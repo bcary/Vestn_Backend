@@ -1,0 +1,58 @@
+﻿@model UserClientMembers.Models.ProjectModel
+           
+<div id="projectInformationPartial">
+
+    <ul class="menu">
+        @for (int i = 0; i < Model.projectTags.Count(); i++)
+            {
+            <li id="userTag_@(i)" value = @Model.projectTags.ElementAt(i)><sh6>@Model.projectTags.ElementAt(i)</sh6></li>
+           }
+    </ul>
+
+<div class="aboutPictureWrapper">
+    <div class="aboutPicture"  style = "display:table-cell; text-align:center; vertical-align:middle; width:200px; height:200px; cursor:pointer">
+        @if (Model.coverPictureThumbnail != null)
+        {
+            <img src="@Model.coverPictureThumbnail" alt="" alt="click to add a picture please..." />
+        }
+        else
+        {
+            <img src="../../Content/Images/chip_contentGoesHere.png" alt="" width="200px" height="200px" />
+        }
+        
+        
+    </div>
+    
+    <div class = "informationPictureUpload" id="projectPictureUpload_@(Model.id)">
+        <span class="editProjectPictureLabel">CHANGE</span>
+        <form action="/Project/UpdateProjectPicture" method="post" enctype="multipart/form-data"
+        target="iframe-post-form">
+        <input id="projectId" name="projectId" type="hidden" value="@Model.id" />
+        <input type="file" class="projectPictureUploadInput" name="projectPictureUploadInput" style="" onchange="javascript:postFile('projectPicture');" />
+        </form>
+    </div>
+
+    <span id="name" class="name inLineEditProject editable" style="margin-top:10px;">
+        @if (Model.name != null)
+        {
+            @Html.Raw(Model.name);
+        }
+        else
+        {@Html.Raw("Project Name goes here")}</span>
+</div>
+<div class="aboutProjectWrapper">
+    <sh4><div class="aboutProject userAboutInformation">@*@Model.description*@
+    <br />
+        <p id="description" class="inLineEditProjectDescription editable">@if (Model.description != null)
+            {@Html.Raw(Model.description)}
+            else{@Html.Raw("This is some text describing the current project. It gives some background on the project and mentions the lessons you've learned and the skills you've gained as a result of working on it.<br /><br />Don't make this too long or people will get bored and end up playing flash games instead.")}</p>
+    </div></sh4>
+</div>
+<div class="helpElementContainer">
+    <div id="helpElementRenameProject" class="helpElement tipHelpElementRenameProject active">
+        <p2><br /></p2>
+    </div>
+
+    @Html.Partial("_HelpTipsPopup", new UserClientMembers.Models.HelpTips { HelpTipsText = "You can rename your Project here by clicking on it.  Then click and upload a Project photo." })
+</div>
+</div>

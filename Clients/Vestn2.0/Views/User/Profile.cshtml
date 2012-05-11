@@ -1,0 +1,101 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+
+		<head>
+			<link rel="stylesheet" href="../../Content/stylesheets/site.css" type="text/css">
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+			<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+			<script src="../../Scripts/jsrender.js" type="text/javascript"></script>
+			<script src="../../Scripts/global.js" type="text/javascript"></script>
+			<title>Vestn</title>	
+		</head>
+		
+		<body>
+			<div id="container">
+				<div id="header">
+					<div id="headerContent">
+						<div class="headerLeft">
+							<div class="headerProfilePic"></div>
+							<div class="headerSummaryContainer">
+								<div class="headerName">
+									<div id="firstName" class="inLineEdit"></div>
+									<div id="lastName"></div>
+								</div>
+								<div class="headerOccupation headerText">
+									Actuator
+								</div>
+								<div class="headerEmployer headerText">
+									Allstate
+								</div>
+								<div id="headerIcons">
+									<div id="linkedInIcon"></div>
+									<div id="twitterIcon"></div>
+									<div id="facebookIcon"></div>
+									<div id="emailIcon"></div>
+								</div>
+							</div>
+						</div><!--end headerLeft-->
+						
+						
+						<div class="headerMiddle headerText">
+							<div class="headerTagLine">
+								"I'm a modern-era renaissance man with interests and talents in many disciplines. I am currently pursuing web development, design, and actuarial science. It's a fun combo."
+							</div>
+							<div class="headerTagLineExample">
+								Example: "I'm an entrepreneurial-minded, web-passionate, UX-devoted developer and designer who wants to revolutionize the way we digest content."
+							</div>
+						</div>
+						
+						<div class="headerRight"></div>
+					</div>
+				</div>
+				
+				<div id="main">
+					<div class="mainContent">
+						<div class="leftColumn">
+							<div class="leftColTags headerText">
+								you don't have any tags yet
+							</div>
+							<ul id="leftCol-list">
+								<li id="essentialsHeading" class="category essentials active">ESSENTIALS
+									<ul>
+										<li id="leftColAbout" class="active">About</li>
+										<li id="leftColResume">Resume</li>
+										<li id="leftColExperiences">Experiences</li>
+										<li id="leftColReferences">References</li>
+									</ul>
+								</li>	
+								<li id="projectsHeading" class="category projects">PROJECTS
+									<ul id="leftColProjects">
+										<!--this is where projects will be populated-->
+									</ul>
+								</li>	
+								<li id="settingsHeading" class="category settings">SETTINGS
+									<ul>
+										<li id="leftColChangePassword">Change Password</li>
+										<li id="leftColChangeURL">Change Profile URL</li>
+									</ul>
+								</li>
+							</ul>
+							
+						</div><!--end leftColumn-->
+						
+						
+						<div id="projectsPane">
+							<div id="projects">
+								<div id="timeLine"></div>
+								<div id="projectsBuffer"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div><!--End Container-->
+			<script src="../../Scripts/waypoints.min.js"></script>
+			<script src="../../Scripts/tinyscrollbar.min.js"></script>
+			<script src="../../Scripts/profile.js" type="text/javascript"></script>
+			<script src="../../Scripts/jeditable.js" type="text/javascript"></script>
+		</body>
+
+</html>

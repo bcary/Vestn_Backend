@@ -1,0 +1,159 @@
+﻿/*header*//*header*//*header*//*header*//*header*//*header*//*header*//*header*//*header*/
+#header{
+    z-index:1000;
+	position:relative;
+	width:100%;
+	margin-bottom:0px;/*this is 15px on headerOn to adjust for differences in header heights*/
+}
+#headerContent
+{
+	width:1000px;
+	height:60px;
+	position:relative;
+	left:-500px;
+	top:0px;
+	margin-left:50%;
+	border-bottom:1.5px solid #F7941E;
+}
+
+/*not logged in*/
+
+.login.button{
+	position:absolute;
+	left:280px;
+	top:3px;
+	padding:6px 14px 6px 14px;
+	
+	border:none;
+	font-weight:bold;
+}
+.signUp1.button{
+	position:absolute;
+	left:360px;
+	top:5px;
+	padding:6px 14px 6px 14px;
+}
+#headerLogo{
+	width:220px;
+	height:60px;
+}
+#showWhatYouCanDoLogo{
+	width:303px;
+	height:72px;
+	position:absolute;
+	left:220px;
+	top:-5px;
+}
+
+#headerActionsForm{
+	position:absolute;
+	left:550px;
+	width:440px;
+	height:32px;
+	top:0px;
+}
+
+#emailInput{
+	position:absolute;
+	left:10px;
+	top:5px;
+	
+	width:120px;
+	height:20px;
+}
+#passwordInput{
+	position:absolute;
+	left:145px;
+	top:5px;
+	
+	width:120px;
+	height:20px;
+}
+
+#loginFramePlaceholder{
+	position:absolute;
+	left:560px;
+	top:35px;
+	width:430px;
+	height:20px;
+	opacity:1;
+}
+
+#loginPlaceholderTriangle{
+	position:absolute;
+	top:8px;
+	left:20px;
+}
+#loginPlaceholder{
+	position:absolute;
+	left:35px;
+	top:5px;
+	
+	font-family:"HelveticaNeue", Helvetica, Arial, Sans-serif;
+	font-size:14px;
+}
+#signUpPlaceholder{
+	position:absolute;
+	left:100px;
+	top:5px;
+	
+	font-family:"HelveticaNeue", Helvetica, Arial, Sans-serif;
+	font-size:14px;
+}
+#signUpPlaceholderTriangle{
+	position:absolute;
+	left:380px;
+	top:8px;
+}
+
+#rememberMeCheckbox
+{
+	position:absolute;
+	left:10px;
+	top:42px;
+	cursor:pointer;
+}
+#labelForRememberMeCheckbox
+{
+	position:absolute;
+	left:29px;
+	top:44px;
+	cursor:pointer;
+	font-family:"HelveticaNeue", Helvetica, Arial, Sans-serif;
+	font-size:11px;
+	color:#6d6e71;
+}
+
+#labelForForgotPassword
+{
+	position:absolute;
+	left:148px;
+	top:44px;
+	cursor:pointer;
+}
+
+#loginFrameOverlay{
+	width:350px;
+	height:60px;
+	
+	position:absolute;
+	left:550px;
+	top:-10px;
+	
+	border-color:#FAA946;
+	border-style:solid;
+	border-width: 0 1px 1px 1px;
+	
+	-moz-box-shadow: 0 0 10px #F7941E;
+	-webkit-box-shadow: 0 0 10px #F7941E;
+	box-shadow: 0 0 10px #F7941E;
+	
+	opacity:0;
+	display:none;
+}
+
+/*logged in*/
+
+
+
+/*/header*//*/header*//*/header*//*/header*//*/header*//*/header*//*/header*//*/header*/

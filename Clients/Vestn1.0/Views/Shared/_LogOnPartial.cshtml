@@ -1,0 +1,74 @@
+﻿@model UserClientMembers.Models.LogOnModel
+
+@if (Request.IsAuthenticated)
+{
+        <text>Welcome <strong>@User.Identity.Name</strong>!
+        [ @Html.ActionLink("Log Off", "LogOff", "User") ] [ @Html.ActionLink("My Profile", "Index", "User") ]</text>
+}
+else
+{
+                <div id="loginFramePlaceholder">
+                    <img id="loginPlaceholderTriangle" alt="" src="../../Content/Images/BlueTriangle.png" />
+                    <div id="loginPlaceholder" class="c1">
+                        Log In</div>
+                    <div id="signUpPlaceholder" class="c2">
+                        Or Sign Up to demonstrate your excellence</div>
+                    <img id="signUpPlaceholderTriangle" alt="" src="../../Content/Images/OrangeTriangle.png">
+                </div>
+                <div id="loginFrameOverlay">
+                    <input id="rememberMeCheckbox" type="checkbox">
+                    <div id="labelForRememberMeCheckbox">
+                        Remember Me
+                    </div>
+                    <a id="labelForForgotPassword" href="#" onclick="$('#forgotPasswordBox').show();">Forgot your password?</a>
+                </div>
+                <div id="headerActionsForm">
+                    <input type="text" id="emailInput" class="inputBox" tabindex="1" placeholder="User Name  /  email"/>
+                    <input type="password" id="passwordInput" class="inputBox" tabindex="2" placeholder="Password"/>
+                    
+
+                    <a><input type="button" class="black login button" tabindex="3" value="Log In" id="btnLogin"/></a>
+                    <a class="orange signUp1 button" href="@Url.Action("Register", "User")" tabindex="4">Sign Up</a>
+                </div>
+@*    <div id="headerActionsForm">
+                    @using (Html.BeginForm("LogOn", "User", FormMethod.Post, new { id = "logOnForm" }))
+                    {
+                        
+                        @Html.TextBoxFor(m => m.UserName, new { id = "emailInput", @class = "inputBox", placeholder = "User Name  /  email", tabindex = "1" })
+                        @Html.PasswordFor(m => m.Password, new { id = "passwordInput", @class = "inputBox", placeholder = "Password", tabindex = "2" })
+                        
+                        <a><input type="submit" class="black login button" tabindex="3" value="Log In" /></a>
+                        <a  href="#" tabindex="3" onclick="$('#logOnForm').submit();">Log In</a>
+                    }
+
+                    <a class="orange signUp1 button" href="@Url.Action("Register", "User")" tabindex="4">Sign Up</a>
+                </div>*@
+    
+                <div style="z-index:-9;position:absolute;left:50%;margin-left:-270px;top:65px;padding-bottom:40px;width:740px;background-color:white;border-radius:8px;border:2px solid #F9A135;-moz-box-shadow: 1px 2px 7px #000;-webkit-box-shadow: 1px 2px 7px #000;box-shadow: 1px 2px 7px #000;display:none;" id="forgotPasswordBox">
+                        
+                        <div class="title">
+                            <h1>
+                                Forgot Your Password?</h1>
+                            <br />
+                            <h5>Just enter your email and we'll help you access your account!</h5>
+                           
+                            <form id="forgotPasswordForm" action="/User/ForgotPassword" method="post">
+                                <input id="emailForgotPassword" type="text" name="email" placeholder="Email Address" />
+                            </form>
+                        </div>
+                            
+
+                            <div id="buttonGroup">
+                                <a id="forgotPasswordButton" class="continueButton orange talent button">
+                                    <span style="font-size: 30px;">Send</span>
+                                    <img style="position: relative; top: 2px; left: 2px;" src="../../Content/Images/WhiteArrow.png"
+                                        alt="" />
+                                </a><a onclick="javascript:$('#forgotPasswordBox').hide();"
+                                    class="skipButton blue talent button"><span style="font-size: 22px;">Nevermind</span>
+                                    <img style="position: relative; top: 2px; left: 2px;" src="../../Content/Images/WhiteArrow.png"
+                                        alt="" />
+                                </a>
+                            </div>
+
+               </div>
+}

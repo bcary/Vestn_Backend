@@ -1,0 +1,125 @@
+﻿@model UserClientMembers.Models.ProfileModel
+@using UserClientMembers.Models
+
+<input type="hidden" id="profileUsername" value="@Model.userName" />
+<input type="hidden" id="profileId" value="@Model.id" />
+
+<div id="main" class="b5">
+    <div id="mainContent">
+    
+    
+
+        <div id="leftCol">
+            <div id="mugShot">
+                <div id="userProfilePicture">
+                    @if (Model.profilePictureThumbnail != null)
+                    {
+                        <img style="cursor: pointer; vertical-align:middle;" src="@Model.profilePictureThumbnail" alt="" />
+                }
+                    else
+                    {
+                        <img style="cursor: pointer" src="../../Content/Images/chip_happy.png" alt="" width="175px"
+                            height="175px" /> 
+                }
+                </div>
+            </div>
+            <div id="userAboutHeader">
+                <span style="color: #222; position: relative; left: 20px; top: 15px; font-size: 16px;">@Model.firstName
+                    @Model.lastName</span>
+                    
+                    </div>
+            <div id="userAboutTriangle" class="triangle">
+            </div>
+            <div id="userAbout">
+                <div id="userAboutInformationPane">
+                    <div class="userAboutInformationLabel">
+                        Education:</div>
+                    <sh4><div id="school" class="userAboutInformation">@Model.school</div></sh4>
+                    <br />
+                    <div class="userAboutInformationLabel">
+                        Major:</div>
+                    <sh4><div id="major" class="userAboutInformation">@Model.major</div>
+                                </sh4>
+                    <br />
+                    <div class="userAboutInformationLabel">
+                        Location:</div>
+                    <sh4><div id="location" class="userAboutInformation">@Model.location</div></sh4>
+                    <br />
+                </div>
+                @if (Model.resume != null)
+                {
+                    @Html.Raw("<a href=" + @Model.resume + ">")
+                }
+                else
+                {
+                    @Html.Raw("<a onClick='notify(\"This user does not have a resume\", 1500)'>")
+                }
+                    <div class="b1" id="viewResume">
+                        <span style="position: relative; left: 7px; top: 5px; font-size: 16px; font-family: HelveticaNeue-Bold, Helvetica, Arial, Sans-serif;
+                            font-weight: bold;">Download Resume</span></div>
+                </a>
+            </div>
+            <div id="feedbackToUser">
+                Send Feedback to @Model.firstName
+            </div>
+
+@*            @if (User.Identity.IsAuthenticated)
+            {
+            <div onclick="addConnection();" id="addConnectionButton">
+            +CONNECT
+            </div>
+            }*@
+            <div id="companiesFollowing">
+            </div>
+        </div>
+        <div id="rightCol">
+            <div id="nameBar">
+                <div style="color: #3A3A3A; font-size: 32px; position: relative; left: 10px; top: -8px;
+                    font-weight: bold;"><div id="firstName" class="userNameBarName">@Model.firstName</div> <div id="lastName" class="userNameBarName">@Model.lastName</div></div>
+                <div id="nameBarButtons">
+                    <div id="shareButton">
+                        @*<span style="font-family: Trebuchet MS; font-weight: bold; color: #444; position: relative; font-size: 16px;">SHARE</span>*@
+                        SHARE
+                        </div>
+                    <div id="shareDropdown">
+                        <span style="font-family: Trebuchet MS; font-weight: bold; font-size:14px;">Think this is a cool profile?
+                        Tell others!</span>
+                        <div id="shareDropdownEmailText">
+                            <input class="c1" spellcheck="false" value="recipient's email" />
+                        </div>
+
+                        <div id="invalidEmailText">
+                            *Please enter a valid email.
+                        </div>
+
+                        <div id="shareDropdownProfileButton">
+                            <span style="font-family: Trebuchet MS; font-weight: bold; color: #444; position: relative;
+                                left: 1px; top: -6px; font-size: 16px;">Profile</span>
+                        </div>
+                        <div id="shareDropdownProjectButton">
+                            <span style="font-family: Trebuchet MS; font-weight: bold; color: #444; position: relative;
+                                left: 1px; top: -6px; font-size: 16px;">Selected Project</span>
+                        </div>
+                        <div id="shareDropdownElementButton">
+                            <span style="font-family: Trebuchet MS; font-weight: bold; color: #444; position: relative;
+                                left: 1px; top: -6px; font-size: 16px;">Current View</span>
+                        </div>
+                    </div>                    
+                    @*<div id="connectButton">
+                        <span style="font-family: Trebuchet MS; font-weight: bold; color: #444; position: relative;
+                            left: 8px; top: 4px; font-size: 16px;">+CONNECT</span></div>
+                    <div id="printButton">
+                        <span style="font-family: Trebuchet MS; font-weight: bold; color: #444; position: relative;
+                            left: 18px; top: 4px; font-size: 16px;">PRINT</span></div>*@
+                </div>
+            </div>
+
+
+            <div id="Partial_Projects">
+                @Html.Partial("_Projects_Public", (ProfileModel)Model, ViewData)
+            </div>
+            
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../../Scripts/profile.js?1.0.7"></script>

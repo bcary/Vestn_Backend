@@ -1,0 +1,236 @@
+﻿@model UserClientMembers.Models.ProfileModel
+@using UserClientMembers.Models
+<link type="text/css"  href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/redmond/jquery-ui.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="../../Content/Stylesheets/profile.css?1.0.7">
+<link rel="stylesheet" type="text/css" href="../../Content/Stylesheets/projects.css?1.0.7">
+<div id="main" class="b5">
+    <div id="mainContent">
+        @if (@Model.firstName==null||@Model.lastName==null||@Model.location==null||@Model.school==null||@Model.major==null)
+        {
+            @Html.Partial("_CompleteProfilePrompt", Model);
+            <script type="text/javascript">
+                $('.haze').show();
+
+               
+            </script>
+        }
+        
+        <div id="leftCol">
+            <div id="mugShot">
+                @{
+                    var model = new UserClientMembers.Models.FileUploadModel
+                    {
+                        entity = "user",
+                        entityId = Model.id,
+                        FileName = Model.profilePicture,
+                        thumbnail = Model.profilePictureThumbnail
+                    };
+                    
+                    <div id="userProfilePicture" style = "cursor:pointer;">
+                        <div id="userProfilePictureUpload">
+                        <span class="editProfilePictureLabel">CHANGE</span>   
+                        </div>
+                        @Html.Partial("_UserProfilePicture_Owner", model)
+                        
+                    </div>
+                    <form id = "userProfilePictureUploadForm" action="/User/UpdateProfilePicture" method="post" enctype="multipart/form-data"
+                    target="iframe-post-form">
+                    <input type="file" id="userProfilePictureUploadInput" name="profilePictureUpload" style="" onchange="javascript:postFile('profilePicture');" />
+                    </form>
+                }
+            </div>
+            <div id="userAboutHeader">
+                <span style="color: #222; position: relative; left: 20px; top: 15px; font-size: 16px;">@Model.firstName
+                    @Model.lastName</span>
+                    </div>
+            <div id="userAboutTriangle" class="triangle">
+            </div>
+            <div id="userAbout">
+                <div id="userAboutInformationPane">
+                    @Html.HiddenFor(m => m.id, new { id = "editProfileUserId" })
+                    @Html.HiddenFor(m => m.userName, new { id = "editProfileUserName" })
+                    @Html.HiddenFor(m => m.email, new { id = "editProfileEmail" })
+                    <div class="userAboutInformationLabel">
+                        Education:</div>
+                    <sh4><div id="school" class="userAboutInformation inLineEdit editable">@Model.school</div></sh4>
+                    <br />
+                    @*
+                    <div class="userAboutInformationLabel">
+                        Birth Date:</div>
+                    <sh4><div id="birthDate" class="userAboutInformation inLineEdit editable">@if (Model.birthDate.ToString().Substring(0, Model.birthDate.ToString().IndexOf(' ')) != "1/1/1800")
+                    {
+                        @Model.birthDate.ToString().Substring(0, Model.birthDate.ToString().IndexOf(' '))
+                    }</div> </sh4>
+                    <br />
+                    *@
+                    <div class="userAboutInformationLabel">
+                        Major:</div>
+                    <sh4><div id="major" class="userAboutInformation inLineEdit editable">@Model.major</div>
+                                </sh4>
+                    <br />
+                    @*
+                    <div class="userAboutInformationLabel">
+                        Phone #:</div>
+                    <sh4><div id="phoneNumber" class="userAboutInformation inLineEdit editable">@Model.phoneNumber</div></sh4>
+                    <br />
+                    *@
+                    <div class="userAboutInformationLabel">
+                        Location:</div>
+                    <sh4><div id="location" class="userAboutInformation inLineEdit editable">@Model.location</div></sh4>
+                    <br />
+                </div>
+                <div id="resumeWrapper">
+                <div class="b2" id="viewResume" style = "cursor:pointer;">
+                    <span class="addEditResumeLabel">Add/Edit Resume</span>
+                        <div id="userResumeUpload">
+                            <form id = "userResumeUploadForm" action="@Url.Action("UpdateResume", "User")" method="post" enctype="multipart/form-data"
+                            target="iframe-post-form">
+                            <input type="file" id="resumeUploadInput" name="profilePictureUpload" style="" onchange="javascript:postFile('resume')" />
+                            </form>
+                        </div>
+                </div>
+                </div>
+            </div>
+            @*<div id="companiesFollowing">
+            </div>*@
+            @*
+            <div id="tagsTextField">
+                <input type="text" id="tags" />
+                <div id="userTagButton" class="tagButton">User Tag</div>
+                <div id="projectTagButton" class="tagButton">Project Tag</div>
+
+                    <ul class="menu">
+                        @for (int i = 0; i < Model.userTags.Count(); i++)
+                        {
+                            <li id="userTag_@(i)" value = @Model.userTags.ElementAt(i)><sh6>@Model.userTags.ElementAt(i)</sh6></li>
+                        }
+                    </ul>
+
+            </div>
+            *@                  
+@*            <div id="userConnections">
+            <span>Connections:</span>
+            @if (Model.connections != null)
+            {
+                foreach (Entity.User user in Model.connections)
+                {
+                    <div>
+                    <a href="@(Url.Action("Profile", new { profileURL = user.profileURL }))" target="_blank" style = "vertical-align:middle;">
+                    <img class="userConnectionsImage" src="@(user.profilePictureThumbnail)" width="50" height="50"></img>
+                    <sh4><div style = "float:right;" class="connectionName">@user.firstName @user.lastName</div></sh4>
+                    </a>
+                    
+                    </div>
+                }
+            }
+            </div>*@
+            
+            @*<div id="userTags">
+                @foreach (var tag in @Model.tagValues)
+                {
+                    <h1>tag</h1>
+                }
+            </div>*@
+        </div>
+        <div id="rightCol">
+            <div id="nameBar">
+                <div style="color: #3A3A3A; font-size: 32px; position: relative; left: 10px; top: -8px;
+                    font-weight: bold;"><div id="firstName" class="userNameBarName inLineEdit editable">@Model.firstName</div> <div id="lastName" class="userNameBarName inLineEdit editable">@Model.lastName</div> 
+                </div>
+                    
+                    @if (Model.emailVerified == 1)
+                    {
+                        <div id="URL">
+                            <div id="profileURLStart">My URL: vestn.com/v/</div>
+                            <input type="text" id="changeURLTextField" />
+                            <div id="profileURLText">@Model.profileURL</div>
+                            
+                            <div id="changeURLButton">
+                                <span class="URLButtonText">Change URL</span>
+                            </div>
+                            <div id="saveURLButton">
+                                <span class="URLButtonText">Save URL</span>
+                            </div>
+                        </div>
+                    }
+                <div id="nameBarButtons">
+                    @*<div id="connectButton">
+                        <span style="font-family: Trebuchet MS; font-weight: bold; color: #444; position: relative;
+                            left: 8px; top: 4px; font-size: 16px;">+CONNECT</span></div>*@
+                    @if (Model.isPublic == 1)
+                    {
+                        <div id="shareButton">
+                        @*<span style="font-family: Trebuchet MS; font-weight: bold; color: #444; position: relative; font-size: 16px;">SHARE</span>*@
+                        SHARE
+                        </div>
+                    }
+                    
+                    
+
+                    <div id="shareDropdown">
+                        Show off!<br />
+
+                        <div id="shareDropdownEmailText">
+                            <input class="c1" spellcheck="false" value="recipient's email" />
+                        </div>
+
+                        <div id="invalidEmailText">
+                            *Please enter a valid email.
+                        </div>
+
+                        <div id="shareDropdownProfileButton">
+                            <span style="font-family: Trebuchet MS; font-weight: bold; color: #444; position: relative;
+                                left: 1px; top: -6px; font-size: 16px;">Profile</span>
+                        </div>
+                        <div id="shareDropdownProjectButton">
+                            <span style="font-family: Trebuchet MS; font-weight: bold; color: #444; position: relative;
+                                left: 1px; top: -6px; font-size: 16px;">Selected Project</span>
+                        </div>
+                        <div id="shareDropdownElementButton">
+                            <span style="font-family: Trebuchet MS; font-weight: bold; color: #444; position: relative;
+                                left: 1px; top: -6px; font-size: 16px;">Current View</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="nameBarHelpButtons">
+                    <div id="helpSwitch" class="button">
+                        <p4>Hints</p4>
+                    </div>
+                                                        
+                </div>
+            </div>
+            <div id="Partial_Projects">
+                @Html.Partial("_Projects_Owner", (ProfileModel)Model, ViewData)
+            </div>
+        </div>
+        <div class="helpElementContainer">
+            <div id="resetHelpSwitch" class="button">
+                <p4>
+                    Reset Help</p4>
+            </div>
+            
+            <div id="helpElementAbout" class="helpElement tipHelpElementAbout active">
+                <p2><br/></p2>
+             </div>
+             @Html.Partial("_HelpTipsPopup", new UserClientMembers.Models.HelpTips { HelpTipsText = "You can edit all your basic info here. Simply click the info you want and start typing." })
+            
+            <div id="helpElementPicture" class="helpElement tipHelpElementPicture active">
+                <p2><br /></p2>
+            </div>
+            @Html.Partial("_HelpTipsPopup", new UserClientMembers.Models.HelpTips { HelpTipsText = "Click here to upload a picture of your pretty smiling face!" })
+            
+            <div id="helpElementProjects" class="helpElement tipHelpElementProject active">
+                <p2><br/></p2>               
+            </div>
+            @Html.Partial("_HelpTipsPopup", new UserClientMembers.Models.HelpTips { HelpTipsText = "You can add projects to demonstrate your capabilities here." })
+         
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="../../Scripts/jeditable.js?1.0.7"></script>
+<script type="text/javascript" src="../../Scripts/profile.js"></script>
+<script type="text/javascript" src="../../Scripts/profile_Owner.js"></script>
+<script type="text/javascript" src="../../Scripts/autogrow.js?1.0.7"></script>
+<script type="text/javascript" src="../../Scripts/jquery.tools.min.js"></script>

@@ -1,0 +1,22 @@
+﻿@model UserClientMembers.Models.ProfileModel
+@if (@Model.resume != null)
+{
+if (@Model.resume.Contains(".pdf"))
+{
+    <iframe id="resumeViewer" name="resumeViewer" src="@Model.resume" style="width:560px; height:480px;" frameborder="0">
+    </iframe>
+}
+else if (@Model.resume.Contains(".png") || @Model.resume.Contains(".jpg") || @Model.resume.Contains(".jpeg") || @Model.resume.Contains(".bmp") || @Model.resume.Contains(".PNG") || @Model.resume.Contains(".JPG") || @Model.resume.Contains(".JPEG") || @Model.resume.Contains(".BMP"))
+{
+    <img id="resumeViewer" name="resumeViewer" src="@Model.resume" width="560" height="480" />
+}
+else
+{
+    @*<sh6>We apoligize, but due to ZohoViewer being temporarily offline, we cannot show the resume at this time.</sh6>*@
+    <iframe id="resumeViewer" name="resumeViewer" src="https://viewer.zoho.com/api/urlview.do?url=@Model.resume&embed=true" style="width:560px; height:480px;" frameborder="0"></iframe>
+}
+}
+else
+{
+    <sh6>No resume uploaded.</sh6>
+}

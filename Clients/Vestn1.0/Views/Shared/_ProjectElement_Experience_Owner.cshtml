@@ -1,0 +1,126 @@
+﻿@model UserClientMembers.Models.ProjectModel
+
+<div class="mediaWindow">
+    @foreach (var item in Model.experience)
+    {
+    <div id="projectElementMedia_@(item.id)" class="media pe_exp">
+        <div class="mediaViewer experienceViewer">
+
+            <div class="experienceItemContainer">
+            <div id="jobTitle" class="experience-item-float experience-jobTitle inLineEditProjectElement editable" style="left:-50%;">@item.jobTitle</div>
+            </div>
+            <div class="experienceItemContainer">
+            <div id="company" class="experience-item-float experience-company inLineEditProjectElement editable" style="left:-50%;">@item.company</div><br />
+            </div>
+
+            <p id="jobDescription" class="experience-item-float experience-jobDescription inLineEditProjectElementDescription editable">@Html.Raw(@item.jobDescription)</p>
+            
+            <span class="experience-citystate"><span id="city" class="experience-city inLineEditProjectElement editable">@item.city</span><span style="position:relative;float:left;">,&nbsp;</span><span id="state" class="experience-state inLineEditProjectElement editable">@item.state</span></span>
+
+        </div>
+
+        <div class="mediaInformation">
+        
+        <div id="company" class="mediaInformation-company inLineEditProjectElement editable">@item.company</div>
+        <div class="startAndEndDates"><div id="startDate" class="experience-startDate inLineEditProjectElement editable">      
+            @if (item.startDate.Year == 1811)
+            {
+                @Html.Raw("Present")
+            }
+            else
+            {
+                @item.startDate.ToString().Substring(0, item.startDate.ToString().IndexOf(' '))
+            }
+        </div>
+        <div class="experience-startAndEndDateDivider">-</div>
+        <div id="endDate" class="experience-endDate inLineEditProjectElement editable">
+            @if (item.endDate.Year == 1811)
+            {
+                @Html.Raw("Present")
+            }
+            else
+            {
+                @item.endDate.ToString().Substring(0, item.endDate.ToString().IndexOf(' '))
+            }
+        
+        </div>
+        
+        </div>
+            
+        <p id="description" class="mediaInformation-description inLineEditProjectElementDescription editable">@Html.Raw(@item.description)</p>
+
+        <div class="innerProjectElementTabButton moveUp" >Move Up</div>
+            <div class="innerProjectElementTabButton moveDown" >Move Down</div>
+            <div class="innerProjectElementTabButton delete" >Delete</div>
+
+        </div>
+        
+    </div>
+    }
+
+    <div class="media pe_addNew">
+        <div id="addNewExperienceToProject_@(Model.id)"  class="addNewElementContainer">
+        <form action="/Project/AddExperienceElement" method="post" enctype="multipart/form-data" target="iframe-post-form">
+
+            @*ensure that we pass the ID into the post or this project won't be known by the controller*@
+            <input id="projectId" name="projectId" type="hidden" value="@Model.id" />
+
+            <div id="buttonGroup">
+            <a onclick="javascript:postFile('experience');"
+                class="continueButton orange talent button"
+                style="padding:5px 10px 5px 10px;margin-top:10px;margin-left:75px;"
+                >
+                    <span style="font-size: 15px;">Add Experience</span>
+                    <img style="position: relative; top: 0px; left: 2px;" width="10" height="10" src="../../Content/Images/WhiteArrow.png"
+                        alt="" />
+                </a>
+            </div>
+            </form>
+
+    </div>
+    </div>
+
+    <div class="chooser">
+        <div class="mediaSelectionPane">
+            <ul>
+                @foreach (var item in Model.experience)
+                {   
+                    <li id="projectElementSelector_@(item.id)" value=@Model.id class="pe-experience-selector mediaSelector">
+                        <img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" /><img
+                            class="mediaTypeIndicator" src="../../Content/Images/projectElementTypeIndicator20x20-Document.png"
+                            style="float: left;" /><sh5>@if (item.company.Length > 9)
+                                {
+                                    string Temp = item.company.Split(' ').FirstOrDefault();
+                                    if (Temp.Length > 9)
+                                    {
+                                        @Temp.Substring(0, 9).ToLower()
+                                    }
+                                    else
+                                    {
+                                        @Temp.ToLower()
+                                    }
+                                }
+                                else
+                                {
+                                    @item.company.ToLower()
+                                }</sh5></li>
+                }
+                <li value=@Model.id class="projectElementAddNewSelector mediaSelector" style="text-align:center;"><img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" /></li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div class="helpElementContainer">
+    <div id="helpElementExperience" class="helpElement tipHelpElementExperience active">
+        <p2><br/></p2>
+    </div>
+     @Html.Partial("_HelpTipsPopup", new UserClientMembers.Models.HelpTips { HelpTipsText = "This is where you can tell other about the great jobs you've had" })
+</div>

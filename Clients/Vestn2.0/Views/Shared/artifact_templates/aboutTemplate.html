@@ -1,0 +1,26 @@
+<div class="timelineIcon aboutIcon" style="cursor:auto"></div>
+<div class="artifactContent">
+	<div class="artifactTitle" style="color:#F48200; cursor:auto">
+		About
+	</div>
+	<div id="topAboutContent">
+		<div class="leftCol">
+			<div class="container">
+				<div class="picture">
+					<img src="{{:Response[0].profilePicture}}" style="max-width:100%; max-height:100%" />
+				</div>
+				<div class="statsContainer">
+					<div class="views">{{:Response[0].stats.views}}<br />views</div>
+					<div class="props">{{:Response[0].stats.props}}<br />props</div>
+					<div class="artifacts">{{:Response[0].stats.numberOfArtifacts}}<br />artifacts</div>
+				</div>
+			</div>
+		</div>
+		<div class="rightCol">
+			recent activity
+		</div>
+	</div>
+	<div id="bottomAboutContent">
+		{{:Response[0].description}}
+	</div>
+</div>

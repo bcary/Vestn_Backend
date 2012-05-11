@@ -1,0 +1,57 @@
+﻿@model UserClientMembers.Models.ProfileModel
+@using UserClientMembers.Models
+
+
+<script type="text/javascript">
+    $('.haze').show();
+</script>
+
+<div id="getStarted">
+    <div class="title">
+        <h1>
+            Get started by completing the following:</h1>
+        @*<a href="/v/mwong" target="_blank">View Sample Profile</a>*@
+    </div>
+    <form id="completeProfileForm" method="post" onsubmit="javascript:submitCompleteProfile();return false;">
+
+        <input style="margin-top:24px" type="text" id="firstNameCompleteProfile" name="firstName" class="required" /> <br/>
+        <sh4>First Name* </sh4>
+        <input type="text" id="lastNameCompleteProfile" name="lastName" class="required" /> <br />
+        <sh4>Last Name* </sh4>
+        <input type="text" id="locationCompleteProfile" name="location" class="required" /> <br />
+        <sh4>Location* </sh4>
+        <input type="text" id="schoolCompleteProfile" name="school" class="required" data-autocomplete="@Url.Action("AutocompleteSchools", "Resources")" /><br />
+        @*Html.ActionLink("complete", "AutocompleteSchools", "Resources")*@
+        <sh4>School* </sh4>
+        <input type="text" id="majorCompleteProfile" name="major" class="required" /> <br />
+        <sh4>Major* </sh4>
+
+        <!--
+        <input type="text" id="birthDate" name="birthDate" /> <br />
+        <sh4>Birth Date</sh4>
+        <input type="text" id="phoneNumber" name="phoneNumber" /> <br />
+        <sh4>Phone # </sh4>
+                           
+        <input type="file" id="profilePictureUploadForm" name="profilePictureUpload" style="font-size: 17px; margin-right:100px" />  <br />
+        <sh4>Profile Picture </sh4>
+        <input type="file" id="resumeUploadForm" name="resumeUpload" style="font-size: 17px;  margin-right:100px" /> <br />
+        <sh4>Resume</sh4>
+        -->
+        
+        @Html.CheckBoxFor(m => m.agreement, new { @id = "agreement", @style = "margin-left: -12px; margin-top: 19px" })
+        <sh4>I agree to the <a href="http://vestnstorage.blob.core.windows.net/pdfs/VestnUserAgreement.pdf" target="_blank" style="font-size:19px; text-decoration:underline">Vestn User Agreement</a></sh4>
+        
+        <div id="buttonGroup" style="position:relative; margin-top:100px;">
+            <a id="completeProfileSubmitButton" style="margin-top:20px; margin-right:120px;" class="continueButton talent button">
+                <span style="font-size: 30px;">Continue</span>
+                <img style="position: relative; top: 1px; left: 2px;" src="../../Content/Images/WhiteArrow.png"
+                    alt="" />
+            </a>
+        </div>
+        <input type="submit" style="opacity:.01;" />
+     </form>
+</div>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../Scripts/jquery.youtubepopup.min.js"></script>
+<script type="text/javascript" src="../../Scripts/completeProfile.js?1.0.7"></script>

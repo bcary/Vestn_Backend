@@ -1,0 +1,146 @@
+﻿@model UserClientMembers.Models.ProfileModel
+@using Entity
+
+<div class="sessionVariables">
+    <text class="session_userName">@Model.userName</text>
+    <text class="session_profileURL">@Model.profileURL</text>
+    <text class="session_firstName">@Model.firstName</text>
+</div>
+
+<div id="movePageButtonWrapper">
+    <div id="movePageLeftButton" class="movePageButton b1">
+            <img class="rotateBy-90 b1" src="../../Content/Images/WhiteTriangle.png" width="20" height="20" title="Scroll left" style="position:relative;float:left;margin-top:6px;padding:5px;" />
+        </div>
+        <div id="movePageRightButton" class="movePageButton b1">
+            <img class="rotateBy90 b1" src="../../Content/Images/WhiteTriangle.png" width="20" height="20" title="Scroll right" style="position:relative;float:right;margin-top:6px;padding:5px;" />
+        </div>
+        <div class="newProjectButton" title="Create new project" onclick="createProject()"></div>
+    </div>
+
+<div id="projectTabs">
+    <div id="moveProjectButtonWrapper">
+        <div id="moveProjectLeftButton" class="moveProjectButton b2">
+            <img class="rotateBy-90" src="../../Content/Images/WhiteTriangle.png" width="10" height="10" title="Move project left" style="position:relative;float:left;margin-left:3px;margin-top:6px;" />
+        </div>
+        <div id="moveProjectRightButton" class="moveProjectButton b2">
+            <img class="rotateBy90" src="../../Content/Images/WhiteTriangle.png" width="10" height="10" title="Move project right" style="position:relative;float:right;margin-right:3px;margin-top:6px;" />
+        </div>
+    </div>
+    
+    <ul class="menu">
+        @for (int i = 0; i < Model.projects.Count(); i++)
+        {
+            if (Model.projects.ElementAt(i).isActive)
+            {
+                if (i == 0)
+                {
+            <li id="project_@(Model.projects.ElementAt(i).id)" value=@Model.projects.ElementAt(i).id class="active aboutProjectTab projectTab"><sh6>About</sh6></li>
+                }
+                else
+                {
+            <li id="project_@(Model.projects.ElementAt(i).id)" value=@Model.projects.ElementAt(i).id class="projectTab"><sh6>@if(@Model.projects.ElementAt(i).name.Length > 11){@Model.projects.ElementAt(i).name.Substring(0,11)}else{@Model.projects.ElementAt(i).name}</sh6></li>
+                }
+            }
+        }
+
+        @*this will show up  no matter how many projects the user has- it will just be outside of the projectTabs menu (overflow hidden) if there are already 5 projects*@
+            @*<li class="newProjectTab" title="Create new project" onclick="createProject()"></li>*@
+    </ul>
+
+        
+</div>
+
+<div id="projectArea">
+    <div id="projectInnerTabs">
+        <ul class="innerMenu">
+
+            @*project tabs*@
+            <li id="innerProjectTab-project-Information">Information</li>
+            <li id="innerProjectTab-project-Documents">Documents</li>
+            <li id="innerProjectTab-project-Pictures">Pictures</li>
+            <li id="innerProjectTab-project-Videos">Videos</li>
+            <li id="innerProjectTab-project-Audio">Audio</li>
+
+            @*user tabs*@
+            <li id="innerProjectTab-user-Information">Information</li>
+            <li id="innerProjectTab-user-Experience">Experience</li>
+            <li id="innerProjectTab-user-Resume">Resume</li>
+            @*<li id="innerProjectTab7">Work Items</li>
+            <li id="innerProjectTab8">References</li>
+            <li id="innerProjectTab9">Contact</li>
+            <li id="innerProjectTab10">Misc</li>*@
+        </ul>
+       
+
+       @*<div id="shareLinkText">
+            <sh4>ctrl + c</sh4>
+            <br />
+            <input class="c1" spellcheck="false"  />
+        </div>
+       <a>
+            <li id="innerProjectTabShare">Share</li>
+        </a>*@
+        <a>
+            <li id="innerProjectTabDelete">Delete</li>
+        </a>
+    </div>
+    <div id="projectInnerTabArrowStart" class="arrow">
+    </div>
+    <div id="projectInnerTabArrowEnd" class="arrow">
+    </div>
+    @for (int i = 0; i < Model.projects.Count(); i++)
+    {
+        if (Model.projects.ElementAt(i).isActive)
+        {
+
+            if (Model.projects.ElementAt(i).name == "About")
+            {
+        <div id="projectContent_@(Model.projects.ElementAt(i).id)" class="projectContent" value=@Model.projects.ElementAt(i).id>
+            <!--<input type="hidden" value="something" />-->
+            <div class="projectContentFrame user-Information active">
+                @Html.Partial("_UserAboutInformation_Owner", Model)
+            </div>
+            <div class="projectContentFrame user-Experience">
+                @Html.Partial("_ProjectElement_Experience_Owner", Model.projects.ElementAt(i), (ViewDataDictionary)ViewData[i.ToString()])
+            </div>
+            <div class="projectContentFrame user-Resume">
+                <div id="Partial_Resume">
+                @Html.Partial("_UserResume", Model)
+                </div>
+            </div>
+        </div>
+            }
+        else
+        {
+        <div id="projectContent_@(Model.projects.ElementAt(i).id)" class="projectContent" value=@Model.projects.ElementAt(i).id>
+            <div class="projectContentFrame project-Information active">
+                @Html.Partial("_ProjectElement_Information_Owner", Model.projects.ElementAt(i), (ViewDataDictionary)ViewData[i.ToString()])
+            </div>
+            <div class="projectContentFrame project-Documents">
+                @Html.Partial("_ProjectElement_Documents_Owner", Model.projects.ElementAt(i), (ViewDataDictionary)ViewData[i.ToString()])
+            </div>
+            <div class="projectContentFrame project-Videos">
+                @Html.Partial("_ProjectElement_Videos_Owner", Model.projects.ElementAt(i), (ViewDataDictionary)ViewData[i.ToString()])
+            </div>
+            <div class="projectContentFrame project-Pictures">
+                @Html.Partial("_ProjectElement_Pictures_Owner", Model.projects.ElementAt(i), (ViewDataDictionary)ViewData[i.ToString()])
+            </div>
+            <div class="projectContentFrame project-Audio">
+                @Html.Partial("_ProjectElement_Audio_Owner", Model.projects.ElementAt(i), (ViewDataDictionary)ViewData[i.ToString()])
+            </div>
+        </div>
+            }
+        }
+    }
+</div>
+
+<script type="text/javascript">
+    $(".projectContent").first().show();
+        </script>
+
+@*putting jeditible reference here is the only way i could get around an error-
+ on multiple project deletes/adds, jeditible would stop binding to objects.
+ Not completely sure why, but putting the script refrence here in this file seems to work*@
+
+<script type="text/javascript" src="../../Scripts/projects_Owner.js?1.0.7"></script>
+<script type="text/javascript" src="../../Scripts/projects.js?1.0.7"></script>

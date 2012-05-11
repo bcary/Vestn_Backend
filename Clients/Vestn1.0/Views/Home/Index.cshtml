@@ -1,0 +1,259 @@
+﻿@model UserClientMembers.Models.LogOnModel
+@{
+    Layout = "~/Views/Home/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="../../Content/Stylesheets/index.css?1.0.7">
+@*
+    <script type="text/javascript" 
+     src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+
+    <style>
+     .chromeFrameInstallDefaultStyle {
+       width: 100%; /* default is 800px */
+       border: 5px solid blue;
+     }
+    </style>
+
+    <div id="prompt">
+     <!-- if IE without GCF, prompt goes here -->
+    </div>
+ 
+    <script>
+        // The conditional ensures that this code will only execute in IE,
+        // Therefore we can use the IE-specific attachEvent without worry
+        window.attachEvent("onload", function () {
+            CFInstall.check({
+                mode: "inline", // the default
+                node: "prompt"
+            });
+        });
+    </script>
+    *@
+<div id="main">
+    <div id="mainContent">
+        <div id="topContent">
+            <div class="left">
+                <div class="text">
+                    <h2 style="text-align: center">
+                        The best way to <span class="c1">demonstrate</span>
+                        <br>
+                        your capabilities.</h2>
+                    </br>
+                    <sh2>
+                        @*Vestn lets you quickly share snapshots of your work by uploading documents, pictures, and videos to your own personal profile.  
+                        This simple site is intended for every college major and every career field.<br /><br />
+                        If you love the job you have now, then show others why.  If you don't have a job, then use this site as a way to stand out from your peers.<br /><br />
+                        We are a group of students who believe that visual media speaks louder than just words on a resume.  Start showing people the cool things you do.
+						*@
+                        Vestn is a new ePortfolio solution that lets you quickly share snapshots of your work by uploading documents, pictures, and videos to your own personal profile. This intuitive site is intended for every college major and every career field.<br /><br />If you love the job you have now, then show others why. If you don't have a job, then use this site as a way to stand out from your peers.<br />
+                        </sh2>
+                </div>
+                <a href="@Url.Action("Register", "User")?isEducation=false" class="vestnForMeButton orange talent button">
+                    <span style="font-size: 20px;">Vestn for Me</span>
+                    <img style="position:absolute;top:5px;left:5px;" src="../../Content/Images/Personal-logo-White-35x35.png" alt="" />
+                    <img style="position: relative; top: 2px; left: 10px;" src="../../Content/Images/WhiteArrow.png"
+                        alt="" />
+                </a>
+                <a href="@Url.Action("Register", "User")?isEducation=true" class="vestnForEducationButton orange button"><span style="font-size: 20px;">
+                    Vestn for Education</span>
+                    <img style="position:absolute;top:5px;left:5px;" src="../../Content/Images/Education-logo2-White-35x35.png" alt="" />
+                    <img style="position: relative; top: 2px; left: 10px;" src="../../Content/Images/WhiteArrow.png"
+                        alt="" />
+                </a>
+                @*<div class="links" style="display: none">
+                    <a href="">
+                        <sh4 style="position: absolute; left: 30px; width: 100px;">Get Help</sh4>
+                        <img class="rotateBy90" style="position: absolute; top: 6px; left: 100px;" src="../../Content/Images/BlueTriangle.png"
+                            alt="">
+                    </a><a href="">
+                        <sh4 style="position: absolute; left: 150px; width: 100px;">FAQ</sh4>
+                        <img class="rotateBy90" style="position: absolute; top: 6px; left: 186px;" src="../../Content/Images/BlueTriangle.png"
+                            alt="">
+                    </a><a href="@Url.Action("Index", "Admin")">
+                        <sh4 style="position: absolute; left: 150px; width: 100px;">User List</sh4>
+                        <img class="rotateBy90" style="position: absolute; top: 6px; left: 186px;" src="../../Content/Images/BlueTriangle.png"
+                            alt="">
+                    </a>
+                </div>*@
+
+                <div id="checkOutProfiles">
+                    <div class="header c1">
+                        Check out our profiles!
+                    </div>
+
+                    <div class="profileList">
+                        <ul>
+                            <a href="http://vestn.com/v/brian">
+                            <li class="listItem">
+                                <div class="listPicture">
+                                    <img alt="" src="https://vestnstorage.blob.core.windows.net/thumbnails/50dc9b5f-39b7-429b-9256-0672c806f658.jpeg" width=100% height=100% />
+                                </div>
+                                <div class="listPersonName"><sh4>Brian Cary</sh4></div>
+                                <div class="listJobTitle"><sh6>Computer Engineer</sh6></div>
+                                <div class="listEmployer"><sh6>Vestn, LLC</sh6></div>
+                            </li>
+                            </a>
+                            <a href="http://vestn.com/v/pbaylog">
+                            <li class="listItem">
+                                <div class="listPicture">
+                                    <img alt="" src="https://vestnstorage.blob.core.windows.net/thumbnails/6ac76f92-e324-47fb-9eb6-f485ed16ecfd.jpeg" width=100% height=100% />
+                                </div>
+                                <div class="listPersonName"><sh4>Phil Baylog</sh4></div>
+                                <div class="listJobTitle"><sh6>Software Developer</sh6></div>
+                                <div class="listEmployer"><sh6>Vestn, LLC</sh6></div>
+                            </li>
+                            </a>
+                            <a href="http://vestn.com/v/connerdana">
+                            <li class="listItem">
+                                <div class="listPicture">
+                                    <img alt="" src="https://vestnstorage.blob.core.windows.net/thumbnails/460a6f93-5bec-4860-a8f3-7fd859a006bd.jpeg" width=80% height=100% />
+                                </div>
+                                <div class="listPersonName"><sh4>Conner Dana</sh4></div>
+                                <div class="listJobTitle"><sh6>Marketing Consultant</sh6></div>
+                                <div class="listEmployer"><sh6>Vestn, LLC</sh6></div>
+                            </li>
+                            </a>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="right">
+                <div class="videoContent b1">
+                    <div class="youtubeVideo">
+                    <iframe width="450" height="310" src="http://www.youtube.com/embed/-X7AtJqtpnE?rel=0&wmode=opaque"></iframe>
+                    </div>
+                </div>
+                <div class="videoFooter">
+                    <!--VIEW VESTN FOR BUSINESS BUTTON-->
+                    <!--<a class="viewBusinessButton blue button">
+						<span style="font-size:20px;">View Vestn for Business</span>
+						<img style="position:relative;top:2px;left:10px;" src="../../Content/Images/WhiteArrow.png" alt=""/>
+					</a>-->
+                    <!--UNCOMMENT WHEN WE HAVE MORE VIDEOS! <a href="" style="position: relative; top: 0px; left: 150px;">
+                        <sh4>View more Videos</sh4>
+                        <img class="rotateBy90" style="position: relative; top: -2px; left: 0px;" src="../../Content/Images/BlueTriangle.png"
+                            alt=""></a>-->
+                </div>
+
+                <div class="trendingWrapper">
+                    <div class="trendingHeader blue button">
+                        <span style="position:relative;left:35px;top:10px;">Trending</span>
+                        <img class="rotateBy90" style="position: relative; top: 10px; left: 43px;" src="../../Content/Images/WhiteArrow.png"
+                        alt="" />
+                    </div>
+                    <div class="trendingContent">
+                        <ul class="trendingList">
+                            <li class="trendingItem">
+                                <a style="cursor:pointer;" href="http://online.wsj.com/article/SB10001424052970203750404577173031991814896.html#articleTabs=article" target="_blank">
+                                    <span style="color:#36454B;font-size:14px;font-weight:bold;font-family:Verdana;">Wall Street Journal</span><br />
+                                    <span style="color:#F89C31;font-size:19px;font-weight:bold;font-family:Verdana;">No More Resumes, Say Some Firms</span>
+                                </a>
+                            </li>
+
+                            <li class="trendingItem">
+                                <a style="cursor:pointer;" href="http://campustechnology.com/articles/2012/02/15/evidence-based-learning-supported-by-eportfolios.aspx" target="_blank">
+                                    <span style="color:#36454B;font-size:14px;font-weight:bold;font-family:Verdana;">Campus Technology</span><br />
+                                    <span style="color:#F89C31;font-size:19px;font-weight:bold;font-family:Verdana;">AAEEBL: It's All About Evidence-Based Learning-- Supported by ePortfolios</span>
+                                </a>
+                            </li>
+
+                            <li class="trendingItem" style="display:none;">
+                                <a style="cursor:pointer;" href="http://www.thetigernews.com/news.php?aid=7486&sid=1" target="_blank">
+                                    <span style="color:#36454B;font-size:14px;font-weight:bold;font-family:Verdana;">The Tiger News</span><br />
+                                    <span style="color:#F89C31;font-size:19px;font-weight:bold;font-family:Verdana;">ePortfolio: not what you think</span>
+                                </a>
+                            </li>
+
+                            <li class="trendingItem" style="display:none;">
+                                <a style="cursor:pointer;"  href="http://www.bu.edu/today/2012/e-portfolios-showcase-student-work/" target="_blank">
+                                    <span style="color:#36454B;font-size:14px;font-weight:bold;font-family:Verdana;">BU Today</span><br />
+                                    <span style="color:#F89C31;font-size:19px;font-weight:bold;font-family:Verdana;">E-Portfolios Showcase Student Work</span>
+                                </a>
+                            </li>
+
+                            <li class="trendingItem" style="display:none;">
+                                <a style="cursor:pointer;"  href="http://philadelphia.cbslocal.com/2012/02/23/temple-business-students-hope-e-portfolio-gives-them-an-advantage-in-job-hunt/" target="_blank">
+                                    <span style="color:#36454B;font-size:14px;font-weight:bold;font-family:Verdana;">CBS</span><br />
+                                    <span style="color:#F89C31;font-size:19px;font-weight:bold;font-family:Verdana;">Temple Business Students Hope E-Portfolio Gives Them An Advantage In Job Hunt</span>
+                                </a>
+                            </li>
+
+                            <div id="moreTrendingButton">More</div>
+                        </ul>
+                        
+                    </div>
+                </div>
+
+            </div>
+
+            <!--
+            <div id="middleContent">
+        <div class="left">
+            <h3 class="c4">
+                What every business card should have</h3>
+            <sh2 style="position: relative; left: 5px; top: 5px;">
+					First, if you don’t already have
+business cards, get them now.
+They are cheap and arguably the
+best way to solidify your networking
+efforts.  Now if you already have
+one, does it say everything it
+should?
+				</sh2>
+        </div>
+        <div class="middle">
+        </div>
+        <div class="right">
+            <h3 class="c4">
+                What you're doing wrong in interviews</h3>
+            <sh2 style="position: relative; left: 5px; top: 5px;">
+					The number one thing you’re
+doing wrong during interviews
+according to the top companies
+will suprise you.  But don’t worry
+it should be an easy fix with
+practice.
+				</sh2>
+        </div>
+    </div>
+    <div id="bottomContent">
+        Bottom shit here
+    </div>
+    -->
+
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div id="scrollDownToLearn" class="orange button">
+    <h1>Scroll Down to Learn More</h1>
+</div>
+<div id="scrollContent">
+    
+    30 REASONS YOU'LL LOVE VESTN
+
+    <!--End Container-->
+    @*<div id="footer">
+        <div id="footerContent">
+            <img src="../../Content/Images/VestnLogoWhite.png" width="180px" height="50px" alt="">
+            <div id="footerLinks">
+                <a class="footerLink" style="cursor: pointer;" href="/">Blog | </a><a class="footerLink"
+                    style="cursor: pointer;" href="/">Help | </a><a class="footerLink" style="cursor: pointer;"
+                        href="/">Legal | </a><a class="footerLink" style="cursor: pointer;" href="/">About |
+                        </a><a class="footerLink" style="cursor: pointer;" href="/">Contact</a>
+            </div>
+        </div>
+    </div>*@
+</div>
+
+
+
+<script type="text/javascript" src="../../Scripts/index.js?1.0.7"></script>

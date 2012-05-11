@@ -1,0 +1,77 @@
+﻿@model UserClientMembers.Models.ProjectModel
+
+<div class="mediaWindow">
+    @{
+        int i = 0;
+    }
+    @foreach (var item in Model.pictures)
+    {
+    <div id="projectElementMedia_@(item.id)" class="media pe_pic">
+        <div class="mediaViewer pictureViewer">
+            @if (@item.pictureThumbnailLocation != null)
+            {
+                <div class="mediaPictureFrame" style = "display:table-cell; text-align:center; vertical-align:middle; width:440px; height:330px">
+                @*<a href="@item.pictureLocation" target="_blank" >*@
+                <img src="@item.pictureThumbnailLocation" alt="Click to Open Full Size Image" onclick="showGallery(@Model.id, @i);"> 
+                @*</a>*@
+                </div>
+            }
+            else
+            {
+                <div class="mediaPictureFrame">
+                    <img class="mediaPictureFrame" id="pictureFrameForProject_@(item.id)" src="../../Content/Images/chip_contentGoesHere.png" width="440" height="330" />
+                </div>
+            }
+
+
+        </div>
+        <div class="mediaInformation">
+
+        
+
+        <div id="title" class="mediaInformation-title">@item.title</div>
+
+        <div id="description" class="mediaInformation-description">@Html.Raw(@item.description)</div>
+
+        </div>
+        
+    </div>
+        i++;
+    }
+    
+    <div style="display:none;">
+        @Html.Partial("_PictureGallery", Model);
+    </div>
+
+    <div class="chooser">
+        <div class="mediaSelectionPane">
+            <ul>
+                @foreach (var item in Model.pictures)
+                {   
+                    <li id="projectElementSelector_@(item.id)" value=@Model.id class="pe-picture-selector mediaSelector">
+                        <img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" />
+                        <img class="mediaTypeIndicator" src="../../Content/Images/projectElementTypeIndicator20x20-Spreadsheet.png"
+                            style="float: left;" /><sh5>
+                            @if (item.title.Length > 9)
+                            {
+                                string Temp = item.title.Split(' ').FirstOrDefault();
+                                if (Temp.Length > 9)
+                                {
+                                        @Temp.Substring(0, 9).ToLower()
+                                }
+                                else
+                                {
+                                        @Temp.ToLower()
+                                }
+                            }
+                            else
+                            {
+                                    @item.title.ToLower()
+                            }
+                                                        
+                                                        </sh5></li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,160 @@
+﻿#createAccountContentHeader{
+	position:absolute;
+	left:40px;
+	top:100px;
+	width:385px;
+	height:65px;
+}
+#createAccountContentBody{
+	position:absolute;
+	left:30px;
+	top:185px;
+	width:400px;
+	height:160px;
+}
+#createAccountContentLinks{
+	position:relative;
+	left:30px;
+	top:30px;
+}
+
+
+#createAccountFormArea{
+	position:absolute;
+	left:475px;
+	top:100px;
+	width:490px;
+	height:305px;
+	border: 1px solid #4D8EC6;
+	border-radius:8px;
+	
+	-moz-box-shadow: 0 0 5px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 0 5px rgba(0,0,0,0.5);
+	box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+#createAccountForm{
+	
+}
+
+/*FORM LABELS*//*FORM LABELS*//*FORM LABELS*//*FORM LABELS*//*FORM LABELS*//*FORM LABELS*/
+#formEmailLabel{
+	position:absolute;
+	left:50px;
+	top:50px;
+	
+	width:100px;
+	text-align:right;
+}
+#formPasswordLabel{
+	position:absolute;
+	left:50px;
+	top:100px;
+	
+	width:100px;
+	text-align:right;
+}
+
+#formVestnProfileLabel{
+	position:absolute;
+	left:66px;
+	top:203px;
+}
+#formEmailHint{
+	position:absolute;
+	left:330px;
+	top:42px;
+}
+#formVestnURL
+{
+    display:none;
+	position:absolute;
+	left:65px;
+	top:203px;
+}
+
+/*FORM DIVIDER*//*FORM DIVIDER*//*FORM DIVIDER*//*FORM DIVIDER*//*FORM DIVIDER*//*FORM DIVIDER*/
+#formDivider{
+	position:absolute;
+	left:50%;
+	margin-left:-175px;
+	top:183px;
+	
+	width:350px;
+	height:0px;
+	
+	border-top:1px solid #F6901C;
+}
+
+/*FORM INPUTS*//*FORM INPUTS*//*FORM INPUTS*//*FORM INPUTS*//*FORM INPUTS*//*FORM INPUTS*/
+#formEmailInput{
+	position:absolute;
+	left:170px;
+	top:45px;
+	
+	width:125px;
+	height:25px;
+}
+#formPasswordInput{
+	position:absolute;
+	left:170px;
+	top:95px;
+	
+	width:125px;
+	height:25px;
+}
+#formPasswordVerifyInput{
+	position:absolute;
+	left:170px;
+	top:135px;
+	width:125px;
+	height:25px;
+}
+#formUserNameInput{
+	position:absolute;
+	left:170px;
+	top:197px;
+	
+	width:125px;
+	height:25px;
+}
+
+#talentCreateTab{
+	padding:10px 25px 10px 25px;
+	
+	position:absolute;
+	left:150px;
+	top:-36px;
+}
+#educationCreateTab{
+	padding:10px 25px 10px 25px;
+	
+	position:absolute;
+	left:260px;
+	top:-36px;
+	
+	opacity:.65;
+}
+
+#getStartedButton{
+	padding:10px 25px 10px 25px;
+	
+	position:absolute;
+	left:150px;
+	top:241px;
+	
+	-moz-box-shadow: 0 0 5px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 2px 0 rgba(0,0,0,0.5);
+	box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+#educationCreateAccountForm
+{
+    display:none;
+}
+
+#educationCreateAccountForm .educationMessage
+{
+    margin-left:20px;
+    margin-top:20px;
+    margin-right:20px;
+}

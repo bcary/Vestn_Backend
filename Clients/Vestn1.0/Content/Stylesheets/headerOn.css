@@ -1,0 +1,143 @@
+﻿/*header*//*header*//*header*//*header*//*header*//*header*//*header*//*header*//*header*/
+#header{
+    z-index:1000;
+	position:relative;
+	width:100%;
+	margin-bottom:15px;/*this is 15px on headerOn to adjust for differences in header heights*/
+}
+#headerContent
+{
+	width:1000px;
+	height:45px;
+	position:relative;
+	left:-500px;
+	top:0px;
+	margin-left:50%;
+	border-bottom:1.5px solid #F7941E;
+}
+
+#headerBackground
+{
+    width:100%;
+    height:100%;
+    
+    background: #4C4C4D;
+    /*background: #1A1A1A; TO*/
+    /*background: #4C4C4D;*/
+    
+    background-image: linear-gradient(bottom, #4C4C4D 0%, #1A1A1A 100%);
+    background-image: -o-linear-gradient(bottom, #4C4C4D 0%, #1A1A1A 100%);
+    background-image: -moz-linear-gradient(bottom, #4C4C4D 0%, #1A1A1A 100%);
+    background-image: -webkit-linear-gradient(bottom, #4C4C4D 0%, #1A1A1A 100%);
+    background-image: -ms-linear-gradient(bottom, #4C4C4D 0%, #1A1A1A 100%);
+}
+
+
+/**************/
+/*Header*/
+#headerSearch
+{
+	position:absolute;
+	top:15px;
+	left:500px;
+	width:160px;
+	height:25px;
+}
+#headerSearchTab
+{
+}
+
+#headerDivider
+{
+    float:right;
+    margin-top:10px;
+    margin-left:10px;
+}
+
+#headerDropDown
+{
+    float:right;
+    padding:10px;
+    padding-right:15px;
+}
+
+#headerHomeLink
+{
+    float:right;
+    margin-top:10px;
+    margin-left:10px;
+}
+
+#headerHomeLink a
+{
+    color:#FFF;
+    font-size:22px;
+}
+#headerHomeLink a:hover
+{
+    color:#EEA53D;
+    /*background: #FAA946;
+	background: -webkit-gradient(linear, left top, left bottom, from(#FAA946), to(#F78F1E));
+	background: -webkit-linear-gradient(top, #FAA946, #F78F1E);
+	background: -moz-linear-gradient(top, #FAA946, #F78F1E);
+	background: -ms-linear-gradient(top, #FAA946, #F78F1E);
+	background: -o-linear-gradient(top, #FAA946, #F78F1E);*/
+}
+
+#headerVestnIcon
+{
+    position:absolute;
+    
+    width:200px;
+    height:45px;
+    left:412px;
+}
+
+
+/*DROP DOWN*/
+
+/* General dropdown styles */       
+.dropdown dd, .dropdown dt, .dropdown ul { margin:0px; padding:0px; }
+.dropdown dd { position:relative; }
+/* DT styles for sliding doors */
+.dropdown dt a:hover
+{
+    color:#EEA53D;
+    /*background: #FAA946;
+	background: -webkit-gradient(linear, left top, left bottom, from(#FAA946), to(#F78F1E));
+	background: -webkit-linear-gradient(top, #FAA946, #F78F1E);
+	background: -moz-linear-gradient(top, #FAA946, #F78F1E);
+	background: -ms-linear-gradient(top, #FAA946, #F78F1E);
+	background: -o-linear-gradient(top, #FAA946, #F78F1E);*/
+}
+.dropdown dt a {
+    display:block; padding-right:20px; min-width:40px;
+    text-align:right;
+    color:#FFF;
+    font-size:22px;
+    }
+.dropdown dt a span {cursor:pointer; display:block; padding:5px;}
+/* UL styles */
+.dropdown dd ul { background:#4C4C4D; display:none;
+    list-style:none; padding:5px 0px; position:absolute; 
+    left:0px; top:10px; width:auto; width:100%;
+    }
+.dropdown dd ul li a:hover
+{
+    color:#EEA53D;
+    /*background: #FAA946;
+	background: -webkit-gradient(linear, left top, left bottom, from(#FAA946), to(#F78F1E));
+	background: -webkit-linear-gradient(top, #FAA946, #F78F1E);
+	background: -moz-linear-gradient(top, #FAA946, #F78F1E);
+	background: -ms-linear-gradient(top, #FAA946, #F78F1E);
+	background: -o-linear-gradient(top, #FAA946, #F78F1E);*/
+}
+.dropdown dd ul li a
+{
+    padding:5px;
+    display:block;
+    color:#FFF;
+    font-size:17px;
+}
+
+/*/DROPDOWN*/

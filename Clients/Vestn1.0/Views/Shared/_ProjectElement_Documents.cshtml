@@ -1,0 +1,75 @@
+﻿@model UserClientMembers.Models.ProjectModel
+
+<div class="mediaWindow">
+    @foreach (var item in Model.documents)
+    {
+    <div id="projectElementMedia_@(item.id)" class="media pe_doc">
+        <div class="mediaViewer documentViewer">
+
+            @if (@item.documentLocation.Contains(".pdf"))
+            {
+                <iframe name="iframeForProject_@(item.id)" src="@item.documentLocation" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+            }
+            else if (item.documentLocation.Contains(".png") || item.documentLocation.Contains(".jpg") || item.documentLocation.Contains(".jpeg") || item.documentLocation.Contains(".bmp"))
+            {
+                <img id="pictureFrameForProject_@(item.id)" src="@item.documentLocation" width="440" height="330" />
+            }
+            else if(item.documentThumbnailLocation != null)
+            {
+                <iframe name="iframeForProject_@(item.id)" src="@item.documentThumbnailLocation" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+            }
+            else if (item.documentLocation != null)
+            {
+                <p>Sorry, this document has not been optimized for viewing on Vestn.com</p>
+            }
+            else
+            {
+                //something is wrong. plain and simple.
+                <img id="pictureFrameForProject_@(item.id)" src="http://www.rewardredemptioncenter.com/images/oops-icon.jpg" width="300" height="300" />
+            }
+
+        </div>
+        <div class="mediaInformation">
+
+        <div id="title" class="mediaInformation-title">@item.title</div>
+            
+        <div id="description" class="mediaInformation-description">@Html.Raw(@item.description)</div>
+        <div class="innerProjectElementTabButton open" > <a href="@item.documentLocation" id="openDoc" target="_blank">Open</a></div>
+
+        </div>
+        
+    </div>
+    }
+
+    <div class="chooser">
+        <div class="mediaSelectionPane">
+            <ul>
+                @foreach (var item in Model.documents)
+                {   
+                    <li id="projectElementSelector_@(item.id)" value=@Model.id class="pe-document-selector mediaSelector">
+                        <img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" /><img
+                            class="mediaTypeIndicator" src="../../Content/Images/projectElementTypeIndicator20x20-Document.png"
+                            style="float: left;" /><sh5>
+                            @if (item.title.Length > 9)
+                            {
+                                string Temp = item.title.Split(' ').FirstOrDefault();
+                                if (Temp.Length > 9)
+                                {
+                                        @Temp.Substring(0, 9).ToLower()
+                                }
+                                else
+                                {
+                                        @Temp.ToLower()
+                                }
+                            }
+                            else
+                            {
+                                    @item.title.ToLower()
+                            }
+                                </sh5></li>
+                }
+
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,124 @@
+﻿@model UserClientMembers.Models.UserModel
+@using UserClientMembers.Models
+
+@{
+    Layout = "~/Views/User/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="../../Content/Stylesheets/home.css?1.0.7">
+
+<div class="sessionVariables">
+    <text class="session_userName">@Model.userName</text>
+    <text class="session_profileURL">@Model.profileURL</text>
+    <text class="session_firstName">@Model.firstName</text>
+</div>
+
+<div id="homeContainer">
+	
+	<div id="main" class="b5">
+	
+		<div id="mainContent">
+		
+			@*<div class="mainTabTitle">
+					<img style="position:relative;top:-58px;" src="../../Content/Images/orangeStripedTabHinged.png" width=400 height=60 />
+					<mainHeader>DASHBOARD</mainHeader>
+				</div>
+		*@
+            <a href="/v/">
+			<div id="editProfileContainer" class="contentContainer">
+				<div class="containerTabTitle">
+					<img class="containerHeader" src="../../Content/Images/homePageBlueHeader.png" width=250 height=50 />
+					<tabHeader>Manage Profile</tabHeader>
+				</div>
+				
+				<div class="containerContent" style = "margin-top:-16px;">
+                    @Html.Partial("_Dashboard_EditProfile", (UserModel)Model, ViewData)
+				</div>
+
+                <img class="contentContainerCorner" src="../../Content/Images/endOfContentIconBlue.png" />
+			</div>
+            </a>
+
+            <div id="feedbackContainer" class="contentContainer">
+				<div class="containerTabTitle">
+					<img class="containerHeader" src="../../Content/Images/homePageOrangeHeader.png" width=250 height=50 />
+					<tabHeader>Feedback</tabHeader>
+				</div>
+				
+				<div class="containerContent">
+                    @Html.Partial("_Dashboard_Feedback", (UserModel)Model, ViewData)
+				</div>
+
+                <img class="contentContainerCorner" src="../../Content/Images/endOfContentIconOrange.png" />
+			</div>
+			
+			<div id="inviteFriendsContainer" class="contentContainer">
+				<div class="containerTabTitle">
+					<img class="containerHeader" src="../../Content/Images/homePageBlueHeader.png" width=250 height=50 />
+					<tabHeader>Invite Friends</tabHeader>
+				</div>
+				
+				<div class="containerContent">
+                    @Html.Partial("_Dashboard_InviteFriends", (UserModel)Model, ViewData)
+				</div>
+				
+                <img class="contentContainerCorner" src="../../Content/Images/endOfContentIconBlue.png" />
+			</div>
+			
+			<div id="shareProfileContainer" class="contentContainer">
+				<div class="containerTabTitle">
+					<img class="containerHeader" src="../../Content/Images/homePageBlueHeader.png" width=250 height=50 />
+					<tabHeader>Share Profile</tabHeader>
+				</div>
+				
+				<div class="containerContent">
+                    @Html.Partial("_Dashboard_ShareProfile", (UserModel)Model, ViewData)
+				</div>
+				
+                <img class="contentContainerCorner" src="../../Content/Images/endOfContentIconBlue.png" />
+			</div>
+			
+			<div id="accountSettingsContainer" class="contentContainer">
+				<div class="containerTabTitle">
+					<img class="containerHeader" src="../../Content/Images/homePageBlueHeader.png" width=250 height=50 />
+					<tabHeader>Account Settings</tabHeader>
+				</div>
+				
+				<div class="containerContent">
+                    @Html.Partial("_Dashboard_AccountSettings", (UserModel)Model, ViewData)
+				</div>
+				
+                <img class="contentContainerCorner" src="../../Content/Images/endOfContentIconBlue.png" />
+			</div>
+			
+			<div id="accessKeysContainer" class="contentContainer">
+				<div class="containerTabTitle">
+					<img class="containerHeader" src="../../Content/Images/homePageBlueHeader.png" width=250 height=50 />
+					<tabHeader>Your URLs</tabHeader>
+				</div>
+				
+				<div class="containerContent" style="opacity:.4;">
+                    @Html.Partial("_Dashboard_AccessKeys", (UserModel)Model, ViewData)
+				</div>
+				
+                <img class="contentContainerCorner" src="../../Content/Images/endOfContentIconBlue.png" style="opacity:.4" />
+
+                <img class="comingSoonOverlay" src="../../Content/Images/comingSoon250x200Overlay.png" alt="" />
+
+			</div>
+
+		</div>
+
+		@*
+		<div id="bottomContent">
+			<div class="containerTabTitle" style="left:700px;">
+					<img class="containerHeader" src="../../Content/Images/homePageBlueHeader.png" width=250 height=50 />
+					<tabHeader>Feature Pipeline</tabHeader>
+			</div>
+		</div>
+        *@
+
+	</div>
+<div class="clear"></div></div><!--End Container-->
+
+<script type="text/javascript" src="../../Scripts/userHome.js?1.0.7"></script>

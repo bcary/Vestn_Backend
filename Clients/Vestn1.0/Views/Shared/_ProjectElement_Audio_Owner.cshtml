@@ -1,0 +1,106 @@
+﻿@model UserClientMembers.Models.ProjectModel
+
+<div class="mediaWindow">
+    @foreach (var item in Model.audio)
+    {
+    <div id="projectElementMedia_@(item.id)" class="media pe_audio">
+        <div class="mediaViewer audioViewer">
+            @if (@item.audioLocation != null)
+            {
+                <audio controls="controls" style="height:166px; width:420px">
+                    <source src=@item.audioLocation type="audio/mpeg" />
+                    <source src=@item.audioLocation type="audio/ogg" />
+                    <source src=@item.audioLocation type="audio/mp3" />
+                    <source src=@item.audioLocation type="audio/wav" />
+                </audio>
+            }
+            else
+            {
+                <div class="mediaAudioFrame">
+                    <img class="mediaAudioFrame" id="audioFrameForProject_@(item.id)" src="../../Content/Images/chip_contentGoesHere.png" width="440" height="330" />
+                </div>
+            }
+
+
+        </div>
+        <div class="mediaInformation">
+
+        
+
+        <div id="title" class="mediaInformation-title inLineEditProjectElement editable">@item.title</div>
+
+            <div id="description" class="mediaInformation-description inLineEditProjectElementDescription editable">@Html.Raw(@item.description)</div>
+            <div class="innerProjectElementTabButton moveUp" >Move Up</div>
+            <div class="innerProjectElementTabButton moveDown" >Move Down</div>
+            <div class="innerProjectElementTabButton delete" >Delete</div>
+
+        </div>
+        
+    </div>
+    }
+
+    <div class="media pe_addNew">
+        <div id="addNewAudioToProject_@(Model.id)"  class="addNewElementContainer">
+        <form action="/Project/AddAudioElement" method="post" enctype="multipart/form-data" target="iframe-post-form">
+            @*ensure that we pass the ID into the post or this project won't be known by the controller*@
+            <input id="projectId" name="projectId" type="hidden" value="@Model.id" />
+            
+            <input type="file" name="newAudioUpload" class="fileUploadField" style="font-size: 17px;color:black;" onchange="javascript:validateFile('audio');"/>
+            <br />
+
+            <div id="buttonGroup">
+            <a onclick="javascript:postFile('audio');"
+                class="disabled black button"
+                style="padding:5px 10px 5px 10px;margin-top:10px;margin-left:100px;display:none;"
+                >
+                    <span style="font-size: 15px;">Upload</span>
+                    <img style="position: relative; top: 0px; left: 2px;" width="10" height="10" src="../../Content/Images/WhiteArrow.png"
+                        alt="" />
+                </a>
+                <div class="acceptedFileTypesLabel" style="position:relative;background-color:#cccccc;margin:20px 20px 0px 0px;line-height:16px;padding:3px;">
+                <div style="color:black;font-size:11px;text-align:center;">
+                    We currently accept the following file types:
+                </div>
+                <div style="color:black;font-size:14px;text-align:center;font-weight:400;">
+                    MP3, WAV, M4A, and OGG
+                </div>
+                </div>
+            </div>
+            </form>
+
+    </div>
+    </div>
+
+    <div class="chooser">
+        <div class="mediaSelectionPane">
+            <ul>
+                @foreach (var item in Model.audio)
+                {   
+                    <li id="projectElementSelector_@(item.id)" value=@Model.id class="pe-audio-selector mediaSelector">
+                        <img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" />
+                        <img class="mediaTypeIndicator" src="../../Content/Images/projectElementTypeIndicator20x20-Spreadsheet.png"
+                            style="float: left;" /><sh5>
+                            @if (item.title.Length > 9)
+                            {
+                                string Temp = item.title.Split(' ').FirstOrDefault();
+                                if (Temp.Length > 9)
+                                {
+                                        @Temp.Substring(0, 9).ToLower()
+                                }
+                                else
+                                {
+                                        @Temp.ToLower()
+                                }
+                            }
+                            else
+                            {
+                                    @item.title.ToLower()
+                            }
+                                                        
+                                                        </sh5></li>
+                }
+                <li value=@Model.id class="projectElementAddNewSelector mediaSelector" style="text-align:center;"><img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" /></li>
+            </ul>
+        </div>
+    </div>
+</div>

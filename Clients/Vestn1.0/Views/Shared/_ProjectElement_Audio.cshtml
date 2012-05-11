@@ -1,0 +1,68 @@
+﻿@model UserClientMembers.Models.ProjectModel
+
+<div class="mediaWindow">
+    @foreach (var item in Model.audio)
+    {
+    <div id="projectElementMedia_@(item.id)" class="media pe_audio">
+        <div class="mediaViewer audioViewer">
+            @if (@item.audioLocation != null)
+            {
+                <audio controls="controls" style="height:166px; width:420px">
+                    <source src=@item.audioLocation type="audio/mpeg" />
+                    <source src=@item.audioLocation type="audio/ogg" />
+                </audio>
+            }
+            else
+            {
+                <div class="mediaAudioFrame">
+                    <img class="mediaAudioFrame" id="audioFrameForProject_@(item.id)" src="../../Content/Images/chip_contentGoesHere.png" width="440" height="330" />
+                </div>
+            }
+
+
+        </div>
+        <div class="mediaInformation">
+
+        
+
+        <div id="title" class="mediaInformation-title">@item.title</div>
+
+        <div id="description" class="mediaInformation-description">@Html.Raw(@item.description)</div>
+
+        </div>
+        
+    </div>
+    }
+
+    <div class="chooser">
+        <div class="mediaSelectionPane">
+            <ul>
+                @foreach (var item in Model.audio)
+                {   
+                    <li id="projectElementSelector_@(item.id)" value=@Model.id class="pe-audio-selector mediaSelector">
+                        <img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" />
+                        <img class="mediaTypeIndicator" src="../../Content/Images/projectElementTypeIndicator20x20-Spreadsheet.png"
+                            style="float: left;" /><sh5>
+                            @if (item.title.Length > 9)
+                            {
+                                string Temp = item.title.Split(' ').FirstOrDefault();
+                                if (Temp.Length > 9)
+                                {
+                                        @Temp.Substring(0, 9).ToLower()
+                                }
+                                else
+                                {
+                                        @Temp.ToLower()
+                                }
+                            }
+                            else
+                            {
+                                    @item.title.ToLower()
+                            }
+                                                        
+                                                        </sh5></li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

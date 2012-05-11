@@ -1,0 +1,9 @@
+﻿@model UserClientMembers.Models.FileUploadModel
+@if (Model.thumbnail != null)
+{
+    <img src="@Model.thumbnail" style="vertical-align:middle;" alt="click to add a picture please..." />
+}
+else
+{
+    <img src="../../Content/Images/chip_you.png" alt="" width="175px" height="175px" />
+}

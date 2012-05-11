@@ -1,0 +1,51 @@
+﻿@model List<UserClientMembers.Models.ErrorModel>
+
+
+@{
+    ViewBag.Title = "ErrorView";
+}
+
+
+
+<style type="text/css">
+table
+{
+border-collapse:collapse;
+}
+table,th, td
+{
+border: 1px solid black;
+}
+  	
+ </style>
+
+ <h1 style="text-align:center;">VESTN ERROR LOGS </h1>
+
+<table>
+
+    <tr>
+        <td>Id </td>
+        <td>Time </td>
+        <td>Location </td>
+        <td>Exception </td>
+    </tr>
+  @for (int i = 0; i < @Model.Count ; i++)
+  {
+   <tr>
+        <td>
+            @Model.ElementAt(i).id
+        </td>
+        <td>
+            @Model.ElementAt(i).eventTime
+        </td>
+        <td>
+            @Model.ElementAt(i).location
+        </td>
+        <td>
+            @Model.ElementAt(i).exception
+        </td>
+    </tr>
+  }
+    
+</table>
+

@@ -1,0 +1,73 @@
+﻿@model UserClientMembers.Models.ProjectModel
+
+<div class="mediaWindow">
+    @if (@Model.videos.Count() > 0)
+    {
+        for (int i = 0; i < @Model.videos.Count(); i++)
+        {
+    <div id="projectElementMedia_@(Model.videos.ElementAt(i).id)" class="media pe_vid">
+        <div class="mediaViewer videoViewer">
+            @if (@Model.videos.ElementAt(i).videoId != null)
+            {
+                <div class="mediaPictureFrame">
+                <iframe width="440" height="330" src="http://www.youtube.com/embed/@Model.videos.ElementAt(i).videoId?modestbranding=1&rel=0&showinfo=0&wmode=opaque" frameborder="0" allowfullscreen></iframe>
+                </div>
+            }
+            else
+            {
+                <div class="mediaVideoFrame">
+                    <img class="mediaVideoFrame" id="videosFrameForProject_@(Model.videos.ElementAt(i).id)" src="../../Content/Images/chip_contentGoesHere.png" width="440" height="330" />
+                </div>
+            }
+
+
+        </div>
+        <div class="mediaInformation">
+
+        
+
+        <div class="mediaInformation-title">@Model.videos.ElementAt(i).title</div>
+
+            <div class="mediaInformation-description">@Model.videos.ElementAt(i).description</div>
+
+        </div>
+        
+    </div>
+        }
+    }
+    else
+    {
+        <sh4>This user has not added any videos.</sh4>
+    }
+    <div class="chooser">
+        <div class="mediaSelectionPane">
+            <ul>
+                @foreach (var item in Model.videos)
+                {   
+                    <li id="projectElementSelector_@(item.id)" value=@Model.id class="pe-video-selector mediaSelector">
+                        <img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" />
+                        <img class="mediaTypeIndicator" src="../../Content/Images/projectElementTypeIndicator20x20-Spreadsheet.png"
+                            style="float: left;" /><sh5>
+                            @if (item.title.Length > 9)
+                                {
+                                    string Temp = item.title.Split(' ').FirstOrDefault();
+                                    if (Temp.Length > 9)
+                                    {
+                                        @Temp.Substring(0, 9).ToLower()
+                                    }
+                                    else
+                                    {
+                                        @Temp.ToLower()
+                                    }
+                                }
+                                else
+                                {
+                                    @item.title.ToLower()
+                                }
+                            
+                            </sh5></li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,121 @@
+﻿@model UserClientMembers.Models.RegisterModel
+
+@{
+    Layout = "~/Views/Home/_Layout.cshtml";
+}
+
+    <link rel="stylesheet" type="text/css" href="../../Content/Stylesheets/createNewAccount.css?1.0.7">
+    <div id="main">
+		<div id="mainContent">
+			<div id="createAccountContentHeader">
+				<h2 style="text-align:center">Try Vestn <span class="c4" style="font-size:28px;"><i>FREE</i></span> for<br />as long as we're in Beta.</h2>
+			</div>
+			<div id="createAccountContentBody">
+				<sh1>Use your Vestn account to let others know your capabilities. Once you sign up on the right, you will
+	have a permanent link to your Vestn profile that you
+	can give to anyone to show off.</sh1><br /><br />
+	
+										  <sh1><i>Not looking for a job?</i> Your Vestn Profile can be used to demonstrate anything! Use Vestn to market your skills as a consultant or freelance worker, apply for higher education, or to display your creative ideas.</sh1>
+				<div id="createAccountContentLinks">
+					@*
+                    <a href=""><sh4 style="">Read More</sh4>
+					<img class="rotateBy90" style="position:absolute;top:6px;left:89px;" src="../../Content/Images/BlueTriangle.png" alt=""/></a>
+					<a href=""><sh4 style="position:absolute;left:130px;">Get Help</sh4>
+					<img class="rotateBy90" style="position:absolute;top:6px;left:200px;" src="../../Content/Images/BlueTriangle.png" alt=""/></a>
+					<a href=""><sh4 style="position:absolute;left:250px;">FAQ</sh4>
+					<img class="rotateBy90" style="position:absolute;top:6px;left:286px;" src="../../Content/Images/BlueTriangle.png" alt=""/></a>
+                    *@
+				</div>
+			</div>
+		
+			<div id="createAccountFormArea">
+            
+				<a id="talentCreateTab" class="orange talent button">
+					Talent
+					<img src="../../Content/Images/WhiteTriangle.png" alt="" class="rotateBy180"/>
+				</a>
+				<a id="educationCreateTab" class="blue business button">
+					Education
+					<img src="../../Content/Images/WhiteTriangle.png" alt="" class="rotateBy90"/>
+				</a>
+
+                <div id="individualCreateAccountForm">
+				@using (Html.BeginForm("Register", "User", FormMethod.Post, new { id = "registerForm" }))
+                {
+				    <div id="createAccountForm">
+                    
+					    <div id="formEmailLabel">
+						    <sh3>Email</sh3>
+					    </div>
+					    <div id="formEmailHint">
+						    <sh3 style="font-size:14px;">We will never share<br />this with anyone.</sh3>
+						    <img class="rotateBy-90" style="position:absolute;top:12px;left:-20px;" src="../../Content/Images/GreyTriangle.png" alt=""/>
+					    </div>
+					    <div id="formPasswordLabel">
+						    <sh3>Password</sh3>
+					    </div>
+                        @*<div id="formBetaAccessKeyLabel">
+                            <sh3>Beta Key</sh3>
+                        </div>*@
+					    <div id="formVestnProfileLabel">
+						    <sh3>User Name</sh3>
+					    </div>
+					    <div id="formVestnURL">
+						    <sh3>vestn.com/v/</sh3>
+					    </div>
+
+					
+					    <div id="formDivider"></div>
+                            @Html.TextBoxFor(m => m.Email, new { id = "formEmailInput", title = "Make this real! We won't spam. I promise!", placeholder = "Email" })
+                            @Html.PasswordFor(m => m.Password, new { id = "formPasswordInput", placeholder = "Password", name = "password" })
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { id = "formPasswordVerifyInput", placeholder = "Confirm Password" })
+                            @*@Html.TextBoxFor(m => m.betaKey, new { id = "formBetaAccessKeyInput", placeholder = "BetaKey" })*@
+                            @Html.TextBoxFor(m => m.UserName, new { id = "formUserNameInput", placeholder = "Username", name="username", type="text" })
+                            <!--
+					        <input type="text" id="formEmailInput" placeholder="Email"></input>
+					        <input type="password" id="formPasswordInput"placeholder="password"></input>
+					        <input type="password" id="formPasswordVerifyInput"placeholder="password"></input>
+					        <input type="text" id="formFirstInput"placeholder="First"></input>
+					        <input type="text" id="formLastInput"placeholder="Last"></input>
+					        -->
+					
+                    </div>
+				
+				    <input type="submit" style="opacity:.01;" />
+				    <a onclick="$('#registerForm').submit();" id="getStartedButton" class="orange talent button" href="#">
+                        <span style="font-size:20px;">Get Started</span>
+					    <img style="position:relative;top:2px;left:10px;" src="../../Content/Images/WhiteArrow.png" alt=""/>
+				    </a>
+                }
+                </div>
+
+                <div id="educationCreateAccountForm">
+                    <div class="educationMessage">
+                    <sh4 style="color:#5C5C5C">Interested in letting your students easily collect and demonstrate their work?<br /><br />
+                    Interested in letting your students reflect on what they have learned during their educational experience?<br /><br />
+                    Want something that they can show to employers once they graduate?<br /><br /><br />
+                    </sh4>
+                    <h3 class="c2">Contact us at vestnteam@vestn.com to learn more.</h3>
+                    </div>
+                </div>
+
+			</div>
+		
+		</div>
+        </div>
+
+<script type="text/javascript" src="../../Scripts/createNewAccount.js?1.0.7"></script>
+<script type="text/javascript" src="../../Scripts/register.js?1.0.7"></script>
+
+@*toggle whether education or personal is active*@
+        @if (ViewBag.IsEducation != null)
+        {
+            if (ViewBag.IsEducation == true)
+            {
+            <script type="text/javascript">
+                $(function () {
+                    $("#educationCreateTab").click();
+                });
+            </script>
+            }
+        }

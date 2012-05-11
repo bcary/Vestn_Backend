@@ -1,0 +1,19 @@
+﻿@model UserClientMembers.Models.ProjectModel
+    <div class="content" id="content_@(Model.id)">
+
+        <div id="galleria_@(Model.id)" class="galleria">
+        @foreach (var item in Model.pictures)
+        {
+            <a href="@item.pictureGalleriaThumbnailLocation">
+            	<img id="galleriaImage_@(item.id)"
+                     title="@item.title"
+            	     alt="@item.description"
+            	     src="@item.pictureThumbnailLocation"
+                     longdesc="@item.pictureLocation" />
+        	</a>
+        }
+        </div>
+    </div>
+    <script type="text/javascript">
+        Galleria.loadTheme('../../Scripts/galleria.classic.min.js');
+    </script>

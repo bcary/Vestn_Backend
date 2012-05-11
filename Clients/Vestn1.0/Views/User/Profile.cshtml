@@ -1,0 +1,23 @@
+﻿@model UserClientMembers.Models.ProfileModel
+@using UserClientMembers.Models
+@{
+    Layout = "~/Views/User/_Layout.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="../../Content/Stylesheets/profile.css?1.0.7">
+<link rel="stylesheet" type="text/css" href="../../Content/Stylesheets/projects.css?1.0.7">
+@if (ViewBag.IsOwner)
+{
+    @Html.Partial("_Profile_Owner", Model, ViewData)
+}
+else if (@Model.isPublic == 1)
+{
+    @Html.Partial("_Profile_Public", Model)
+}
+else
+{
+    //NOTE shouldn't ever be able to get here anyway...the controller will never serve up this view if the user.isPublic is not 1
+    <script type="text/javascript">
+    //TODO FIND OUT WHY THIS WORKS?? I REALLY WANT A REDIRECT BUT THATS NOT WORKING
+        window.location = "www.google.com";
+    </script>
+}

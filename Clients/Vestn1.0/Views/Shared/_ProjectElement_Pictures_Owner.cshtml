@@ -1,0 +1,115 @@
+﻿@model UserClientMembers.Models.ProjectModel
+
+<div class="mediaWindow">
+    @{
+         int i = 0;
+    }
+    @foreach (var item in Model.pictures)
+    {
+    <div id="projectElementMedia_@(item.id)" class="media pe_pic">
+        <div class="mediaViewer pictureViewer">
+            @if (@item.pictureThumbnailLocation != null)
+            {
+                <div class="mediaPictureFrame" style = "display:table-cell; text-align:center; vertical-align:middle; width:440px; height:330px">
+                    @*<a href="@item.pictureLocation" target="_blank" >*@
+                        <img src="@item.pictureThumbnailLocation" alt="Click to Open Full Size Image" onclick="showGallery(@Model.id, @i);">
+                    @*</a>*@
+                </div>
+            }
+            else
+            {
+                <div class="mediaPictureFrame">
+                    <img class="mediaPictureFrame" id="pictureFrameForProject_@(item.id)" src="../../Content/Images/chip_contentGoesHere.png" width="440" height="330" />
+                </div>
+            }
+
+
+        </div>
+        <div class="mediaInformation">
+
+        
+
+        <div id="title" class="mediaInformation-title inLineEditProjectElement editable">@item.title</div>
+
+            <div id="description" class="mediaInformation-description inLineEditProjectElementDescription editable">@Html.Raw(@item.description)</div>
+
+            <div class="innerProjectElementTabButton moveUp" >Move Up</div>
+            <div class="innerProjectElementTabButton moveDown" >Move Down</div>
+            <div class="innerProjectElementTabButton delete" >Delete</div>
+        </div>
+        
+    </div>
+        i++;
+    }
+
+    <div style="display:none;">
+        @Html.Partial("_PictureGallery", Model);
+    </div>
+
+    <div class="media pe_addNew">
+        <div id="addNewPictureToProject_@(Model.id)"  class="addNewElementContainer">
+        <form action="/Project/AddPictureElement" method="post" enctype="multipart/form-data" target="iframe-post-form">
+            @*ensure that we pass the ID into the post or this project won't be known by the controller*@
+            <input id="projectId" name="projectId" type="hidden" value="@Model.id" />
+            
+            <input type="file" name="newPictureUpload" class="fileUploadField" style="font-size: 17px;color:black;" onchange="javascript:validateFile('picture');" />
+            <br />
+
+            <div id="buttonGroup">
+            <a onclick="javascript:postFile('picture');"
+                class="disabled black button"
+                style="padding:5px 10px 5px 10px;margin-top:10px;margin-left:100px;display:none;"
+                >
+                    <span style="font-size: 15px;">Upload</span>
+                    <img style="position: relative; top: 0px; left: 2px;" width="10" height="10" src="../../Content/Images/WhiteArrow.png"
+                        alt="" />
+                </a>
+            </div>
+
+            <div class="acceptedFileTypesLabel" style="position:relative;background-color:#cccccc;margin:20px 20px 0px 0px;line-height:16px;padding:3px;">
+                <div style="color:black;font-size:11px;text-align:center;">
+                    We currently accept the following file types:
+                </div>
+                <div style="color:black;font-size:14px;text-align:center;font-weight:400;">
+                    BMP, JPG and PNG
+                </div>
+                </div>
+
+            </form>
+
+    </div>
+    </div>
+
+    <div class="chooser">
+        <div class="mediaSelectionPane">
+            <ul>
+                @foreach (var item in Model.pictures)
+                {   
+                    <li id="projectElementSelector_@(item.id)" value=@Model.id class="pe-picture-selector mediaSelector">
+                        <img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" />
+                        <img class="mediaTypeIndicator" src="../../Content/Images/projectElementTypeIndicator20x20-Spreadsheet.png"
+                            style="float: left;" /><sh5>
+                            @if (item.title.Length > 9)
+                                {
+                                    string Temp = item.title.Split(' ').FirstOrDefault();
+                                    if (Temp.Length > 9)
+                                    {
+                                        @Temp.Substring(0, 9).ToLower()
+                                    }
+                                    else
+                                    {
+                                        @Temp.ToLower()
+                                    }
+                                }
+                                else
+                                {
+                                    @item.title.ToLower()
+                                }
+                                                        
+                                                        </sh5></li>
+                }
+                <li value=@Model.id class="projectElementAddNewSelector mediaSelector" style="text-align:center;"><img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" /></li>
+            </ul>
+        </div>
+    </div>
+</div>

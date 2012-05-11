@@ -1,0 +1,155 @@
+﻿@model UserClientMembers.Models.ProjectModel
+
+<div class="mediaWindow">
+    @for (int i = 0; i < @Model.videos.Count(); i++)
+    {
+    <div id="projectElementMedia_@(Model.videos.ElementAt(i).id)" class="media pe_vid">
+        <div class="mediaViewer videoViewer">
+            @if (@Model.videos.ElementAt(i).videoId != null)
+            {
+                if (@Model.videos.ElementAt(i).videoId != "false")
+                {
+                     <div class="mediaPictureFrame">
+                        <iframe width="440" height="330" src="http://www.youtube.com/embed/@Model.videos.ElementAt(i).videoId?modestbranding=1&rel=0&showinfo=0&wmode=opaque" frameborder="0" allowfullscreen></iframe>
+                     </div>
+                }
+                else
+                {
+                    <div class="mediaPictureFrame" style="background-color:#545456;width:440px;height:330px;">
+                        <h2 style="color:White;text-align:center"> The video you just uploaded is not valid. <br /> Please delete this video</h2>
+                     </div>
+                }
+
+            }
+            else
+            {
+                <div class="mediaVideoFrame">
+                    <img class="mediaVideoFrame" id="videosFrameForProject_@(Model.videos.ElementAt(i).id)" src="../../Content/Images/chip_contentGoesHere.png" width="440" height="330" />
+                </div>
+            }
+
+
+        </div>
+        <div class="mediaInformation">
+
+        
+
+        <div id="title" class="mediaInformation-title inLineEditProjectElement editable">@Model.videos.ElementAt(i).title</div>
+
+            <div id="description" class="mediaInformation-description inLineEditProjectElementDescription editable">@Html.Raw(@Model.videos.ElementAt(i).description)</div>
+
+            <div class="innerProjectElementTabButton moveUp" >Move Up</div>
+            <div class="innerProjectElementTabButton moveDown" >Move Down</div>
+            <div class="innerProjectElementTabButton delete" >Delete</div>
+        </div>
+        
+    </div>
+    }
+
+    
+     <div class="media pe_addNew">
+
+        <div id="addNewVideoLinkToProject_@(Model.id)"  class="addNewElementContainer" style="display:block;">
+        <sh6 style="color:#FFF;position:relative;float:left;margin-bottom:10px;">Paste the link of your youtube video here or choose to upload your own video.</sh6>
+        @using (Html.BeginForm("AddVideoElementByLink", "Project", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            //ensure that we pass the ID into the post or this project won't be known by the controller
+            @Html.HiddenFor(m => m.id)
+
+            <input class="newVideoLinkUpload" type="text" name="newVideoLinkUpload" style="font-size: 17px;color:#000;width:275px;" />
+            <br />
+            
+            <a id="submitButtonForVideoLink_@(Model.id)"
+                class="submitButtonForVideoLink continueButton orange talent button"
+                style="padding:5px 10px 5px 10px;margin-top:10px;margin-left:105px;"
+                >
+                    <span style="font-size: 15px;">Link</span>
+                    <img style="position: relative; top: 0px; left: 2px;" width="10" height="10" src="../../Content/Images/WhiteArrow.png"
+                        alt="" />
+                </a>
+            
+        }
+
+        <a class="showUploadNewVideoButton continueButton blue talent button" onclick="javascript:$('#addNewVideoLinkToProject_@(Model.id)').css('display', 'none');$('#addNewVideoToProject_@(Model.id)').css('display', 'block');"
+                style="position:relative;float:left;padding:5px 10px 5px 10px;margin-top:25px;margin-left:40px;"
+                ><span style="font-size: 15px;">Upload my own video</span>
+             <img style="position: relative; top: 0px; left: 2px;" width="10" height="10" src="../../Content/Images/WhiteArrow.png"
+                 alt="" />
+         </a>
+
+    </div>
+         
+
+
+         <div id="addNewVideoToProject_@(Model.id)"  class="addNewElementContainer" style="display:none;">
+
+             <form id="UploadFileForm" action="" method="post" enctype="multipart/form-data">    
+          <input type="file" name="file" class="fileUploadField" style="color:black;font-size:17px;" onchange="javascript:validateFile('video');"/>
+
+          <input type="hidden" id="hdModelId" value="@Model.id" />     
+         <input type="hidden" id="hdtoken" name="token" value="" />
+
+         <a onclick="javascript:postFile('video');"
+                class="disabled black button"
+                style="padding:5px 10px 5px 10px;margin-top:10px;margin-left:100px;display:none;"
+                >
+                    <span style="font-size: 15px;">Upload</span>
+                    <img style="position: relative; top: 0px; left: 2px;" width="10" height="10" src="../../Content/Images/WhiteArrow.png"
+                        alt="" />
+                </a>
+        </form>
+
+        <a class="showUploadVideoLinkButton continueButton blue talent button" onclick="javascript:$('#addNewVideoToProject_@(Model.id)').css('display', 'none');$('#addNewVideoLinkToProject_@(Model.id)').css('display', 'block');"
+                style="position:relative;float:left;padding:5px 10px 5px 10px;margin-top:25px;margin-left:105px;"
+                ><img class="rotateBy180" style="position: relative; top: 0px; left: 2px;" width="10" height="10" src="../../Content/Images/WhiteArrow.png"
+                 alt="" />
+                 <span style="font-size: 15px;">Back</span>
+
+         </a>
+             <div class="acceptedFileTypesLabel" style="position:relative;background-color:#cccccc;margin:80px 20px 0px 0px;line-height:16px;padding:3px;text-align:center;">
+             <span style="position:relative;color:red;font-size:16px;">*</span>
+             <span style="position:relative;color:black;font-size:10px;">We currently accept the following file types:</span></br>
+             <span style="position:relative;color:black;font-size:10px;">MPEG4, 3GPP. MOV, AVI, MPEGPS, MWV, FLV</span></br>
+             <span style="position:relative;color:red;font-size:16px;">*</span>
+             <span style="position:relative;color:black;font-size:10px;">We use YouTube for our video hosting, so although they are unlisted in YouTube's search tool, we cannot guarantee they will not be accessible.</span>
+             <span style="position:relative;color:black;font-size:10px;">Also, because we currently are hosting with YouTube, if multiple users upload the same video, it runs into problems. For best performance, link to the same video.</span>
+             </div>
+        </div>
+
+    
+    </div>
+    
+    <div class="chooser">
+        <div class="mediaSelectionPane">
+            <ul>
+                @foreach (var item in Model.videos)
+                {   
+                    <li id="projectElementSelector_@(item.id)" value=@Model.id class="pe-video-selector mediaSelector">
+                        <img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" />
+                        <img class="mediaTypeIndicator" src="../../Content/Images/projectElementTypeIndicator20x20-Spreadsheet.png"
+                            style="float: left;" /><sh5>
+                            @if (item.title.Length > 9)
+                            {
+                                string Temp = item.title.Split(' ').FirstOrDefault();
+                                if (Temp.Length > 9)
+                                {
+                                        @Temp.Substring(0, 9).ToLower()
+                                }
+                                else
+                                {
+                                        @Temp.ToLower()
+                                }
+                            }
+                            else
+                            {
+                                    @item.title.ToLower()
+                            }
+                            
+                            </sh5></li>
+                }
+                <li value=@Model.id class="projectElementAddNewSelector mediaSelector" style="text-align:center;"><img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" /></li>
+
+            </ul>
+        </div>
+    </div>
+</div>

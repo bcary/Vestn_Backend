@@ -1,0 +1,28 @@
+﻿@model UserClientMembers.Models.ProjectModel
+           
+<div id="userAboutInformationPartial">
+
+<div class="aboutPictureWrapper" >
+        <div class="aboutPicture" style = "display:table-cell; text-align:center; vertical-align:middle; width:200px; height:200px">
+            @if (Model.coverPictureThumbnail != null)
+            {
+                <img src="@Model.coverPictureThumbnail" alt="" />
+            }
+            else
+            {
+                <img src="../../Content/Images/theBean.png" alt="" width="200px" height="200px" />
+            }
+        </div>
+
+        <span class="title" style="margin-top:10px;">@Model.name</span>
+
+    </div>
+<div class="aboutProjectWrapper">
+    <sh4><div class="aboutProject userAboutInformation">
+        @if(Model.description != null)
+        {@Html.Raw(@Model.description)}
+        else {@Html.Raw("This user has not entered a description for the project yet.")}
+        
+    </div></sh4>
+</div>
+</div>

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{88EEE859-7550-499B-AF53-034C19D5CD6F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ReorderEngine</RootNamespace>
+    <AssemblyName>ReorderEngine</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ReorderEngine.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Accessors\LogAccessor\LogAccessor.csproj">
+      <Project>{E93BC31C-2391-4A9D-9D6A-B717F915D64B}</Project>
+      <Name>LogAccessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\Log\Log.csproj">
+      <Project>{5BEFDC6C-F543-4AB2-AC74-6AB07F7CBAB8}</Project>
+      <Name>Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\Users\Users.csproj">
+      <Project>{5E71E86E-850C-4160-8475-D2801F3D4614}</Project>
+      <Name>Users</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\ProjectElements\ProjectElements.csproj">
+      <Project>{F901A9F4-174A-439A-9F25-7F9D3D9FD4F1}</Project>
+      <Name>ProjectElements</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\Project\Projects.csproj">
+      <Project>{622DDB50-9525-4CD4-8CEC-F2EDF1DA8C79}</Project>
+      <Name>Projects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accessors\ProjectAccessor\ProjectAccessor.csproj">
+      <Project>{687D2ED5-F309-4333-8DD8-6B692BA19A19}</Project>
+      <Name>ProjectAccessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accessors\UserAccessor\UserAccessor.csproj">
+      <Project>{BC27F985-DE61-4094-8694-C1A174C59EA6}</Project>
+      <Name>UserAccessor</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

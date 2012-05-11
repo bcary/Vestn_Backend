@@ -1,0 +1,595 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2E9AFDC5-03C1-4C6E-89ED-8B512D7452FA}</ProjectGuid>
+    <ProjectTypeGuids>{E53F8FEA-EAE0-44A6-8774-FFD645390401};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UserClientMembers</RootNamespace>
+    <AssemblyName>UserClientMembers</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <UseIISExpress>false</UseIISExpress>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PublishDatabaseSettings>
+      <Objects>
+        <ObjectGroup Name="VestnDB-Deployment" Order="2" xmlns="" Enabled="False">
+          <Destination Path="Data Source=.\SQLEXPRESS%3bInitial Catalog=VestnDB%3bIntegrated Security=True" />
+          <Object Type="dbFullSql" Enabled="False">
+            <Source Path="..\VestnDB\sql\debug\VestnDBMembershipTables.sql" Transacted="False" />
+          </Object>
+          <Object Type="dbFullSql" Enabled="False">
+            <PreSource Path="" ScriptSchema="True" ScriptData="False" CopyAllFullTextCatalogs="False" DriDefaults="True" />
+            <Source Path="obj\Debug\AutoScripts\VestnDB-Deployment_SchemaOnly.sql" Transacted="True" />
+          </Object>
+        </ObjectGroup>
+      </Objects>
+    </PublishDatabaseSettings>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\..\packages\EntityFramework.4.1.10715.0\lib\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Diagnostics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="RazorEngine, Version=2.1.4039.23635, Culture=neutral, PublicKeyToken=1f722ed313f51831, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\RazorJS.0.4.3\lib\RazorEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="RazorJS">
+      <HintPath>..\..\packages\RazorJS.0.4.3\lib\RazorJS.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.WebPages.Deployment, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ProjectController.cs" />
+    <Compile Include="Controllers\ResourcesController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserModels.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Images\404image.png" />
+    <Content Include="Content\Images\addNewElementButton.png" />
+    <Content Include="Content\Images\black.png" />
+    <Content Include="Content\Images\black_big.png" />
+    <Content Include="Content\Images\calendarIcon20x20.png" />
+    <Content Include="Content\Images\chip_contentGoesHere.png" />
+    <Content Include="Content\Images\chip_happy.png" />
+    <Content Include="Content\Images\chip_timid.png" />
+    <Content Include="Content\Images\chip_you.png" />
+    <Content Include="Content\Images\chip_you2.png" />
+    <Content Include="Content\Images\closeIconGray_.jpg" />
+    <Content Include="Content\Images\closeIcon_Blue.jpg" />
+    <Content Include="Content\Images\closeIcon_Orange.jpg" />
+    <Content Include="Content\Images\closeIcon_Red.jpg" />
+    <Content Include="Content\Images\closeIcon_White.jpg" />
+    <Content Include="Content\Images\Education-logo-White-35x35.png" />
+    <Content Include="Content\Images\Education-logo2-White-35x35.png" />
+    <Content Include="Content\Images\help.png" />
+    <Content Include="Content\Images\Personal-logo-White-35x35.png" />
+    <Content Include="Content\Images\projectElementButtonActiveIcon6x22.png" />
+    <Content Include="Content\Images\projectElementTypeIndicator20x20-Document.png" />
+    <Content Include="Content\Images\projectElementTypeIndicator20x20-Spreadsheet.png" />
+    <Content Include="Content\Images\question_mark.png" />
+    <Content Include="Content\Stylesheets\about.css" />
+    <Content Include="Content\Images\question_mark.png" />
+    <Content Include="Content\Stylesheets\galleria.classic.css" />
+    <Content Include="Content\Stylesheets\images\ajax-loader.gif" />
+    <Content Include="Content\Images\ArrowOrangeLarge.png" />
+    <Content Include="Content\Images\ArrowOrangeSmall.png" />
+    <Content Include="Content\Images\betaText.png" />
+    <Content Include="Content\Images\blueArrowsLoader.gif" />
+    <Content Include="Content\Images\blueBarLoader.gif" />
+    <Content Include="Content\Images\blueCircleLoader.gif" />
+    <Content Include="Content\Images\blueTab.png" />
+    <Content Include="Content\Images\BlueTriangle.png" />
+    <Content Include="Content\Images\closeMessage.png" />
+    <Content Include="Content\Images\comingSoon120x40Overlay.png" />
+    <Content Include="Content\Images\comingSoon250x200Overlay.png" />
+    <Content Include="Content\Stylesheets\images\classic-loader.gif" />
+    <Content Include="Content\Stylesheets\images\classic-map.png" />
+    <Content Include="Content\Stylesheets\images\contact.png" />
+    <Content Include="Content\Images\endOfContentIconBlue.png" />
+    <Content Include="Content\Images\endOfContentIconOrange.png" />
+    <Content Include="Content\Images\favicon.ico" />
+    <Content Include="Content\Images\feedback.png" />
+    <Content Include="Content\Images\GreyTriangle.png" />
+    <Content Include="Content\Images\headerBlackArrows.png" />
+    <Content Include="Content\Images\headerOrangeArrowDown.png" />
+    <Content Include="Content\Images\headerOrangeArrowRight.png" />
+    <Content Include="Content\Images\headerWhiteDivider.png" />
+    <Content Include="Content\Images\homePageBlueHeader.png" />
+    <Content Include="Content\Images\homePageOrangeHeader.png" />
+    <Content Include="Content\Images\homePageWhiteHeader.png" />
+    <Content Include="Content\Images\mailIcon.png" />
+    <Content Include="Content\Images\mailIconLarge.png" />
+    <Content Include="Content\Images\messageBar.png" />
+    <Content Include="Content\Images\Tab_NewTab.png" />
+    <Content Include="Content\Images\OrangeGradientBackground.png" />
+    <Content Include="Content\Images\orangeStripedTabHinged.png" />
+    <Content Include="Content\Images\orangeTab.png" />
+    <Content Include="Content\Images\OrangeTriangle.png" />
+    <Content Include="Content\Images\ShowWhatYouCanDo.png" />
+    <Content Include="Content\Images\splashHeaderBackgroundRepeat.png" />
+    <Content Include="Content\Images\splashHeaderLogoLarge.png" />
+    <Content Include="Content\Images\splashPrivateBetaAccessKey.png" />
+    <Content Include="Content\Images\splashPrivateBetaGetStartedButton.png" />
+    <Content Include="Content\Images\Tab_ActiveProject.png" />
+    <Content Include="Content\Images\Tab_InactiveProject.png" />
+    <Content Include="Content\Images\theBean.png" />
+    <Content Include="Content\Images\VestnBetaLogoWhite.png" />
+    <Content Include="Content\Images\VestnLogo.png" />
+    <Content Include="Content\Images\VestnLogoArrow.png" />
+    <Content Include="Content\Images\VestnLogoWhite.png" />
+    <Content Include="Content\Images\WhiteArrow.png" />
+    <Content Include="Content\Images\whiteTab.png" />
+    <Content Include="Content\Images\WhiteTriangle.png" />
+    <Content Include="Content\images_jquery\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\images_jquery\ui-bg_flat_55_fbec88_40x100.png" />
+    <Content Include="Content\images_jquery\ui-bg_glass_75_d0e5f5_1x400.png" />
+    <Content Include="Content\images_jquery\ui-bg_glass_85_dfeffc_1x400.png" />
+    <Content Include="Content\images_jquery\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\images_jquery\ui-bg_gloss-wave_55_5c9ccc_500x100.png" />
+    <Content Include="Content\images_jquery\ui-bg_inset-hard_100_f5f8f9_1x100.png" />
+    <Content Include="Content\images_jquery\ui-bg_inset-hard_100_fcfdfd_1x100.png" />
+    <Content Include="Content\images_jquery\ui-icons_217bc0_256x240.png" />
+    <Content Include="Content\images_jquery\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\images_jquery\ui-icons_469bdd_256x240.png" />
+    <Content Include="Content\images_jquery\ui-icons_6da8d5_256x240.png" />
+    <Content Include="Content\images_jquery\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\images_jquery\ui-icons_d8e7f3_256x240.png" />
+    <Content Include="Content\images_jquery\ui-icons_f9bd01_256x240.png" />
+    <Content Include="Content\Stylesheets\resetPassword.css" />
+    <Content Include="Content\Stylesheets\headerOn.css" />
+    <Content Include="Content\Stylesheets\headerOff.css" />
+    <Content Include="Content\Stylesheets\home.css" />
+    <Content Include="Content\Stylesheets\projects.css" />
+    <Content Include="Content\Stylesheets\messageBar.css" />
+    <Content Include="Content\Stylesheets\splash.css" />
+    <Content Include="Content\Stylesheets\profile.css" />
+    <Content Include="Content\Stylesheets\createNewAccount.css" />
+    <Content Include="Content\Stylesheets\site.css" />
+    <Content Include="Content\Stylesheets\index.css" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\jquery.ui.accordion.css" />
+    <Content Include="Content\themes\base\jquery.ui.all.css" />
+    <Content Include="Content\themes\base\jquery.ui.autocomplete.css" />
+    <Content Include="Content\themes\base\jquery.ui.base.css" />
+    <Content Include="Content\themes\base\jquery.ui.button.css" />
+    <Content Include="Content\themes\base\jquery.ui.core.css" />
+    <Content Include="Content\themes\base\jquery.ui.datepicker.css" />
+    <Content Include="Content\themes\base\jquery.ui.dialog.css" />
+    <Content Include="Content\themes\base\jquery.ui.progressbar.css" />
+    <Content Include="Content\themes\base\jquery.ui.resizable.css" />
+    <Content Include="Content\themes\base\jquery.ui.selectable.css" />
+    <Content Include="Content\themes\base\jquery.ui.slider.css" />
+    <Content Include="Content\themes\base\jquery.ui.tabs.css" />
+    <Content Include="Content\themes\base\jquery.ui.theme.css" />
+    <Content Include="Global.asax" />
+    <None Include="Resources\freelancer tags.txt" />
+    <Content Include="Scripts\bbq.js" />
+    <Content Include="Scripts\autogrow.js" />
+    <Content Include="Scripts\completeProfile.js" />
+    <Content Include="Scripts\galleria-1.2.6.js" />
+    <Content Include="Scripts\galleria.classic.min.js" />
+    <Content Include="Scripts\testLogon.js" />
+    <Content Include="Scripts\jquery.tools.min.js" />
+    <Content Include="Scripts\index.js" />
+    <Content Include="Scripts\moveListItems.js" />
+    <Content Include="Scripts\jquery.image-resize.js" />
+    <Content Include="Scripts\jquery.tmpl.js" />
+    <Content Include="Scripts\register.js" />
+    <Content Include="Scripts\projects.js" />
+    <Content Include="Scripts\projects_Owner.js" />
+    <Content Include="Scripts\jquery.fileupload.js" />
+    <Content Include="Scripts\jquery.iframe-transport.js" />
+    <Content Include="Scripts\jquery.ui.widget.js" />
+    <Content Include="Scripts\testRegister.js" />
+    <Content Include="Scripts\UploadFileProgress.js" />
+    <Content Include="Scripts\uploading.js" />
+    <Content Include="Scripts\userHome.js" />
+    <Content Include="Scripts\jeditable.js" />
+    <Content Include="Scripts\jquery.messagebar.js" />
+    <Content Include="Scripts\profile_Owner.js" />
+    <Content Include="Scripts\site.js" />
+    <Content Include="Scripts\createNewAccount.js" />
+    <Content Include="Scripts\headerActions.js" />
+    <Content Include="Scripts\modernizr-1.7.js" />
+    <Content Include="Scripts\modernizr-1.7.min.js" />
+    <Content Include="Scripts\profile.js" />
+    <Content Include="Scripts\widtherizer.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\User\ChangePassword.cshtml" />
+    <Content Include="Views\User\Register.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_LogOnPartial.cshtml" />
+    <Content Include="Views\Home\_Layout.cshtml" />
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\User\fileexist.cshtml" />
+    <Content Include="Views\User\testNewRegister.cshtml" />
+    <Content Include="Views\User\testLogon.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Controllers\Account\" />
+    <Folder Include="Views\Project\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Accessors\BlobStorageAccessor\BlobStorageAccessor.csproj">
+      <Project>{1502BA66-0AFD-4817-8304-FF77134283DF}</Project>
+      <Name>BlobStorageAccessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accessors\AnalyticsAccessor\AnalyticsAccessor.csproj">
+      <Project>{0420AA94-F8D8-4081-A893-0D44F15C7C1C}</Project>
+      <Name>AnalyticsAccessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accessors\TagAccessor\TagAccessor.csproj">
+      <Project>{ADED7100-BC2B-47FB-9BF4-9696C766F51E}</Project>
+      <Name>TagAccessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\Analytics\Analytics.csproj">
+      <Project>{BC962547-338A-4A68-91C3-2C6F2D18F194}</Project>
+      <Name>Analytics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\JsonModels\JsonModels.csproj">
+      <Project>{F52C4CC1-F773-4912-8D96-56286C81BB35}</Project>
+      <Name>JsonModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\Users\Users.csproj">
+      <Project>{5E71E86E-850C-4160-8475-D2801F3D4614}</Project>
+      <Name>Users</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\DatabaseContext\DatabaseContext.csproj">
+      <Project>{835E4CCE-E754-4368-9D60-D6D2DC0FDEEE}</Project>
+      <Name>DatabaseContext</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Managers\CommunicationManager\CommunicationManager.csproj">
+      <Project>{1EE4B5CB-CC17-448C-8992-FCB4E2058656}</Project>
+      <Name>CommunicationManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accessors\FeedbackAccessor\FeedbackAccessor.csproj">
+      <Project>{E1A52502-2733-44AC-9D74-DCE04E8611A2}</Project>
+      <Name>FeedbackAccessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\Feedback\Feedback.csproj">
+      <Project>{E29188EB-DBD4-4BCB-8341-046FB77BC73F}</Project>
+      <Name>Feedback</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accessors\LogAccessor\LogAccessor.csproj">
+      <Project>{E93BC31C-2391-4A9D-9D6A-B717F915D64B}</Project>
+      <Name>LogAccessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\Log\Log.csproj">
+      <Project>{5BEFDC6C-F543-4AB2-AC74-6AB07F7CBAB8}</Project>
+      <Name>Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\ProjectElements\ProjectElements.csproj">
+      <Project>{F901A9F4-174A-439A-9F25-7F9D3D9FD4F1}</Project>
+      <Name>ProjectElements</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Managers\ProjectManager\ProjectManager.csproj">
+      <Project>{C9CDDD0E-C63C-4DD3-8005-1E73A426BAAA}</Project>
+      <Name>ProjectManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\Project\Projects.csproj">
+      <Project>{622DDB50-9525-4CD4-8CEC-F2EDF1DA8C79}</Project>
+      <Name>Projects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accessors\ProjectAccessor\ProjectAccessor.csproj">
+      <Project>{687D2ED5-F309-4333-8DD8-6B692BA19A19}</Project>
+      <Name>ProjectAccessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engines\ReorderEngine\ReorderEngine.csproj">
+      <Project>{88EEE859-7550-499B-AF53-034C19D5CD6F}</Project>
+      <Name>ReorderEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Managers\TagManager\TagManager.csproj">
+      <Project>{A4CF6AF9-7D0A-4699-8D82-476713D29DE9}</Project>
+      <Name>TagManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\Tags\Tags.csproj">
+      <Project>{848568E1-61F9-44E4-8E87-C090416AD2D4}</Project>
+      <Name>Tags</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Managers\UploadManager\UploadManager.csproj">
+      <Project>{031D3153-C506-4929-B8F0-F65901103C14}</Project>
+      <Name>UploadManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accessors\UserAgreementAccessor\UserAgreementAccessor.csproj">
+      <Project>{899E58FD-93A2-440A-868A-36A8C04286EC}</Project>
+      <Name>UserAgreementAccessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Entities\UserAgreement\UserAgreement.csproj">
+      <Project>{1B13A8E4-7682-401A-ADAF-3B5420A01D91}</Project>
+      <Name>UserAgreement</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Managers\UserManager\UserManager.csproj">
+      <Project>{6F593A74-2D84-4D50-AAC7-34A1AD871CB1}</Project>
+      <Name>UserManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engines\ValidationEngine\ValidationEngine.csproj">
+      <Project>{E4F892EF-FB39-4408-928A-05AC3DEFDB87}</Project>
+      <Name>ValidationEngine</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\Profile.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\AccessKeys.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\AccessKeyCreate.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\AccessKeyDelete.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\AccessKeyUpdate.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ProjectElement_Documents.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ProjectElement_Pictures.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ProjectElement_Videos.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Splash.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\ResetPassword.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\_Layout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Projects_Public.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_UserAboutInformation.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ProjectElement_Information.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ProjectElement_Experience.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\Home.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Dashboard_AccountSettings.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\NotAuthenticated.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Dashboard_AccessKeys.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Dashboard_EditProfile.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Dashboard_InviteFriends.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Dashboard_ShareProfile.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_UserProfilePicture_Owner.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Header_LoggedOn.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Header_LoggedOff.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Dashboard_Feedback.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_PopUp.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\_Profile_Owner.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\_CompleteProfilePrompt.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\_Profile_Public.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ProjectElement_Videos_Owner.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ProjectElement_Pictures_Owner.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ProjectElement_Information_Owner.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ProjectElement_Experience_Owner.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ProjectElement_Documents_Owner.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Projects_Owner.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_UserAboutInformation_Owner.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_UserResume.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ProjectElement_Audio_Owner.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ProjectElement_Audio.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_PictureGallery.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_HelpTipsPopup.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\ErrorView.cshtml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>False</AutoAssignPort>
+          <DevelopmentServerPort>8011</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

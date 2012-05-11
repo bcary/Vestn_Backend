@@ -1,0 +1,395 @@
+﻿
+
+/***TEXT*/
+
+mainHeader
+{
+	font-family:"HelveticaNeue-Bold", Helvetica, Arial, Sans-serif;
+	font-weight:bold;
+	font-size:36px;
+	color:#3e3e3e;
+	position:relative;
+	top:-112px;
+	text-shadow: 1px 1px #FEEBD2, -1px -1px #DDD;
+}
+
+tabHeader
+{
+	font-family:"HelveticaNeue-Bold", Helvetica, Arial, Sans-serif;
+	font-weight:bold;
+	font-size:26px;
+	color:#FFF;
+	width:200px;
+	position:relative;
+	top:-60px;
+	left:-25px;
+	cursor:default;
+}
+
+/*end text*/
+
+/***MAIN CONTENT***/
+#mainContent
+{
+	background-color:#444444;
+	
+	position:relative;
+	margin-left:-500px;
+	margin-top:20px;
+	left:50%;
+	width:1000px;
+	height:550px;
+	
+	-moz-box-shadow: 1px 1px 15px #888;
+	-webkit-box-shadow: 1px 1px 15px #888;
+	box-shadow: 1px 1px 15px #888;
+}
+
+.contentContainer
+{
+	/*SHADOW*/
+	-moz-box-shadow: 1px 1px 5px #888;
+	-webkit-box-shadow: 1px 1px 5px #888;
+	box-shadow: 1px 1px 5px #888;
+	
+}
+
+.contentContainerCorner
+{
+    width:30px;
+    height:30px;
+    
+    position:absolute;
+    bottom:2px;
+    right:2px;
+}
+
+.contentContainer:hover
+{	
+	/*SHADOW*/
+	-moz-box-shadow: 0 0 20px #DDD;
+	-webkit-box-shadow: 0 0 20px #DDD;
+	box-shadow: 0 0 20px #DDD;
+	
+}
+
+#editProfileContainer
+{
+    cursor:pointer;
+	position:absolute;
+	width:250px;
+	height:200px;
+	
+	left:30px;
+	top:50px;
+	
+	background-color:#FFF;
+}
+
+#feedbackContainer
+{
+    position:absolute;
+	width:250px;
+	height:200px;
+	
+    left:30px;
+	top:300px;
+	
+	background-color:#FFF;
+}
+
+#inviteFriendsContainer
+{
+	position:absolute;
+	width:250px;
+	height:200px;
+	
+	left:375px;
+	top:50px;
+	
+	background-color:#FFF;
+}
+#shareProfileContainer
+{
+	position:absolute;
+	width:250px;
+	height:200px;
+	
+	left:375px;
+	top:300px;
+	
+	background-color:#FFF;
+}
+#accountSettingsContainer
+{
+	position:absolute;
+	width:250px;
+	height:200px;
+	
+	left:720px;
+	top:50px;
+	
+	background-color:#FFF;
+}
+#accessKeysContainer
+{
+	position:absolute;
+	width:250px;
+	height:200px;
+	
+	left:720px;
+	top:300px;
+	
+	background-color:#FFF;
+}
+
+
+/*END MAIN CONTENT*/
+
+.mainTabTitle
+{
+	text-align:center;
+	position:relative;
+	left:0px;
+	top:0px;
+	width:450px;
+}
+
+.containerTabTitle
+{
+	text-align:center;
+	position:relative;
+	left:0px;
+	top:0px;
+	width:250px;
+}
+
+.containerContent
+{
+	position:relative;
+	top:-30px;
+	left:5px;
+	
+	width:240px;
+	
+}
+
+/***BOTTOM CONTENT***/
+/*
+#bottomContent
+{
+	border-radius:10px;
+	background-color:#2588BF;
+	clear:both;
+	float:left;
+	position:relative;
+	margin-left:-500px;
+	margin-top:-50px;
+	left:50%;
+	width:1000px;
+	height:150px;
+	
+	-moz-box-shadow: 1px 1px 5px #888;
+	-webkit-box-shadow: 1px 1px 5px #888;
+	box-shadow: 1px 1px 5px #888;
+}
+*/
+/*END BOTTOM CONTENT*/
+
+
+/*Content Headers*/
+.containerHeader
+{
+    position:relative;
+    left:-20px;
+    top:-15px;
+}
+
+#mugShot
+{
+    position:relative;
+    left:40px;
+    top:-20px;
+    width:150px;
+    height:150px;
+    
+    -moz-box-shadow: 1px 1px 5px #888;
+	-webkit-box-shadow: 1px 1px 5px #888;
+	box-shadow: 1px 1px 5px #888;
+}
+
+#copyLinkButton
+{
+    position:absolute;
+    left:50%;
+    margin-left:-50px;
+    top:20px;
+    
+    
+    width:100px;
+    font-size:18px;
+    text-align:center;
+    padding:5px;
+}
+#copyLinkText
+{
+    display:none;
+    position:absolute;
+    width:100px;
+    left:50%;
+    margin-left:-50px;
+    top:0px;
+    
+    font-size:18px;
+    text-align:center;
+}
+#copyLinkText input
+{
+    position:absolute;
+    left:50%;
+    margin-left:-75px;
+    width:150px;
+    text-align:center;   
+    padding:5px;
+    text-size:11px;
+    font-weight:bold;
+}
+
+#addThisLinks
+{
+    position:absolute;
+    width:150px;
+    left:70px;
+    
+    top:70px;
+}
+
+#inviteFriendNameInput
+{
+    position:absolute;
+    width:200px;
+    height:25px;
+    left:50%;
+    margin-left:-100px;
+    
+    top:-10px;
+    
+    font-size:12px;
+    font-weight:bold;
+    color:#888;
+}
+
+#inviteFriendEmailInput
+{
+    position:absolute;
+    width:200px;
+    height:25px;
+    left:50%;
+    margin-left:-100px;
+    
+    top:50px;
+    
+    font-size:12px;
+    font-weight:bold;
+    color:#888;
+}
+
+.inviteFriendInput
+{
+    position:absolute;
+    width:150px;
+    height:25px;
+    left:50%;
+    margin-left:-50px;
+}
+
+#inviteFriendButton
+{
+    position:absolute;
+    left:50%;
+    margin-left:-50px;
+    top:100px;
+    
+    
+    width:100px;
+    font-size:18px;
+    font-family: "HelveticaNeue-Bold", "HelveticaNeue", Helvetica, Arial, Sans-serif;
+    text-align:center;
+    padding:5px;
+}
+
+#goPublicButton
+{
+    position:relative;
+    margin-top:15px;
+    float:left;
+    margin-left:80px;
+    font-size:14px;
+    padding:5px 10px 5px 10px;
+    font-weight:bold;
+    font-family: "HelveticaNeue-Bold", "HelveticaNeue", Helvetica, Arial, Sans-serif;
+}
+
+#hideProfileButton
+{
+    position:relative;
+    margin-top:15px;
+    float:left;
+    margin-left:75px;
+    font-size:14px;
+    padding:5px 10px 5px 10px;
+    font-weight:bold;
+    font-family: "HelveticaNeue-Bold", "HelveticaNeue", Helvetica, Arial, Sans-serif;
+}
+
+#profileStatusPublic
+{
+    text-align:center;
+}
+#profileStatusHidden
+{
+    text-align:center;
+}
+
+#resendVerificationEmailButton
+{
+    cursor:pointer;
+    position:relative;
+    margin-top:15px;
+    float:left;
+    margin-left:25px;
+    font-size:14px;
+    padding:10px;
+}
+
+#submitFeedbackButton
+{
+    position:absolute;
+    
+    font-size:14px;
+    top:110px;
+    left:85px;
+    
+    padding:5px 10px 5px 10px;
+}
+
+#submitFeedbackText
+{
+    resize:none;
+    position:absolute;
+    left:10px;
+    top:-20px;
+    width:210px;
+    height:110px;
+    
+    color:#777;
+}
+
+.comingSoonOverlay
+{
+    width:250px;
+    height:200px;
+    position:absolute;
+    left:0px;
+    top:0px;
+}

@@ -1,0 +1,54 @@
+﻿@model IEnumerable<UserClientMembers.Models.AccessKeysModel>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>AccessKeys</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Back to Profile", "Index")
+    </p>
+    <p>
+        @Html.ActionLink("Create New", "AccessKeyCreate")
+    </p>
+    <table>
+        <tr>
+            <th>
+                accessString
+            </th>
+            <th>
+                pictureVisible
+            </th>
+            <th>
+                infoVisible
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.accessString)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.pictureVisible)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.infoVisible)
+            </td>
+            <td>
+                @Html.ActionLink("Update", "AccessKeyUpdate", new { id=item.id })
+                @Html.ActionLink("Delete", "AccessKeyDelete", new { id=item.id })
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

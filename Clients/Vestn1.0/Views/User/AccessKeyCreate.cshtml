@@ -1,0 +1,54 @@
+﻿@model UserClientMembers.Models.AccessKeysModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>AccessKeyCreate</title>
+</head>
+<body>
+    
+    @using (Html.BeginForm()) {
+        @Html.ValidationSummary(true)
+        <fieldset>
+            <legend>AccessKeysModel</legend>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.accessString)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.accessString)
+                @Html.ValidationMessageFor(model => model.accessString)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.pictureVisible)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.pictureVisible)
+                @Html.ValidationMessageFor(model => model.pictureVisible)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.infoVisible)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.infoVisible)
+                @Html.ValidationMessageFor(model => model.infoVisible)
+            </div>
+    
+            <p>
+                <input type="submit" value="Create" />
+            </p>
+        </fieldset>
+    }
+    
+    <div>
+        @Html.ActionLink("Back to List", "AccessKeys")
+    </div>
+</body>
+</html>

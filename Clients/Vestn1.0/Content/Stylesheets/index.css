@@ -1,0 +1,353 @@
+﻿#topContent
+{
+	position:relative;
+	margin-top:50px;
+	padding-bottom:5px;
+	
+	height:420px;
+	width:100%;
+	border-bottom:1.5px solid #F7941E;
+}
+
+#middleContent
+{
+	position:relative;
+	float:left;
+	margin-top:80px;
+	
+	height:300px;
+	width:100%;
+}
+
+#bottomContent
+{
+	position:relative;
+	float:left;
+	margin-top:50px;
+	
+	height:300px;
+	width:100%;
+	background-color:red;
+}
+
+
+#topContent .left
+{
+	position:relative;
+	float:left;
+	width:400px;
+	height:100%;
+	
+	margin-left:30px;
+}
+#topContent .right
+{
+	position:relative;
+	float:left;
+	width:500px;
+	margin-left:50px;
+	height:100%;
+}
+#topContent .text
+{
+	position:absolute;
+	width:100%;
+	height:270px;
+	
+}
+#topContent .vestnForMeButton{
+	padding:10px 25px 10px 50px;
+	
+	position:relative;
+	left:90px;
+	top:290px;
+	
+	-moz-box-shadow: 0 0 5px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 2px 0 rgba(0,0,0,0.5);
+	box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+#topContent .vestnForEducationButton{
+	padding:10px 25px 10px 50px;
+	
+	position:relative;
+	left:56px;
+	top:310px;
+	
+	-moz-box-shadow: 0 0 5px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 2px 0 rgba(0,0,0,0.5);
+	box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+#topContent .links
+{
+	position:relative;
+	left:75px;
+	top:300px;
+}
+
+#topContent .videoContent
+{
+	position:relative;
+	margin-top:50px;
+	margin-left:30px;
+	
+	width:470px;
+	height:330px;
+}
+
+.right .trendingHeader
+{
+    position:absolute;
+    top:-50px;
+    height:50px;
+    width:200px;
+    left:50%;
+    margin-left:-100px;
+    
+    font-size:24px;
+    font-family:Verdana;
+    font-weight:bold;
+    color:#FFFFFF;
+}
+
+.right .trendingWrapper
+{
+    position:relative;
+    margin-top:60px;
+    margin-left:30px;
+    
+    width:470px;
+    background-color:#FFFEF8;
+    border:1px solid #277DBF;
+    
+    -moz-box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+	box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+.trendingContent
+{
+    text-align:center;
+}
+
+#moreTrendingButton
+{
+    font-size:18px;
+    color:#669AC8;
+    font-family:Verdana;
+    font-weight:bold;
+    cursor:pointer;
+    margin-bottom:10px;
+}
+
+.trendingItem
+{
+    opacity:.75;
+    
+    position:relative;
+    margin-top:10px;
+    margin-bottom:10px;
+    list-style:none;
+}
+
+.trendingItem:hover
+{
+    opacity:1;
+}
+
+#topContent .youtubeVideo
+{
+	position:relative;
+	left:10px;
+	top:10px;
+	
+	background-color:black;
+	width:450px;
+	height:310px;
+}
+
+#topContent .videoFooter
+{
+	position:relative;
+	left:50px;
+	top:10px;
+	width:470px;
+	height:40px;
+}
+
+#topContent .viewSampleProfileButton
+{
+	padding:5px 20px 5px 10px;
+	
+	position:relative;
+	left:56px;
+	top:425px;
+	
+	-moz-box-shadow: 0 0 5px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 2px 0 rgba(0,0,0,0.5);
+	box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+#topContent .viewBusinessButton
+{
+    display:none;
+	padding:10px 25px 10px 25px;
+	
+	position:relative;
+	left:25px;
+	top:300px;
+	
+	-moz-box-shadow: 0 0 5px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 2px 0 rgba(0,0,0,0.5);
+	box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+
+
+#middleContent .left
+{
+	position:relative;
+	float:left;
+	width:270px;
+	height:200px;
+	padding-left:15px;
+	padding-right:15px;
+	
+	border-right:1.5px solid #F7941E;
+}
+
+#middleContent .middle
+{
+	position:relative;
+	float:left;
+	width:360px;
+	height:250px;
+	padding-left:15px;
+	padding-right:15px;
+	
+}
+
+#middleContent .right
+{
+	position:relative;
+	float:left;
+	width:270px;
+	height:200px;
+	padding-left:15px;
+	padding-right:15px;
+	
+	border-left:1.5px solid #F7941E;
+}
+
+
+#scrollDownToLearn
+{
+    display:none;
+    position:absolute;
+    bottom:0px;
+    left:50%;
+    margin-left:-300px;
+    
+    height:40px;
+    width:600px;
+    
+    text-align:center;
+    padding-top:15px;
+    
+    -moz-box-shadow: 0 0 15px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 0 0 15px rgba(0,0,0,0.75);
+	box-shadow: 0 0 15px rgba(0,0,0,0.75);
+    
+    cursor:pointer;
+}
+
+#scrollDownToLearn:hover
+{
+    background-color:#EEA53D;
+    
+    height:47px;
+    width:620px;
+    margin-left:-310px;
+}
+
+#scrollContent
+{
+    position:absolute;
+    bottom:-600px;
+    left:50%;
+    margin-left:-300px;
+    
+    width:600px;
+    height:600px;
+    background-color:#FFF;
+    
+    text-size:48px;
+    text-align:center;
+    color:White;
+
+    display:none;
+    opacity:0;
+    
+    -moz-box-shadow: 0 2px 5px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 0 2px 5px rgba(0,0,0,0.75);
+	box-shadow: 0 2px 5px rgba(0,0,0,0.75);
+}
+
+
+#checkOutProfiles
+{
+    position:relative;
+    float:left;
+    top:350px;
+    width:400px;
+    padding-bottom:20px;
+    
+    padding-left:15px;
+    padding-right:15px;
+}
+
+#checkOutProfiles .header
+{
+    position:relative;
+    text-align:center;
+    font-size:28px;
+    font-family:Verdana;
+    font-weight:bold;
+    margin-bottom:20px;
+}
+
+#checkOutProfiles .profileList
+{
+    position:relative;
+    float:left;
+    width:100%;
+    padding-bottom:5px;
+}
+#checkOutProfiles .profileList .listItem
+{
+    list-style:none;
+    float:left;
+    position:relative;
+    
+    margin-left:5px;
+    margin-right:5px;
+    width:123px;
+    padding-bottom:5px;
+    
+    font-family:Verdana;
+    text-align:center;
+}
+
+#checkOutProfiles .profileList .listItem div
+{
+    margin-top:3px;
+}
+
+#checkOutProfiles .profileList .listItem .listPicture
+{
+    width:100px;
+    height:100px;
+    margin-left:11px;
+    margin-top:5px;
+}

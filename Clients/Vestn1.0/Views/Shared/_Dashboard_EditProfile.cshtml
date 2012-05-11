@@ -1,0 +1,14 @@
+﻿@model UserClientMembers.Models.UserModel
+@using UserClientMembers.Models
+<div class="profilePicFrame" style="display: table-cell; text-align: center; vertical-align: middle; width: 150px; height: 150px; padding-left:45px;">
+    @if (Model.profilePictureThumbnail != null)
+    {
+        <img style="cursor: pointer; -moz-box-shadow: 1px 1px 5px #888; -webkit-box-shadow: 1px 1px 5px #888; box-shadow: 1px 1px 5px #888;"
+     src="@Model.profilePictureThumbnail" alt="" class="manage-profile-picture"/>
+    }
+    else
+    {
+        <img style="cursor: pointer" src="../../Content/Images/chip_you.png" alt="" width="150px"
+            height="150px" />
+    }
+</div>

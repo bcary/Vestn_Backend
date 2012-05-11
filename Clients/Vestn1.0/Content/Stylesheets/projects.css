@@ -1,0 +1,518 @@
+﻿
+.projectContentFrame:not(.active)
+{
+    display:none;
+}
+
+.mediaTypeIndicator
+{
+    pointer-events:none;
+}
+
+.addNewElementContainer
+{
+    position:relative;
+    float:left;
+    
+    width:300px;
+    margin-left:53px;
+    
+    margin-top:20px;
+    background-color:#545456;
+    
+    padding:20px 0px 20px 20px;
+    
+    -moz-box-shadow: 0 0 7px #888;
+	-webkit-box-shadow: 0 0 7px #888;
+	box-shadow: 0 0 7px #888;
+}
+
+.addNewDocumentContainer
+{
+}
+
+.addNewPictureContainer
+{
+}
+
+/*
+#smartUploadSpace
+{
+    display:none;
+    position:relative;
+    margin-left:5px;
+    margin-top:20px;
+    margin-left:10px;
+    width:105px;
+    height:100px;
+    background-color:#545456;
+}
+*/
+
+#userAboutInformationPartial
+{
+    display:table;
+}
+
+#projectInformationPartial
+{
+    display:table;
+}
+
+.aboutMeWrapper, .aboutProjectWrapper
+{
+    display:table-cell;
+    vertical-align:middle;
+    
+    position:relative;
+    margin-left:0px;
+    padding-left:25px;
+    
+    width:325px;
+}
+.aboutMe, .aboutProject
+{
+    border-left: 1px dotted #3A3A3A;
+    padding-left:25px;
+    
+    position:relative;
+    margin-left:0px;
+    float:left;
+    
+    width:300px;
+    
+    color:#4B4B4B;
+}
+
+.aboutPictureWrapper
+{
+    position:relative;
+    float:left;
+    
+    width:200px;
+    min-height:250px;
+    
+    margin-top:55px;
+    
+    background-color:#3a3a3a;
+    
+    -moz-box-shadow: 2px 2px 4px #888;
+	-webkit-box-shadow: 2px 2px 4px #888;
+	box-shadow: 2px 2px 4px #888;
+	
+	color:#EEE;
+	text-align:center;
+	
+	cursor:default;
+	font-family:Trebuchet MS;
+}
+
+.aboutPicture
+{
+    width:200px;
+    height:200px;
+}
+
+.aboutPictureWrapper .title
+{
+    position:relative;
+    left:0px;
+    width:200px;
+    font-size:18px;
+}
+
+.aboutPictureWrapper .name
+{
+    position:relative;
+    width:200px;
+    left:0px;
+    font-size:26px;
+}
+
+.aboutPictureWrapper .email
+{
+    position:relative;
+    width:200px;
+    left:0px;
+    
+    font-size:15px;
+}
+
+.aboutLeftColumn
+{
+    position:relative;
+    float:left;
+}
+
+.aboutLinks
+{
+    opacity:.8;
+    position:relative;
+    float:left;
+    clear:both;
+    top:0px;
+    left:40px;
+    
+    width:120px;
+    height:40px;
+    
+    background-color:#5C5C5C;
+    
+    -moz-box-shadow: 2px 2px 4px #888;
+	-webkit-box-shadow: 2px 2px 4px #888;
+	box-shadow: 2px 2px 4px #888;
+}
+
+.aboutLinks:hover
+{
+    opacity:1;
+}
+
+.aboutLink
+{
+    opacity:.8;
+}
+.aboutLink:hover
+{
+    opacity:1;
+}
+
+.comingSoonOverlay
+{
+    width:120px;
+    height:40px;
+    position:absolute;
+    left:0px;
+    top:0px;
+}
+
+
+
+
+
+/*MEDIA VIEWER TEMPLATE*/
+.mediaWindow
+{
+    float:left;
+    min-height:430px;
+    width:560px;
+    
+    background-color:#6D6E71;
+    
+    position:relative;
+    -moz-box-shadow: 2px 2px 4px #888;
+	-webkit-box-shadow: 2px 2px 4px #888;
+	box-shadow: 2px 2px 4px #888;
+}
+.mediaWindow .media
+{
+    position:relative;
+    float:left;
+}
+.mediaWindow .pe_addNew
+{
+    width:440px;
+    height:430px;
+    background-color:#FFF;
+}
+.mediaWindow .chooser
+{
+    position:relative;
+    float:right;
+    height:inherit;
+}
+.mediaViewer
+{
+    /*background-color:#5E8BC5;*/
+    background-color:#FFF;
+    width:440px;
+    height:330px;
+}
+.mediaViewer iframe
+{
+    width:440px;
+    height:330px;
+}
+.mediaSelectionPane
+{
+    width:120px;
+    height:415px;
+}
+
+.mediaInformation
+{
+    z-index:0;
+    position:relative;
+    float:left;
+    background-color: #3A3A3C;
+    width:430px;
+    min-height:90px;
+    
+    padding:5px;
+    overflow:hidden;
+}
+.mediaInformation sh6
+{
+    cursor:default;
+}
+
+.mediaInformation-title, .mediaInformation-company
+{
+    z-index:-1;
+    background-color:#3A3A3C;
+    color:White;
+    
+    position:relative;
+    
+    float:left;
+    margin-left:20px;
+    padding-left:10px;
+    padding-right:10px;
+    top:-5px;
+    
+    
+    font-size:20px;
+}
+.mediaInformation-description
+{
+    position:relative;
+    margin-top:5px;
+    margin-left:0px;
+    
+    z-index:-2;
+    color:White;
+    
+    font-size:13px;
+    font-family:Arial;
+    
+    width:400px;
+    min-height:40px;
+    
+    border:2px solid #868688;
+    padding-left:15px;
+    padding-right:10px;
+    padding-top:20px;
+    padding-bottom:25px;
+}
+
+.mediaViewer img
+{
+}
+
+
+
+.mediaSelectionPane ul
+{
+	list-style:none;
+	list-style-position:outside;
+}
+
+.mediaSelectionPane ul li
+{
+    margin-top:15px;
+	
+	left:15px;
+	
+    cursor:pointer;
+	
+	display:block;
+	overflow:hidden;
+	
+	width:90px;
+	height:20px;
+	position:relative;
+	
+	padding-right:10px;
+	
+	-moz-box-shadow: 0 0 4px #777;
+	-webkit-box-shadow: 0 0 4px #777;
+	box-shadow: 0 0 4px #777;
+}
+.mediaSelectionPane ul li:not(.projectElementAddNewSelector)
+{
+	background-color:#FCB040;
+	color:#3A3A3C;
+	
+	/*text*/
+	font-size:12px;
+	font-weight:600;
+	
+	text-align:right;
+	
+}
+.mediaSelectionPane ul li.active
+{
+    overflow:visible;
+    
+    left:5px;
+	width:100px;
+}
+
+.mediaSelectionPane ul li:hover:not(.active):not(.projectElementAddNewSelector)
+{
+    width:100px;
+    margin-left:-10px;
+    height:20px;
+    font-size:13px;
+}
+
+.projectElementAddNewSelector
+{
+	background:url('../Images/addNewElementButton.png');
+}
+
+.media
+{
+    display:none;
+}
+
+.mediaActiveIndicator
+{
+    display:none;
+    position:absolute;
+    left:-6px;
+    top:-1px;
+}
+
+/*Job Experience Formatting*/
+.experienceItemContainer
+{
+    position:relative;
+    float:left;
+    left:50%;
+    clear:both;
+}
+.experience-item-float
+{
+    margin-top:5px;
+    
+    position:relative;
+    float:left;
+    font-weight:bold;
+    color:#3A3A3A;
+    font-family:"HelveticaNeue-Bold", "HelveticaNeue", Helvetica, Arial, Sans-serif;
+}
+.experience-jobTitle
+{
+    font-size:32px;
+}
+.experience-company
+{
+    font-size:20px;
+    color:#4B90C7;
+}
+.experience-jobDescription
+{
+    clear:both;/*if we don't do this a one letter company name will cause the description to float on company name line*/
+    font-size:13px;
+    width:420px;
+}
+.experience-citystate
+{
+    position:absolute;
+    bottom:0px;
+    left:20px;
+    width:420px;
+    
+    font-weight:bold;
+    font-size:21px;
+    color:#3C3C3E;
+}
+.experience-city
+{
+    position:relative;
+    float:left;
+}
+.experience-state
+{
+    position:relative;
+    float:left;
+}
+
+.startAndEndDates
+{
+    position:absolute;
+    right:15px;
+    top:3px;
+    
+    padding:0 5px 0 5px;
+    font-size:12px;
+    color:#DDD;
+    background-color:#3A3A3C;
+}
+.experience-startDate
+{
+    position:relative;
+    float:left;
+    
+    margin-right:3px;
+    font-size:12px;
+}
+.experience-startAndEndDateDivider
+{
+    position:relative;
+    float:left;
+}
+.experience-endDate
+{
+    position:relative;
+    float:left;
+    
+    margin-left:3px;
+    font-size:12px;
+}
+
+
+#moveProjectButtonWrapper
+{
+    display:none;
+    width:148px;
+    height:22px;
+    position:absolute;
+    top:25px;
+    left:5px;
+}
+
+.moveProjectButton
+{
+    width:18px;
+    height:20px;
+    position:relative;
+    cursor:pointer;
+    opacity:.5;
+}
+
+.moveProjectButton:hover
+{
+    opacity:1;
+}
+
+#moveProjectLeftButton
+{
+    float:left;
+}
+#moveProjectRightButton
+{
+    float:right;
+}
+
+
+#movePageButtonWrapper
+{
+    width:775px;
+    height:35px;
+    position:absolute;
+    top:62px;
+    left:213px;
+}
+
+.movePageButton img
+{
+    cursor:pointer;
+    opacity:.5;
+}
+
+.movePageButton img:hover
+{
+    opacity:1;
+}

@@ -1,0 +1,40 @@
+﻿@model UserClientMembers.Models.ProfileModel
+
+<div id="userAboutInformationPartial">
+<div class="aboutLeftColumn">
+    <div class="aboutPictureWrapper">
+    
+        <div class="aboutPicture" style = "display:table-cell; text-align:center; vertical-align:middle; width:200px; height:200px" >
+            @if (Model.projects.ElementAt(0).coverPictureThumbnail!= null)
+            {
+                <img src="@Model.projects.ElementAt(0).coverPictureThumbnail" alt=""/>
+            }
+            else
+            {
+                <img src="../../Content/Images/theBean.png" alt="" width="200px" height="200px" />
+            }
+        </div>
+
+        <div class="title">@Model.title</div>
+        <div class="name">@Model.firstName @Model.lastName</div>
+        <div class="email">@Model.email</div>
+
+    </div>
+
+    <div class="aboutLinks">
+
+        <img class="aboutLink" style="cursor:pointer;position:absolute;margin-top:5px;margin-left:5px;" src="http://cdn1.iconfinder.com/data/icons/web2/Icons/FaceBook_32x32.png" width="32" height="32" alt="" />
+        <img class="aboutLink" style="cursor:pointer;position:absolute;margin-top:4px;margin-left:45px;" src="http://cdn1.iconfinder.com/data/icons/metallic/128%20PNG/twitter_02.png" width="30" height="30" alt="" />
+        <img class="aboutLink" style="cursor:pointer;position:absolute;margin-top:2px;margin-left:80px;" src="http://cdn1.iconfinder.com/data/icons/umar/Linked%20In.png" width="35" height="35" alt="" />
+        
+        <img class="comingSoonOverlay" src="../../Content/Images/comingSoon120x40Overlay.png" />
+    </div>
+    </div>
+    <div class="aboutMeWrapper">
+        <sh4><div class="aboutMe userAboutInformation">@*@Model.description*@
+    <br />
+        <p id="description">@if (Model.description != null)
+            {@Html.Raw(Model.description);}</p>
+    </div></sh4>
+    </div>
+</div>

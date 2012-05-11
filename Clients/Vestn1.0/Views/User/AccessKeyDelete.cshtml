@@ -1,0 +1,41 @@
+﻿@model UserClientMembers.Models.AccessKeysModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>AccessKeyDelete</title>
+</head>
+<body>
+    <h3>Are you sure you want to delete this?</h3>
+    <fieldset>
+        <legend>AccessKeysModel</legend>
+    
+        <div class="display-label">accessString</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.accessString)
+        </div>
+    
+        <div class="display-label">pictureVisible</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.pictureVisible)
+        </div>
+    
+        <div class="display-label">infoVisible</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.infoVisible)
+        </div>
+    </fieldset>
+    @using (Html.BeginForm()) {
+        <p>
+            <input type="submit" value="Delete" /> |
+            @Html.ActionLink("Back to List", "AccessKeys")
+        </p>
+    }
+
+</body>
+</html>

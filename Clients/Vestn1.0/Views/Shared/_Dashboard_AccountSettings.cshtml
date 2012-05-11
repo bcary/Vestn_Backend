@@ -1,0 +1,51 @@
+﻿@model UserClientMembers.Models.UserModel
+@using UserClientMembers.Models
+
+
+
+@if (Model.emailVerified == 1)
+{
+    if (Model.isPublic == 0)
+    {
+    
+        <sh4>
+        <div id="profileStatusPublic" style="display:none">Your profile is currently<br />Public.</div>
+        <div id="profileStatusHidden">Your account is currently<br />Hidden.</div>
+        </sh4>
+    
+    <div id="goPublicButton" class="orange button">
+        Go Public
+    </div>
+    <div id="hideProfileButton" class="orange button" style="display:none;">
+        Hide Profile
+    </div>
+    }
+    else
+    {
+        
+        <sh4>
+        <div id="profileStatusPublic">Your account is currently<br />Public.</div>
+        <div id="profileStatusHidden" style="display:none">Your profile is currently<br />Hidden.</div>
+        </sh4>
+    
+    <div id="goPublicButton" class="orange button" style="display:none;">
+        Go Public
+    </div>
+    <div id="hideProfileButton" class="orange button">
+        Hide Profile
+    </div>
+    }
+}
+else
+{
+        
+    <sh4>
+        <div id="profileStatusPublic" style="display:none">Your account is currently<br />Public.</div>
+        <div id="profileStatusHidden">Your profile is currently<br />Hidden.</div>
+    </sh4>
+    
+    <a id="goPublicButton" class="black button disabled">Go Public </a>
+    
+    <a id="resendVerificationEmailButton" class="orange button">Resend Verification Email</a>
+    
+}

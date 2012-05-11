@@ -1,0 +1,84 @@
+﻿@model UserClientMembers.Models.ProjectModel
+
+<div class="mediaWindow">
+    @foreach (var item in Model.experience)
+    {
+    <div id="projectElementMedia_@(item.id)" class="media pe_exp">
+        <div class="mediaViewer experienceViewer">
+
+            <div class="experienceItemContainer">
+            <div id="jobTitle" class="experience-item-float experience-jobTitle" style="left:-50%;">@item.jobTitle</div>
+            </div>
+            <div class="experienceItemContainer">
+            <div id="company" class="experience-item-float experience-company" style="left:-50%;">@item.company</div><br />
+            </div>
+
+            <p id="jobDescription" class="experience-item-float experience-jobDescription">@Html.Raw(@item.jobDescription)</p>
+            
+            <span class="experience-citystate"><span id="city" class="experience-city">@item.city</span><span style="position:relative;float:left;">,&nbsp;</span><span id="state" class="experience-state">@item.state</span></span>
+
+        </div>
+
+        <div class="mediaInformation">
+
+        <div id="company" class="mediaInformation-company">@item.company</div>
+        <div class="startAndEndDates"><div id="startDate" class="experience-startDate">
+            @if (item.startDate.Year == 1811)
+            {
+                @Html.Raw("Present")
+            }
+            else
+            {
+                @item.startDate.ToString().Substring(0, item.startDate.ToString().IndexOf(' '))
+            }
+        </div>
+        <div class="experience-startAndEndDateDivider">-</div>
+        <div id="endDate" class="experience-endDate">
+            @if (item.endDate.Year == 1811)
+            {
+                @Html.Raw("Present")
+            }
+            else
+            {
+                @item.endDate.ToString().Substring(0, item.endDate.ToString().IndexOf(' '))
+            }
+        </div>
+        </div>
+            
+        <p id="description" class="mediaInformation-description">@Html.Raw(@item.description)</p>
+
+        </div>
+        
+    </div>
+    }
+
+    <div class="chooser">
+        <div class="mediaSelectionPane">
+            <ul>
+                @foreach (var item in Model.experience)
+                {   
+                    <li id="projectElementSelector_@(item.id)" value=@Model.id class="pe-experience-selector mediaSelector">
+                        <img class="mediaActiveIndicator" src="../../Content/Images/projectElementButtonActiveIcon6x22.png" /><img
+                            class="mediaTypeIndicator" src="../../Content/Images/projectElementTypeIndicator20x20-Document.png"
+                            style="float: left;" /><sh5>@if (item.company.Length > 9)
+                                {
+                                    string Temp = item.company.Split(' ').FirstOrDefault();
+                                    if (Temp.Length > 9)
+                                    {
+                                        @Temp.Substring(0, 9).ToLower()
+                                    }
+                                    else
+                                    {
+                                        @Temp.ToLower()
+                                    }
+                                }
+                                else
+                                {
+                                    @item.company.ToLower()
+                                }</sh5></li>
+                }
+
+            </ul>
+        </div>
+    </div>
+</div>

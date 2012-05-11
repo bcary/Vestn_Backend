@@ -1,0 +1,107 @@
+﻿@using UserClientMembers.Models
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Vestn - Show what you can do.</title>
+    <link rel="shortcut icon" href="../../Content/Images/favicon.ico" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../Scripts/jquery.messagebar.js"></script>
+    <script type="text/javascript" src="../../Scripts/galleria-1.2.6.js"></script>
+
+    <script type="text/javascript">
+        function showMessageBar() {
+            $('#message_bar').displayMessage({
+                message: '@TempData["Message"]'
+            });
+        }
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="../../Content/Stylesheets/messageBar.css?1.0.7" />
+    <link rel="stylesheet" type="text/css" href="../../Content/Stylesheets/site.css?1.0.7">
+    <link rel="stylesheet" type="text/css" href="../../Content/Stylesheets/galleria.classic.css" />
+</head>
+<body>
+    
+    @if (TempData["MessageBar"] != null)
+    {
+        <div id="message_bar">
+        </div>
+        <script type="text/javascript">
+            $('#message_bar').displayMessage({
+                message: '@TempData["MessageBar"]'
+            });
+        </script>
+    }
+    <div id="container">
+        
+        @if (User.Identity.IsAuthenticated)
+        {
+            @Html.Partial("_Header_LoggedOn");
+        }
+        else
+        {
+            @Html.Partial("_Header_LoggedOff");
+        }
+
+        @if (Model != null)
+        {
+        <input type="hidden" id="profileURL" value="@Model.profileURL" />
+        }
+        
+        <div class="haze">
+        </div>
+        <div class="whiteHaze">
+        </div>
+        <div id="galleriaWrapper">
+            <div id="galleriaBox">
+
+        </div>
+        </div>
+        @Html.Partial("_PopUp")
+        <div id="profileView">
+        @RenderBody()
+        </div>
+        <div class="clear">
+        </div>
+    </div>
+    <div id="sideFeedbackButton" class="sideButton">
+    </div>
+    <div id="sideHelpButton" class="sideButton">
+    </div>
+    
+    
+    <!--End Container-->
+    <div id="footer">
+        <div id="footerContent">
+        
+            <img src="../../Content/Images/VestnLogoWhite.png" width="180px" height="50px" alt="" style="margin-left:175px" />
+            @*<img src="../../Content/Images/VestnLogoWhite.png" width="180px" height="50px" alt="" />
+            <div id="footerLinks">
+                <a class="footerLink" style="cursor: pointer;" href="/">Blog | </a><a class="footerLink"
+                    style="cursor: pointer;" href="/">Help | </a><a class="footerLink" style="cursor: pointer;"
+                        href="/">Legal | </a><a class="footerLink" style="cursor: pointer;" href="/">About |
+                        </a><a class="footerLink" style="cursor: pointer;" href="/">Contact</a>
+            </div>*@
+        </div>
+    </div>
+
+    <iframe id="iframe-post-form" name="iframe-post-form" style="width:0px;height:0px;color:White;display:none;">
+    <head></head><html><body><pre></pre></body></html>
+    </iframe>
+</body>
+<script type="text/javascript" src="../../Scripts/moveListItems.js?1.0.7"></script>
+<script type="text/javascript" src="../../Scripts/bbq.js?1.0.0"></script>
+<script type="text/javascript" src="../../Scripts/jquery.image-resize.js?1.0.0"></script>
+<script type="text/javascript" src="../../Scripts/site.js"></script>
+<script type="text/javascript" src="../../Scripts/widtherizer.js?1.0.0"></script>
+
+    @if (TempData["Popup"] != null)
+    {
+        <script type="text/javascript">
+            popUp('@TempData["Popup"]', ['OK']);
+        </script>
+    }
+    
+</html>

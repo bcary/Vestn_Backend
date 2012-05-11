@@ -1,0 +1,1497 @@
+﻿
+/*General*/
+
+#mainContent
+{
+	float:left;
+	position:relative;
+	margin-left:50%;
+	width:1000px;
+	left:-500px;
+	margin-bottom:100px;
+}
+
+#leftCol
+{
+    /*don't know why this was here...
+	/*position:fixed;
+	margin-left:5px;
+	margin-top:15px;
+	
+	left:50%;
+	margin-left:-500px;*/
+	
+	float:left;
+	width:200px;
+	min-height:570px;
+	
+	border-right:dotted 2px #888;
+}
+
+#rightCol
+{
+	width:785px;
+	float:right;
+}
+
+/*************/
+/*Left Column*/
+
+#mugShot
+{
+	position:relative;
+	left:12.5px;
+	top:7px;
+	
+	width:175px;
+	height:175px;
+}
+
+#userAboutHeader{
+	z-index:2;
+	position:relative;
+	
+	
+	left:-2px;
+	top:0px;
+	
+	width:170px;
+	height:45px;
+	
+	background-image:url("../Images/ArrowOrangeLarge.png");
+	
+}
+
+#userConnectionsHeader{
+	z-index:2;
+	position:relative;
+	
+	
+	left:-2px;
+	top:0px;
+	
+	width:170px;
+	height:45px;
+	
+	background-image:url("../Images/ArrowOrangeLarge.png");
+	
+}
+
+#userAboutTriangle{
+	z-index:1;
+	position:relative;
+	left:0px;
+	top:-20px;
+	
+	border-width: 10px;
+	height:0;
+	width:0;
+	
+}
+
+#userAbout
+{
+	float:left;
+	margin-top:-42.5px;
+	margin-left:20px;
+	width:160px;
+	
+	
+	-moz-box-shadow: 0 0 7px #888;
+	-webkit-box-shadow: 0 0 7px #888;
+	box-shadow: 0 0 7px #888;
+	
+	color:#222;
+	
+	overflow:hidden;
+}
+
+#userConnections
+{
+    
+	margin-top:30px;
+	margin-left:20px;
+	width:154px;
+	height:200px;
+	vertical-align:middle;
+	padding:3px;
+	
+	-moz-box-shadow: 0 0 7px #888;
+	-webkit-box-shadow: 0 0 7px #888;
+	box-shadow: 0 0 7px #888;
+	
+	color:#222;
+	
+	overflow:auto;
+}
+
+.userNameBarName
+{
+    float: left;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+#userAboutInformationPane
+{
+	position:relative;
+	margin-left:5px;
+	margin-top:10px;
+	margin-right:5px;
+}
+
+#userAboutInformationPane .userAboutInformation
+{
+    float:left;
+    margin-top:10px;
+    margin-left:5px;
+}
+
+.aboutProject.userAboutInformation, .aboutMe.userAboutInformation
+{
+    float:left;
+}
+
+.userAboutInformation p
+{
+    font-size:16px;
+    font-family:Helvetica;
+}
+
+.aboutProject.userAboutInformation p, .aboutMe.userAboutInformation p
+{
+    margin-top:-20px;
+}
+
+.userAboutInformationLabel
+{
+	margin-top:10px;
+	margin-left:0px;
+	float:left;
+	clear:left;
+}
+
+
+.userTag
+{
+	margin-left:10px;
+	margin-top:10px;
+	float:left;
+	
+	color:#222;
+}
+
+#tagsTextField
+{
+    position:relative;
+    margin-left:20px;
+    margin-top:105px
+}
+
+.tagButton
+{
+    cursor:pointer;
+    position: relative;
+    float:left;
+    padding-left:5px;
+    padding-right:5px;
+    margin-left:-2px;
+    background-color:orange;
+    
+    color: #4B4B4B;
+    font-family:"HelveticaNeue-Bold", Helvetica, Arial, Sans-serif;
+    text-align:center;
+}
+
+.tagButton:hover 
+{
+    background-color:Blue;
+    color:White;
+}
+
+#feedbackToUser
+{
+    text-align:center;
+    vertical-align:middle;
+	float:left;
+	margin-top:10px;
+	margin-left:20px;
+	padding: 5px 0px 5px 0px;
+	width:160px;
+	background-color:#4D8EC6;
+	
+	-moz-box-shadow: 0 0 7px #888;
+	-webkit-box-shadow: 0 0 7px #888;
+	box-shadow: 0 0 7px #888;
+	
+	overflow:hidden;
+	font-size:13px;
+    font-family:Helvetica;
+    color:#FFF;
+    cursor:pointer;
+	
+}
+
+#addConnectionButton
+{
+    text-align:center;
+    vertical-align:middle;
+	float:left;
+	margin-top:10px;
+	margin-left:20px;
+	padding: 5px 0px 5px 0px;
+	width:160px;
+	background-color:#4D8EC6;
+	
+	-moz-box-shadow: 0 0 7px #888;
+	-webkit-box-shadow: 0 0 7px #888;
+	box-shadow: 0 0 7px #888;
+	
+	overflow:hidden;
+	font-size:13px;
+    font-family:Helvetica;
+    color:#FFF;
+    cursor:pointer;
+	
+}
+
+#companiesFollowing
+{
+}
+
+
+#userTagsHeader{
+	z-index:2;
+	float:left;
+	position:relative;
+	left:-1px;
+	
+	width:95px;
+	height:45px;
+	background-image:url("../Images/ArrowOrangeSmall.png");
+}
+
+#userTagsTriangle{
+	z-index:1;
+	float:left;
+	clear:both;
+	position:relative;
+	left:0px;
+	top:-20px;
+	
+	border-width: 10px;
+	height:0;
+	width:0;
+	
+}
+#userTags{
+	position:relative;
+	float:left;
+	clear:both;
+	left:20px;
+	top:-42.5px;
+	background-color:white;
+	
+	width:160px;
+	padding-bottom:10px;
+	
+	-moz-box-shadow: 0 0 7px #888;
+	-webkit-box-shadow: 0 0 7px #888;
+	box-shadow: 0 0 7px #888;
+}
+#userTagsList{
+	background-color:green;
+	margin-top:10px;
+}
+
+
+
+
+/**************/
+/*Right Column*/
+
+#nameBar
+{
+	position:relative;
+	float:left;
+	margin-left:25px;
+	margin-top:20px;
+	
+	width:725px;
+	height:40px;
+	
+	-moz-box-shadow: 2px 2px 3px #AAA;
+	-webkit-box-shadow: 2px 2px 3px #AAA;
+	box-shadow: 2px 2px 3px #AAA;
+	
+	background-image:url("../Images/OrangeGradientBackground.png");
+	background-repeat:repeat-x;
+}
+#nameBarButtons
+{
+	float:right;
+	width:450px;
+	height:40px;
+}
+#connectButton
+{
+	float:right;
+	cursor:pointer;
+	background-color:#FFF;
+	
+	position:relative;
+	margin-top:8px;
+	min-width:80px;
+	height:25px;
+	padding-right:20px;
+	margin-right:20px;
+	
+	-moz-box-shadow: 1px 1px 2px #AAA;
+	-webkit-box-shadow: 1px 1px 2px #AAA;
+	box-shadow: 1px 1px 2px #AAA;
+}
+
+#URL
+{
+    position:absolute;
+    bottom:42px;
+    width:600px;
+    height:30px;   
+}
+#profileURLStart
+{
+    position:relative;
+    float:left;
+    margin-top:5px;
+    margin-left:21px;
+    font-family:Trebuchet MS;
+    font-size:14px;
+}
+
+#profileURLText
+{
+    position:relative;
+    float:left;
+    margin-top:5px;
+    font-family:Trebuchet MS;
+    font-size:14px;
+}
+
+#changeURLTextField
+{
+    position:relative;
+    float:left;
+    margin-bottom:2px;
+    margin-left:1px;
+    
+    width:100px;
+	height:20px;
+	
+	display:none;
+}
+
+#changeURLButton
+{
+	cursor:pointer;
+	background-color:#4D8EC6;
+	
+	position:relative;
+	float:left;
+	margin-left:10px;
+	margin-top:1px;
+	padding:2px;
+	padding-left:8px;
+	padding-right:8px;
+
+	font-family:Trebuchet MS;
+	font-size:16px;
+    font-weight:bold;
+	
+	-moz-box-shadow: 1px 1px 2px #AAA;
+	-webkit-box-shadow: 1px 1px 2px #AAA;
+	box-shadow: 1px 1px 2px #AAA;
+}
+#changeURLButton:hover
+{
+	background-color:#EEA53D;
+}   
+    
+#saveURLButton
+{
+	float:left;
+	cursor:pointer;
+	background-color:#EEA53D;
+	position:relative;
+	margin-left:5px;
+	padding:2px;
+	padding-left:8px;
+	padding-right:8px;
+	
+	display:none;
+	
+	font-family:Trebuchet MS;
+	font-size:16px;
+    font-weight:bold;
+	
+	-moz-box-shadow: 1px 1px 2px #AAA;
+	-webkit-box-shadow: 1px 1px 2px #AAA;
+	box-shadow: 1px 1px 2px #AAA;
+}
+#saveURLButton:hover
+{
+	background-color:#4D8EC6;
+}
+
+.URLButtonText
+{
+    font-family:Trebuchet MS;
+    font-weight:bold;
+    color:#FFF;
+    
+    position:relative;
+    float:left;
+    font-size:16px;
+} 
+
+#shareButton
+{
+	float:right;
+	cursor:pointer;
+	/*background-color:#58585A;*/
+	
+	position:relative;
+	margin-top:7px;
+	margin-right:20px;
+	
+	padding:2px;
+	padding-left:8px;
+	padding-right:8px;
+	
+	font-family:Trebuchet MS;
+    font-weight:bold;
+    color:#FFF;
+    font-size:16px;
+	
+	-moz-box-shadow: 1px 1px 2px #000;
+	-webkit-box-shadow: 1px 1px 2px #000;
+	box-shadow: 1px 1px 2px #000;
+	
+	background: #3A3A3C;
+	background: -webkit-gradient(linear, left top, left bottom, from(#58585A), to(#3A3A3C));
+	background: -webkit-linear-gradient(top, #58585A, #3A3A3C);
+	background: -moz-linear-gradient(top, #58585A, #3A3A3C);
+	background: -ms-linear-gradient(top, #58585A, #3A3A3C);
+	background: -o-linear-gradient(top, #58585A, #3A3A3C);
+}
+#shareButton:hover
+{
+	background:#3A3A3C;
+}
+
+#shareDropdown
+{
+    display:none;
+    position:absolute;
+    margin-left:185px;
+    margin-top:32px;
+    width:300px;
+    height:250px;
+    z-index:1;
+    
+    /*background-color:#6D6E71;*/
+    background: #3A3A3C;
+	background: -webkit-gradient(linear, left top, left bottom, from(#58585A), to(#3A3A3C));
+	background: -webkit-linear-gradient(top, #58585A, #3A3A3C);
+	background: -moz-linear-gradient(top, #58585A, #3A3A3C);
+	background: -ms-linear-gradient(top, #58585A, #3A3A3C);
+	background: -o-linear-gradient(top, #58585A, #3A3A3C);
+    
+    -moz-box-shadow: 4px 4px 10px #000;
+	-webkit-box-shadow: 4px 4px 10px #000;
+	box-shadow: 4px 4px 10px #000;
+    
+    font-size:25px;
+    font-family:Trebuchet MS;
+    text-align:center;
+    color:#EEA53D;
+	font-weight:600;
+	padding-left:5px;
+	padding-top:15px;
+}
+#shareDropdownProfileButton
+{
+	float:right;
+	cursor:pointer;
+	background-color:#FFF;
+	
+	position:relative;
+	margin-right:87px;
+	margin-top:25px;
+	width:134px;
+	height:25px;
+	
+	-moz-box-shadow: 1px 1px 2px #AAA;
+	-webkit-box-shadow: 1px 1px 2px #AAA;
+	box-shadow: 1px 1px 2px #AAA;
+}
+#shareDropdownProfileButton:hover
+{
+    background-color:#EEA53D;
+    -moz-box-shadow: 1px 1px 2px #F88017;
+	-webkit-box-shadow: 1px 1px 2px #F88017;
+	box-shadow: 1px 1px 2px #F88017;
+}
+#shareDropdownProjectButton
+{
+	float:right;
+	cursor:pointer;
+	background-color:#FFF;
+	
+	position:relative;
+	margin-top:20px;
+	margin-right:87px;
+	width:134px;
+	height:25px;
+	
+	-moz-box-shadow: 1px 1px 2px #AAA;
+	-webkit-box-shadow: 1px 1px 2px #AAA;
+	box-shadow: 1px 1px 2px #AAA;
+}
+#shareDropdownProjectButton:hover
+{
+    background-color:#EEA53D;
+    -moz-box-shadow: 1px 1px 2px #F88017;
+	-webkit-box-shadow: 1px 1px 2px #F88017;
+	box-shadow: 1px 1px 2px #F88017;
+}
+#shareDropdownElementButton
+{
+	float:right;
+	cursor:pointer;
+	background-color:#FFF;
+	
+	position:relative;
+	margin-top:20px;
+	margin-right:87px;
+	width:134px;
+	height:25px;
+	margin-left:86px;
+	
+	-moz-box-shadow: 1px 1px 2px #AAA;
+	-webkit-box-shadow: 1px 1px 2px #AAA;
+	box-shadow: 1px 1px 2px #AAA;
+}
+#shareDropdownElementButton:hover
+{
+    background-color:#EEA53D;
+    -moz-box-shadow: 1px 1px 2px #F88017;
+	-webkit-box-shadow: 1px 1px 2px #F88017;
+	box-shadow: 1px 1px 2px #F88017;
+}
+
+#shareDropdownEmailText input
+{
+    position:relative;
+    margin-top:20px;
+    width:200px;
+    text-align:left;   
+    padding:5px;
+    text-size:11px;
+    font-weight:bold;
+}
+
+#projectArea
+{
+	float:left;
+	position:relative;
+	margin-left:25px;
+	margin-top:5px;
+	width:725px;
+	min-height:460px;
+	padding-bottom:20px;
+	padding-right:5px;
+
+	
+	background-color:#6D6E71;
+}
+
+/*PROJECT TABS *//*PROJECT TABS *//*PROJECT TABS *//*PROJECT TABS *//*PROJECT TABS */
+#projectTabs
+{
+    overflow:hidden;
+	position:relative;
+	margin-left:20px;
+	margin-top:15px;
+	width:688px;
+	height:50px;
+	margin-bottom:-10px;
+	float:left;
+}
+
+#projectTabs ul{
+	list-style:none;
+	list-style-position:outside;
+}
+
+#projectTabs ul.menu li{
+
+	float:left;
+	top:-2px;
+	
+	margin-left:10px;
+	margin-bottom:-1px;
+	
+    font-weight: bold;
+    display: block;
+    margin-bottom: -1px;
+    /*border: 1px solid #9FA9B0;
+    border-width: 1px 1px 1px 1px;*/
+    position: relative;
+    color: #FFF;
+    cursor: pointer;
+    height:50px;
+    width:125px;
+    background-image:url('../Images/Tab_InactiveProject.png');
+    background-repeat:no-repeat;
+}
+#projectTabs ul.menu li.active
+{
+    top: 2px;  
+    border-bottom: 0;  
+    color: #FFF;
+    background-image:url('../Images/Tab_ActiveProject.png');
+    
+    pointer-events:none;
+    cursor:default;
+}
+
+#projectTabs ul.menu li sh6{
+	position:relative;
+	left:12px;
+	top:15px;
+	color:#FFF;
+	
+	pointer-events:none;
+}
+
+.newProjectButton
+{
+    left:780px;
+    top:-5px;
+    cursor:pointer;
+    height:32px;
+    width:32px;
+    position:absolute;
+    margin-top:9px;
+    background-image:url('../Images/Tab_NewTab.png');
+    background-repeat:no-repeat;
+    background-position:right;
+    background-position: -30px 0;
+}
+
+/*PROJECT INNER TABS *//*PROJECT INNER TABS *//*PROJECT INNER TABS *//*PROJECT INNER TABS */
+
+#projectInnerTabs
+{
+	position:absolute;
+	left:5px;
+	top:10px;
+	width:120px;
+	height:450px;
+}
+
+#projectInnerTabs ul
+{
+	list-style:none;
+	list-style-position:outside;
+}
+
+#projectInnerTabs ul.innerMenu li{
+	cursor:pointer;
+	
+	display:none;
+	overflow:hidden;
+	
+	margin-top:5px;
+	left:5px;
+	
+	width:100px;
+	height:25px;
+	position:relative;
+
+	background-color:#EEEEEE;
+	color:#3A3A3A;
+	
+	/*text*/
+	font-size:17px;
+	font-weight:600;
+	padding-left:5px;
+	padding-top:5px;
+	
+	/*WHITE SHADOW
+	-moz-box-shadow: 0 0 4px #FFF;
+	-webkit-box-shadow: 0 0 4px #FFF;
+	box-shadow: 0 0 4px #FFF;*/
+	
+	/*BLACK SHADOW
+	-moz-box-shadow: 0 0 4px #000;
+	-webkit-box-shadow: 0 0 4px #000;
+	box-shadow: 0 0 4px #000;*/
+	
+	-moz-box-shadow: 0 0 4px #777;
+	-webkit-box-shadow: 0 0 4px #777;
+	box-shadow: 0 0 4px #777;
+}
+#projectInnerTabs ul.innerMenu li.active{
+	background-color:#4D8EC6;
+	color:#EEEEEE;
+	
+	/*no shadow*/
+	-moz-box-shadow: 0 0 0 #555;
+	-webkit-box-shadow: 0 0 0 #555;
+	box-shadow: 0 0 0 #555;
+	
+	pointer-events:none;
+    cursor:default;
+	
+}
+#projectInnerTabs ul.innerMenu li{
+	
+}
+
+#projectInnerTabArrowStart{
+	z-index:2;
+	border-width: 14px;
+	height:0;
+	width:0;
+	
+	position:absolute;
+	left:130px;
+	top:16px;
+	
+	border-color: transparent transparent transparent #6D6E71;
+}
+
+#projectInnerTabArrowEnd{
+	z-index:2;
+	border-width: 14px;
+	height:0;
+	width:0;
+	
+	position:absolute;
+	left:115px;
+	top:16px;
+	
+	border-color: transparent transparent transparent #4D8EC6;
+}
+
+#innerProjectTabShare
+{
+    position:absolute;
+    display:block;
+    bottom:0px;
+    margin-bottom:36px;
+    
+    cursor:pointer;
+	
+	overflow:hidden;
+	
+	margin-top:5px;
+	left:5px;
+	
+	width:100px;
+	height:25px;
+
+	background-color:#EEEEEE;
+	color:#3A3A3A;
+	
+	/*text*/
+	font-size:17px;
+	font-weight:600;
+	padding-left:5px;
+	padding-top:5px;
+}
+#innerProjectTabShare:hover
+{
+    background-color:#4D8EC6;
+	color:#EEEEEE;
+}
+
+#shareLinkText
+{
+    display:none;
+    position:absolute;
+    width:70px;
+    left:50%;
+    margin-left:-33px;
+    margin-top:361px;
+    top:0px;
+    
+    font-size:18px;
+    text-align:center;
+}
+#shareLinkText input
+{
+    position:absolute;
+    left:50%;
+    margin-left:-64px;
+    width:110px;
+    text-align:center;   
+    padding:5px;
+    text-size:11px;
+    font-weight:bold;
+}
+
+#invalidEmailText
+{
+    position:absolute;
+    display:none;
+    left:67px;
+    
+    font-size:12px;
+    font-family:Trebuchet MS;
+    color:White;
+}
+
+#innerProjectTabDelete
+{
+    position:absolute;
+    display:block;
+    bottom:0px;
+    margin-bottom:0px;
+    
+    cursor:pointer;
+	
+	overflow:hidden;
+	
+	margin-top:5px;
+	left:5px;
+	
+	width:100px;
+	height:25px;
+
+	background-color:#EEEEEE;
+	color:#3A3A3A;
+	
+	/*text*/
+	font-size:17px;
+	font-weight:600;
+	padding-left:5px;
+	padding-top:5px;
+}
+#innerProjectTabDelete:hover
+{
+    background-color:#D64141;
+	color:#EEEEEE;
+}
+
+.innerProjectElementTabButton
+{
+    cursor:pointer;
+	overflow:hidden;
+    
+    /*text*/
+	font-size:15px;
+	padding-left:5px;
+	padding-right:5px;
+	padding-top:2px;
+	padding-bottom:2px;
+	margin-top:15px;
+	font-weight:600;
+	text-align: center;
+
+	font-family:Helvetica;
+	
+    position:absolute;
+    display:block;
+    bottom:0px;
+    margin-bottom:0px;
+    bottom: 6px;
+}
+
+.innerProjectElementTabButton.moveUp
+{
+    right:185px;
+	background-color:#EEEEEE;
+	color:#3A3A3A;
+}
+.innerProjectElementTabButton.moveUp:hover
+{
+    background-color:#516F83;
+	color:#EEEEEE;
+}
+
+.innerProjectElementTabButton.moveDown
+{
+    right:78px;
+	background-color:#EEEEEE;
+	color:#3A3A3A;
+}
+.innerProjectElementTabButton.moveDown:hover
+{
+    background-color:#516F83;
+	color:#EEEEEE;
+}
+
+.innerProjectElementTabButton.delete
+{
+    right:8px;
+	background-color:#EEEEEE;
+	color:#3A3A3A;
+}
+.innerProjectElementTabButton.delete:hover
+{
+    background-color:#D64141;
+	color:#EEEEEE;
+}
+
+.innerProjectElementTabButton.open
+{
+    right:270px;
+	background-color:#EEEEEE;
+	color:#3A3A3A;
+}
+
+#openDoc
+{    
+	font-size:15px;	
+	text-align: center;
+	font-family:Helvetica;
+	color:#3A3A3A;
+}
+.innerProjectElementTabButton.open:hover
+{
+    background-color:#D64141;
+	color:#EEEEEE;
+}
+
+
+/*PROJECT CONTENT*//*PROJECT CONTENT*//*PROJECT CONTENT*//*PROJECT CONTENT*//*PROJECT CONTENT*/
+.projectContent
+{
+    display:none;
+    
+    position:relative;
+    float:left;
+    left:130px;
+    width:560px;
+    min-height:430px;
+    
+    text-align: left;  
+    padding-bottom: 20px;  
+    font-size: 11px;
+    
+    margin-top:10px;
+    margin-right:10px;
+    
+    padding:10px;
+    padding-left:20px;
+    
+    background-color:white;
+}  
+.projectContent h1{
+	text-align:center;
+    line-height: 1em;
+    vertical-align: middle;
+    padding: 10px 10px 10px 52px;
+    font-size: 32px;
+}
+
+/*GET STARTED POPOVER*//*GET STARTED POPOVER*//*GET STARTED POPOVER*//*GET STARTED POPOVER*/
+#getStarted
+{
+	z-index:30001;
+	position:absolute;
+	left:50%;
+	margin-left:-270px;
+	top:65px;
+	
+	padding-bottom:40px;
+	
+	width:740px;
+	background-color:white;
+	
+	border-radius:8px;
+	border:2px solid #F9A135;
+	
+	/*SHADOW*/
+	-moz-box-shadow: 1px 2px 7px #000;
+	-webkit-box-shadow: 1px 2px 7px #000;
+	box-shadow: 1px 2px 7px #000;
+}
+
+#getStarted .title
+{
+	text-align:center;
+	margin-top:15px;
+	margin-bottom:5px;
+}
+
+#getStarted #buttonGroup
+{
+	margin-top:40px;
+	margin-left:260px;
+	clear:both;
+	width:300px;
+	height:80px;
+}
+
+#completeProfileSubmitButton:not(.orange)
+{
+    background-color:#38383A;
+}
+
+#getStarted .continueButton
+{
+	padding:10px 40px 10px 40px;
+	position:relative;
+}
+
+#getStarted .skipButton
+{
+	margin-left:40px;
+	padding:5px;
+	position:relative;
+	opacity:.8;
+}
+
+#getStarted form
+{
+	text-align:center;
+}
+
+#getStarted form sh4
+{
+    margin-top:10px;
+	margin-bottom:10px;
+	margin-right:50px;
+	font-size:22px;
+	float:right;
+}
+
+#getStarted form select
+{
+    margin-top:10px;
+	margin-bottom:10px;
+	margin-right:150px;
+	font-size:14px;
+	float:right;
+	clear:right;
+}
+#getStarted form input
+{
+	margin-top:10px;
+	margin-bottom:10px;
+	margin-right:150px;
+	font-size:22px;
+	float:right;
+    clear:right;
+}
+
+#getStarted form .complete
+{
+	border:solid 2px #4D8EC6;
+	border-radius:4px;
+}
+
+#getStarted form .error
+{
+	border:solid 2px #F99531;
+	border-radius:4px;
+}
+
+.editable
+{
+    cursor:pointer;
+}
+
+.editable:hover
+{
+    /*background-color:rgba(248,156,49,.5);*/
+    background-color:#EEA53D;
+}
+
+/*
+.profile-picture-edit-wrapper
+{
+    cursor:pointer;
+    display:inline-block;
+    overflow:hidden;
+    position:relative;
+}
+
+.profile-picture-edit-wrapper .button
+{
+    background: #79130e;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: bold;
+  margin-right: 5px;
+  padding: 4px 18px;
+  text-transform: uppercase;
+
+}
+
+.profile-picture-edit-wrapper .button:hover
+{
+    background-color: #5E8BC5;
+}
+
+.profile-picture-edit-wrapper input
+{
+    cursor: pointer;
+  font-size: 100px;
+  height: 100%;
+  filter: alpha(opacity=1);
+  -moz-opacity: 0.01;
+  opacity: 0.01;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+*/
+
+.editProjectPictureLabel
+{
+    cursor:pointer;
+    
+    /*TODO add other opaicities for non chrome*/
+    
+    background-color:#5E8BC5;
+    color:#3A3A3A;
+    width:70px;
+    height:18px;
+    font-size:14px;
+    text-align:center;
+    font-weight:bold;
+    font-family:Verdana;
+    
+    position:absolute;
+    right:0px;
+    top:180px;
+    
+    display:none;
+}
+
+.editProjectPictureLabel.hovered
+{
+    background-color:#EEA53D;
+    height:20px;
+    width:200px;
+    right:0px;
+    display:block;
+}
+
+
+.editProfilePictureLabel
+{
+    cursor:pointer;
+    
+    /*TODO add other opaicities for non chrome*/
+    
+    background-color:#5E8BC5;
+    color:#3A3A3A;
+    width:70px;
+    height:18px;
+    font-size:14px;
+    text-align:center;
+    font-weight:bold;
+    font-family:Verdana;
+    
+    position:absolute;
+    right:0px;
+    bottom:0px;
+    
+    display:none;
+}
+
+.editProfilePictureLabel.hovered
+{
+    background-color:#EEA53D;
+    height:20px;
+    width:175px;
+    right:0px;
+    display:block;
+}
+
+#resumeWrapper
+{
+    position:relative;
+    float:left;
+}
+
+#viewResume
+{
+	float:left;
+	position:relative;
+	width:160px;
+	height:25px;
+	margin-top:10px;
+	
+	color:#eff;
+	
+	cursor:pointer;
+	
+	-moz-box-shadow: 0 0 4px #888;
+	-webkit-box-shadow: 0 0 4px #888;
+	box-shadow: 0 0 4px #888;
+}
+
+#viewResumeClickToChangeLabel
+{
+    cursor:pointer;
+    position:relative;
+    float:left;
+    /*TODO add other opaicities for non chrome*/
+    
+    background-color:#EEA53D;
+    color:#3A3A3A;
+    width:160px;
+    height:18px;
+    font-size:14px;
+    text-align:center;
+    font-weight:bold;
+    font-family:Verdana;
+    
+    -moz-box-shadow: 0 0 4px #888;
+	-webkit-box-shadow: 0 0 4px #888;
+	box-shadow: 0 0 4px #888;
+	
+	display:none;
+}
+
+/*Make these essentially invisible and spanning over the entire profile picture or View Full Resume divs*/
+.aboutPictureWrapper
+{
+    overflow:hidden;/*hides the input in the frame*/
+}
+.projectPictureUploadInput
+{
+    cursor:pointer;
+    position:absolute;
+    left:-200px;
+    top:0px;
+    width:1px;
+    height:1px;
+    opacity:.01;
+}
+#userProfilePictureUploadInput
+{
+    cursor:pointer;
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:1px;
+    height:1px;
+    opacity:.01;
+}
+#resumeUploadInput
+{
+    cursor:pointer;
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:260px;
+    left:-100px;/*move if left 100 px and extend width so that the "choose file" button is not overlaying the child div. if it does, we don't get cursor:pointer over it.*/
+    height:25px;
+    opacity:.01;
+}
+
+.addEditResumeLabel
+{
+    position: absolute; left: 17px; top: 5px; font-size: 16px; font-family: HelveticaNeue-Bold, Helvetica, Arial, Sans-serif;font-weight: bold;
+}
+
+#userProfilePicture
+{
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    width: 175px;
+    height: 175px;
+}
+
+
+p4{
+    color:#3A3A3A;
+    font-weight:bold;
+    font-size:18px;
+    font-family:Verdana;
+}
+
+p2{
+    color:#3A3A3A;
+    font-size:14px;
+    font-family:Verdana;
+}
+
+p3{
+    color:#FFFFFF;
+    font-size:16px;
+    font-family:Verdana;
+    font-weight:bold;
+}
+
+.button{
+    -moz-box-shadow: 1px 1px 2px #777;
+    -webkit-box-shadow: 1px 1px 2px #777;
+    box-shadow: 1px 1px 2px #777;
+    
+    background-color:#3D3D3F;
+    
+    padding-left:10px;
+    padding-top:5px;
+    padding-right:10px;
+    padding-bottom:5px;
+    
+    cursor:pointer;
+    border-radius:3px;
+}
+
+.button.active{
+    background-color:#9AC734;
+}
+
+.button.active:hover{
+    background-color:#C4D794;
+}
+
+.button:not(active):hover{
+    background-color:#9AC734;
+}
+
+.helpElementContainer{
+    display:none;
+}
+
+.helpElementCloseButton
+{
+    opacity:.6;
+    display:none;
+    position:absolute;
+    right:0px;
+    top:0px;
+}
+
+#helpSwitch{
+    cursor:pointer;
+    position:absolute;
+    left:584px;
+    top:-34px;
+    background-color:#C4D794;
+}
+
+#helpSwitch.active
+{
+    background-color:#9AC734;
+}
+
+#helpSwitch:not(active):hover
+{
+    background-color:#9AC734;
+}
+
+#helpSwitch.active:hover
+{
+    background-color:#C4D794;
+}
+
+#resetHelpSwitch{
+    position:absolute;
+    left:690px;
+    top:-14px;
+    display:none;
+}
+    
+#helpElementAbout{
+    position:absolute;
+    left:20px;
+    top:454px;
+}
+
+#helpElementPicture{
+    position:absolute;
+    left:35px;
+    top:21px;
+}
+
+#helpElementProjects{
+    position:absolute;
+    right:5px;
+    top:30px;
+}
+
+#helpElementAboutProject{
+    position:absolute;
+    left:260px;
+    top:40px;
+}
+
+#helpElementExperience{
+    position:absolute;
+    left:151px;
+    top:131px;
+}
+
+#helpElementRenameProject{
+    position:absolute;
+    left:9px;
+    top:320px;
+}
+
+#helpElementAboutVisible{
+    position:absolute;
+    left:190px;
+    top:333px;
+}
+
+.helpElement.active
+{
+	height:30px;
+	width:30px;
+    background:transparent url(../Images/question_mark.png);
+}
+
+.helpElement:hover{
+}
+
+/* tooltip styling. by default the element to be styled is .tooltip  */
+.tooltip {
+	display:none;
+	background:transparent url(../Images/black_big.png);
+	font-size:12px;
+	height:150px;
+	width:320px;
+	padding:25px;
+	color:#fff;	
+	z-index:50;
+}
+
+#projectTabs .menu
+{
+    position:relative;
+    width:10000px;
+}
+
+#galleriaBox
+{
+    height:660px;
+    width:1100px;
+    margin-left:-550px;
+    margin-top:-195px;
+}
+
+#galleriaWrapper
+{
+    z-index:30001;
+    text-align:center;
+    position:absolute;
+    top:250px;
+    float:left;
+    left:50%;
+}
