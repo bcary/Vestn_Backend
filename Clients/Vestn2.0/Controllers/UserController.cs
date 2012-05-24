@@ -60,6 +60,10 @@ namespace Controllers
 
         public string TestMe()
         {
+            int testingGithub = 0;
+            testingGithub = 1;
+            //just writing something random to test github
+
             return "success";
         }
 
