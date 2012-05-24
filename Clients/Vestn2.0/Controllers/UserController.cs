@@ -66,6 +66,9 @@ namespace Controllers
 
             int testingBranching = 0;
             testingBranching = 2;
+
+            int testingABranchAfterAMerge = 0;
+            testingABranchAfterAMerge = 3;
             return "success";
         }
 
