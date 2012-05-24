@@ -64,6 +64,8 @@ namespace Controllers
             testingGithub = 1;
             //just writing something random to test github
 
+            int testingBranching = 0;
+            testingBranching = 2;
             return "success";
         }
 
