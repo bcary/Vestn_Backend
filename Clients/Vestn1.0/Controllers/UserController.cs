@@ -577,23 +577,22 @@ namespace UserClientMembers.Controllers
 
                 if (userManager.ValidateUser(user, password))
                 {
-                    FormsAuthentication.SetAuthCookie(username, rememberme);
 
 
-                    //fixing issue with remember me checkbox.
 
-                    FormsAuthentication.Initialize();
-                    FormsAuthenticationTicket tkt = new FormsAuthenticationTicket(1, user.userName, DateTime.Now,
-                    DateTime.Now.AddMinutes(30), rememberme, FormsAuthentication.FormsCookiePath);
-                    HttpCookie ck = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(tkt));
-                    ck.Path = FormsAuthentication.FormsCookiePath;
-                    if (rememberme)
-                        ck.Expires = DateTime.Now.AddMonths(1);
+                    //FormsAuthentication.SetAuthCookie(username, rememberme);
 
-                    Response.Cookies.Add(ck);
+                    ////fixing issue with remember me checkbox.
+                    //FormsAuthentication.Initialize();
+                    //FormsAuthenticationTicket tkt = new FormsAuthenticationTicket(1, user.userName, DateTime.Now,
+                    //DateTime.Now.AddMinutes(30), rememberme, FormsAuthentication.FormsCookiePath);
+                    //HttpCookie ck = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(tkt));
+                    //ck.Path = FormsAuthentication.FormsCookiePath;
+                    //if (rememberme)
+                    //    ck.Expires = DateTime.Now.AddMonths(1);
 
-
-                    //----------------------------------------
+                    //Response.Cookies.Add(ck);
+                    ////----------------------------------------
 
                     AnalyticsAccessor aa = new AnalyticsAccessor();
                     aa.CreateAnalytic("User Login", DateTime.Now, user.userName);
