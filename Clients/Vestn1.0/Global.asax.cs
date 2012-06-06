@@ -11,6 +11,7 @@ using System.IO;
 using System.Net;
 using Accessor;
 using UserClientMembers.Controllers;
+using Engine;
 
 namespace UserClientMembers
 {
@@ -62,7 +63,7 @@ namespace UserClientMembers
 
             //updatePictureElementsForImageGallery();
 
-            InitializeConnections();
+            //InitializeConnections();
             InitializeTags();
 
             //OPTIONAL CALL TO CREATE SAMPLE USER (MOHAMMAD WONG) ON STARTUP
@@ -71,9 +72,8 @@ namespace UserClientMembers
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
             ControllerBuilder.Current.DefaultNamespaces.Add("UserClientMembers.Controllers");
-
-
-            
+            LogAccessor la = new LogAccessor();
+            DateTime dt = DateTime.Now;
         }
 
         private void InitializeTags()

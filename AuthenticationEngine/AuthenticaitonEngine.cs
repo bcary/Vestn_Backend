@@ -14,17 +14,37 @@ namespace Engine
     {
         public int authenticate(string token)
         {
-            return 4; //user id
+            VestnDB db = new VestnDB();
+            Authentication auth = (from c in db.authentication where c.token == token select c).FirstOrDefault();
+            if (auth == null)
+            {
+                return -1;
+            }
+            else
+            {
+                DateTime currentTime = DateTime.Now;
+                // want to add time of most recent use of auth token
+                return auth.userId;
+            }
         }
 
         public string logIn(int userId, string userName)
         {
             byte[] key = Encoding.ASCII.GetBytes("BrianIsABoss");
-            string dateTime = DateTime.Now.ToString();
+            DateTime time = DateTime.Now;
+            string dateTime = time.ToString();
             string input = dateTime + userId.ToString() + userName;
             string token = Encode(input, key);
+            Authentication auth = new Authentication();
+            auth.timeStamp = time;
+            auth.token = token;
+            auth.userId = userId;
             VestnDB db = new VestnDB();
-            return "token";
+            
+            db.authentication.Add(auth);
+            db.SaveChanges();
+
+            return token;
         }
 
         public static string Encode(string input, byte[] key)

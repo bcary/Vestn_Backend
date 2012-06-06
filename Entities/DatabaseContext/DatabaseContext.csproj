@@ -73,6 +73,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Authentication\Authentication.csproj">
+      <Project>{E638A0C7-AD1E-4C46-A285-2BD1863603F2}</Project>
+      <Name>Authentication</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Analytics\Analytics.csproj">
       <Project>{BC962547-338A-4A68-91C3-2C6F2D18F194}</Project>
       <Name>Analytics</Name>

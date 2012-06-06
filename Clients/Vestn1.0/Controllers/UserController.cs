@@ -33,6 +33,7 @@ namespace UserClientMembers.Controllers
         UploadManager uploadManager = new UploadManager();
         CommunicationManager communicationManager = new CommunicationManager();
         LogAccessor logAccessor = new LogAccessor();
+        AuthenticaitonEngine authenticationEngine = new AuthenticaitonEngine();
 
         //User Account Creation
 
@@ -556,64 +557,66 @@ namespace UserClientMembers.Controllers
             }
         }
 
-        //User Account LogOn / LogOff
-
-        [AllowCrossSiteJson]
-        [HttpPost]
+        
+        //The log on function used by the new Front End.
+        /// <summary>
+        /// LogOn POST function. Authenticates the user, and returns a token value that must be stored by the client application and used on every subsequesnt authorized request
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns>Authenticaiton token</returns>
+        [AcceptVerbs("POST", "OPTIONS")]
         public JsonResult LogOn(string username, string password)
         {
-            try
+            Response.AddHeader("Access-Control-Allow-Origin", "*");
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                Boolean rememberme = false;
-                User user = userManager.GetUser(username);
-                if (user == null)
-                {
-                    user = userManager.GetUserByEmail(username);
-                    if (user != null)
-                    {
-                        username = user.userName;
-                    }
-                }
-
-                if (userManager.ValidateUser(user, password))
-                {
-
-
-
-                    //FormsAuthentication.SetAuthCookie(username, rememberme);
-
-                    ////fixing issue with remember me checkbox.
-                    //FormsAuthentication.Initialize();
-                    //FormsAuthenticationTicket tkt = new FormsAuthenticationTicket(1, user.userName, DateTime.Now,
-                    //DateTime.Now.AddMinutes(30), rememberme, FormsAuthentication.FormsCookiePath);
-                    //HttpCookie ck = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(tkt));
-                    //ck.Path = FormsAuthentication.FormsCookiePath;
-                    //if (rememberme)
-                    //    ck.Expires = DateTime.Now.AddMonths(1);
-
-                    //Response.Cookies.Add(ck);
-                    ////----------------------------------------
-
-                    AnalyticsAccessor aa = new AnalyticsAccessor();
-                    aa.CreateAnalytic("User Login", DateTime.Now, user.userName);
-
-                    //return AddSuccessHeaders(Serialize(new JsonModels.LogOnModel { id = user.id }));
-                    return Json(new { id = user.id, Success = true });
-                    // return Json(new { LogInStatus = "Login Success" });
-                }
-                else
-                {
-                    //return GetFailureMessage("User Information Not Valid");
-                    return Json(new { Error = "User Information Not Valid" });
-                }
-
-
+                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
+                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+                return null;
             }
-            catch (Exception ex)
+            else
             {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return Json(new { Error = "An unknown error occured" });
-                //return GetFailureMessage("Error");
+                try
+                {
+                    Boolean rememberme = false;
+                    User user = userManager.GetUser(username);
+                    if (user == null)
+                    {
+                        user = userManager.GetUserByEmail(username);
+                        if (user != null)
+                        {
+                            username = user.userName;
+                        }
+                    }
+
+                    if (userManager.ValidateUser(user, password))
+                    {
+
+                        AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
+                        string token = authEngine.logIn(user.id, user.userName);
+
+                        AnalyticsAccessor aa = new AnalyticsAccessor();
+                        aa.CreateAnalytic("User Login", DateTime.Now, user.userName);
+
+                        return Json(new { id = user.id, Success = true, key = token });
+                    }
+                    else
+                    {
+                        //return GetFailureMessage("User Information Not Valid");
+                        return Json(new { Error = "User Information Not Valid" });
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    return Json(new { Error = "An unknown error occured" });
+                    //return GetFailureMessage("Error");
+                }
             }
         }
 
@@ -1881,8 +1884,15 @@ namespace UserClientMembers.Controllers
 
         [AllowCrossSiteJson]
         [HttpGet]
-        public string GetUserInformation(int[] id, string[] request)
+        public string GetUserInformation(int[] id, string[] request, string token)
         {
+            //authenticate via token
+            int authenticate = authenticationEngine.authenticate(token);
+            if (authenticate < 0)
+            {
+                Response.StatusCode = 500;
+                return "Not Authenticated";
+            }
             string returnVal;
             try
             {

@@ -25,5 +25,6 @@ namespace Entity
         public DbSet<UserAgreement> userAgreements { get; set; }
         public DbSet<ProjectTags> projectTags { get; set; }
         public DbSet<UserTags> userTags { get; set; }
+        public DbSet<Authentication> authentication { get; set; }
     }
 }

@@ -27,6 +27,7 @@ namespace UserClientMembers.Controllers
         ProjectManager projectManager = new ProjectManager();
         AnalyticsAccessor aa = new AnalyticsAccessor();
         LogAccessor logAccessor = new LogAccessor();
+        AuthenticaitonEngine authenticationEngine = new AuthenticaitonEngine();
         public string TestMe()
         {
             return "success";
@@ -274,95 +275,106 @@ namespace UserClientMembers.Controllers
         /// </summary>
         /// <param name="int projectId"></param>
         /// <returns>JsonResult</returns>
-        [Authorize]
-        [HttpPost]
-        public string AddPictureElement(int projectId)
+        [AcceptVerbs("POST", "OPTIONS")]
+        public string AddPictureElement(int projectId, string token)
         {
-            try
+            int userId = authenticationEngine.authenticate(token);
+            Response.AddHeader("Access-Control-Allow-Origin", "*");
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                //int newProjectElementId = -1;
-                JsonModels.UploadReponse response = new JsonModels.UploadReponse();
-                User user = userManager.GetUser(User.Identity.Name);
-                Project project;
-
-                if (!projectManager.IsUserOwnerOfProject(projectId, user))
+                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
+                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+                return null;
+            }
+            else
+            {
+                try
                 {
-                    //return Json(new { Error = "Can't add picture at this time" });
-                    return GetFailureMessage("Can't add picture at this time");
-                }
+                    //int newProjectElementId = -1;
+                    JsonModels.UploadReponse response = new JsonModels.UploadReponse();
+                    User user = userManager.GetUser(userId);
 
-                if (Request != null)
-                {
-                    if (Request.Files.Count == 0)
+                    if (!projectManager.IsUserOwnerOfProject(projectId, user))
                     {
-                        //return Json(new { Error = "No files submitted to server" });
-                        return GetFailureMessage("No files submitted to server");
-                    }
-                    else if (Request.Files[0].ContentLength == 0)
-                    {
-                        //return Json(new { Error = "No files submitted to server" });
-                        return GetFailureMessage("No files submitted to server");
+                        //return Json(new { Error = "Can't add picture at this time" });
+                        return GetFailureMessage("You are not authorized to add this picture");
                     }
 
-                    foreach (string inputFileId in Request.Files)
+                    if (Request != null)
                     {
-                        HttpPostedFileBase file = Request.Files[inputFileId];
-                        if (file.ContentLength > 0)
+                        if (Request.Files.Count == 0)
                         {
-                            if (ValidationEngine.ValidatePicture(file) != ValidationEngine.Success)
-                            {
-                                //return Json(new { Error = ValidationEngine.ValidatePicture(file) });
-                                return GetFailureMessage(ValidationEngine.ValidatePicture(file));
-                            }
+                            //return Json(new { Error = "No files submitted to server" });
+                            return GetFailureMessage("No files submitted to server");
+                        }
+                        else if (Request.Files[0].ContentLength == 0)
+                        {
+                            //return Json(new { Error = "No files submitted to server" });
+                            return GetFailureMessage("No files submitted to server");
+                        }
 
-                            System.IO.Stream fs = file.InputStream;
-                            if (file.FileName.Contains(".jpeg") || file.FileName.Contains(".jpg") || file.FileName.Contains(".png") || file.FileName.Contains(".bmp") || file.FileName.Contains(".JPEG") || file.FileName.Contains(".JPG") || file.FileName.Contains(".PNG") || file.FileName.Contains(".BMP"))
+                        foreach (string inputFileId in Request.Files)
+                        {
+                            HttpPostedFileBase file = Request.Files[inputFileId];
+                            if (file.ContentLength > 0)
                             {
-                                if (inputFileId == "newPictureUpload")
+                                if (ValidationEngine.ValidatePicture(file) != ValidationEngine.Success)
                                 {
-
-                                    response = projectManager.UploadPictureElement(projectId, fs, file.FileName);
-                                    if (response == null)
-                                    {
-                                        //return Json(new { Error = "An error occured saving the docuement." });
-                                        return GetFailureMessage("An error occured saving the docuement.");
-                                    }
-                                    aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, file.FileName);
+                                    //return Json(new { Error = ValidationEngine.ValidatePicture(file) });
+                                    return GetFailureMessage(ValidationEngine.ValidatePicture(file));
                                 }
-                            }
-                            else
-                            {
-                                //return Json(new { Error = "File type not accepted" });
-                                return GetFailureMessage("File type not accepted");
+
+                                System.IO.Stream fs = file.InputStream;
+                                if (file.FileName.Contains(".jpeg") || file.FileName.Contains(".jpg") || file.FileName.Contains(".png") || file.FileName.Contains(".bmp") || file.FileName.Contains(".JPEG") || file.FileName.Contains(".JPG") || file.FileName.Contains(".PNG") || file.FileName.Contains(".BMP"))
+                                {
+                                    if (inputFileId == "newPictureUpload")
+                                    {
+
+                                        response = projectManager.UploadPictureElement(projectId, fs, file.FileName);
+                                        if (response == null)
+                                        {
+                                            //return Json(new { Error = "An error occured saving the docuement." });
+                                            return GetFailureMessage("An error occured saving the docuement.");
+                                        }
+                                        aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, file.FileName);
+                                    }
+                                }
+                                else
+                                {
+                                    //return Json(new { Error = "File type not accepted" });
+                                    return GetFailureMessage("File type not accepted");
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
-                    //return Json(new { Error = "Server did not receive file post" });
-                    return GetFailureMessage("Server did not receive file post");
-                }
+                    else
+                    {
+                        //return Json(new { Error = "Server did not receive file post" });
+                        return GetFailureMessage("Server did not receive file post");
+                    }
 
-                //refresh the user object with the changes
-                user = userManager.GetUser(User.Identity.Name);
-                string returnVal;
-                try
-                {
-                    returnVal = Serialize(response);
+                    //refresh the user object with the changes
+                    user = userManager.GetUser(userId);
+                    string returnVal;
+                    try
+                    {
+                        returnVal = Serialize(response);
+                    }
+                    catch (Exception exception)
+                    {
+                        return GetFailureMessage(exception.Message);
+                    }
+                    return AddSuccessHeaders(returnVal);
+                    //return Json(new { UpdatedPartial = RenderPartialViewToString("_Projects_Owner", new ProfileModel(user)), ProjectElementId = newProjectElementId });
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
-                    return GetFailureMessage(exception.Message);
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    //return Json(new { Error = "Problem saving media to cloud storage" });
+                    return GetFailureMessage("Problem saving media to cloud storage");
                 }
-                return AddSuccessHeaders(returnVal);
-                //return Json(new { UpdatedPartial = RenderPartialViewToString("_Projects_Owner", new ProfileModel(user)), ProjectElementId = newProjectElementId });
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                //return Json(new { Error = "Problem saving media to cloud storage" });
-                return GetFailureMessage("Problem saving media to cloud storage");
             }
         }
 

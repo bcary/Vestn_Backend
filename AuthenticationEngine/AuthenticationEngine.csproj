@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.4.1.10715.0\lib\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
@@ -48,6 +51,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Authentication\Authentication.csproj">
+      <Project>{E638A0C7-AD1E-4C46-A285-2BD1863603F2}</Project>
+      <Name>Authentication</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Entities\DatabaseContext\DatabaseContext.csproj">
       <Project>{835E4CCE-E754-4368-9D60-D6D2DC0FDEEE}</Project>
       <Name>DatabaseContext</Name>
