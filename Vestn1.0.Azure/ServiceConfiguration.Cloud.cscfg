@@ -3,15 +3,15 @@
   <Role name="Vestn1.0">
     <Instances count="1" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstorage;AccountKey=OCZoZBQegbepYCxWNoOLYLkSBg461Bo0cac2F6Q9hpOwiOykYZmgwb5EsGgJWUfPuC3kalOuNk1Dp0C0HXsRaQ==" />
-      <Setting name="BlobConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstorage;AccountKey=OCZoZBQegbepYCxWNoOLYLkSBg461Bo0cac2F6Q9hpOwiOykYZmgwb5EsGgJWUfPuC3kalOuNk1Dp0C0HXsRaQ==" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstaging;AccountKey=5sAlHPtJaiKjOSjFZUuwNwB7PQMU0aNMxAPy6DMBPK1Fuhg3AZey8b2iWkwwTbEfvd610V6xaabB939kZxTp4w==" />
+      <Setting name="BlobConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstaging;AccountKey=5sAlHPtJaiKjOSjFZUuwNwB7PQMU0aNMxAPy6DMBPK1Fuhg3AZey8b2iWkwwTbEfvd610V6xaabB939kZxTp4w==" />
     </ConfigurationSettings>
   </Role>
   <Role name="BackgroundProcesses">
     <Instances count="1" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstorage;AccountKey=OCZoZBQegbepYCxWNoOLYLkSBg461Bo0cac2F6Q9hpOwiOykYZmgwb5EsGgJWUfPuC3kalOuNk1Dp0C0HXsRaQ==" />
-      <Setting name="BlobConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstorage;AccountKey=OCZoZBQegbepYCxWNoOLYLkSBg461Bo0cac2F6Q9hpOwiOykYZmgwb5EsGgJWUfPuC3kalOuNk1Dp0C0HXsRaQ==" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstaging;AccountKey=5sAlHPtJaiKjOSjFZUuwNwB7PQMU0aNMxAPy6DMBPK1Fuhg3AZey8b2iWkwwTbEfvd610V6xaabB939kZxTp4w==" />
+      <Setting name="BlobConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstaging;AccountKey=5sAlHPtJaiKjOSjFZUuwNwB7PQMU0aNMxAPy6DMBPK1Fuhg3AZey8b2iWkwwTbEfvd610V6xaabB939kZxTp4w==" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>

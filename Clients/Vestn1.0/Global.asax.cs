@@ -65,6 +65,13 @@ namespace UserClientMembers
 
             //InitializeConnections();
             InitializeTags();
+            //UserManager um = new UserManager();
+            //User u = new Entity.User();
+            //u.firstName = "b";
+            //UserController uc = new UserController();
+            //uc.Register("b@b.com", "rrrrrr");
+
+        
 
             //OPTIONAL CALL TO CREATE SAMPLE USER (MOHAMMAD WONG) ON STARTUP
             //new UserController().CreateSampleUser();

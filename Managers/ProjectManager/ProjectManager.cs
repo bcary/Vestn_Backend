@@ -121,7 +121,7 @@ namespace Manager
                 videoId = id
             };
             int pID = pa.AddProjectElement(p, pe);
-            return new JsonModels.UploadReponse { id = pID, fileName = pe.title, artifactURL = pe.videoId };
+            return new JsonModels.UploadReponse { id = pID, name = pe.title, URL = pe.videoId };
         }
 
         public JsonModels.UploadReponse UploadPictureElement(int projectId, Stream pictureStream, string fileName)
@@ -162,7 +162,7 @@ namespace Manager
 
             //string thumbnailURL = uploadManager.generateThumbnail(imageURI, pe.id, "PictureElement", 440, 330);
             //string galeriaURL = uploadManager.generateThumbnail(imageURI, pe.id, "PictureElement_Galleria", 1000, 750);
-            return new JsonModels.UploadReponse { id = projectElementId, artifactURL = imageURI, fileName = fileName, galeriaURL = presetGaleriaURL, thumbnailURL = presetThumbURL };
+            return new JsonModels.UploadReponse { id = projectElementId, URL = imageURI.Replace("\"",""), name = fileName, galeriaURL = presetGaleriaURL, thumbnailURL = presetThumbURL, description="default description" };
             //return peId;
         }
 
@@ -221,7 +221,7 @@ namespace Manager
                 title = fileName,
             };
             int pID = pa.AddProjectElement(p, pe);
-            return new JsonModels.UploadReponse { id = pID, artifactURL = location, fileName = fileName };
+            return new JsonModels.UploadReponse { id = pID, URL = location, name = fileName };
 
         }
 
@@ -322,9 +322,9 @@ namespace Manager
             }
             if (extention == "pdf")
             {
-                return new JsonModels.UploadReponse { id = projectElementId, artifactURL = location, fileName = fileName };
+                return new JsonModels.UploadReponse { id = projectElementId, URL = location, name = fileName };
             }
-            return new JsonModels.UploadReponse { id = projectElementId, artifactURL = location, pdfURL = uniqueBlobName, fileName = fileName };
+            return new JsonModels.UploadReponse { id = projectElementId, URL = location, pdfURL = uniqueBlobName, name = fileName };
         }
 
         //This method is use by uploadVideo page when the user upload the video

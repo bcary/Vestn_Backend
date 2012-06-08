@@ -136,6 +136,7 @@ namespace Accessor
                 return null;
             }
 
+            //TODO do not let this go live uncommented....
             //Make sure MembershipUser exists
             MembershipUser membershipUser = Membership.GetUser(user.userName);
             if (membershipUser == null)

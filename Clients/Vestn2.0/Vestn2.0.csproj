@@ -206,6 +206,10 @@
       <Project>{899E58FD-93A2-440A-868A-36A8C04286EC}</Project>
       <Name>UserAgreementAccessor</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AuthenticationEngine\AuthenticationEngine.csproj">
+      <Project>{3C319628-861F-4FD1-B2EA-B67C3EF2AD91}</Project>
+      <Name>AuthenticationEngine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Engines\ReorderEngine\ReorderEngine.csproj">
       <Project>{88EEE859-7550-499B-AF53-034C19D5CD6F}</Project>
       <Name>ReorderEngine</Name>

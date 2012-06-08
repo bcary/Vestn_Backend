@@ -246,9 +246,9 @@ namespace Entity
         public class UploadReponse
         {
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string fileName { get; set; }//document, picture, video
+            public string name { get; set; }//document, picture, video
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string artifactURL { get; set; }
+            public string URL { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public int id { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
@@ -257,6 +257,8 @@ namespace Entity
             public string thumbnailURL { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string galeriaURL { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string description { get; set; }
         }
     }
 }

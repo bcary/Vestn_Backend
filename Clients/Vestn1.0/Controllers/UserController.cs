@@ -565,6 +565,7 @@ namespace UserClientMembers.Controllers
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns>Authenticaiton token</returns>
+        ///
         [AcceptVerbs("POST", "OPTIONS")]
         public JsonResult LogOn(string username, string password)
         {
@@ -1881,7 +1882,6 @@ namespace UserClientMembers.Controllers
         /// <param name="List<string> requestObjects"></param>
         /// <returns>Json Object of UserInformation class</returns>
         /// 
-
         [AllowCrossSiteJson]
         [HttpGet]
         public string GetUserInformation(int[] id, string[] request, string token)
@@ -1896,11 +1896,10 @@ namespace UserClientMembers.Controllers
             string returnVal;
             try
             {
-                if (request == null)
+                bool requestAll = false;
+                if (request == null || request.Contains("all"))
                 {
-                    request = new string[]{
-                    "all"
-                };
+                    requestAll = true;
                 }
 
                 List<JsonModels.UserInformation> userInformationList = new List<JsonModels.UserInformation>();
@@ -1913,7 +1912,7 @@ namespace UserClientMembers.Controllers
                         add = 0;
                         //TODO add company
                         JsonModels.UserInformation ui = new JsonModels.UserInformation();
-                        if (request.Contains("firstName") || request.Contains("all"))
+                        if (requestAll || request.Contains("firstName"))
                         {
                             if (u.firstName != null)
                             {
@@ -1921,7 +1920,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("lastName") || request.Contains("all"))
+                        if (requestAll || request.Contains("lastName"))
                         {
                             if (u.lastName != null)
                             {
@@ -1929,7 +1928,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("connections") || request.Contains("all"))
+                        if (requestAll || request.Contains("connections"))
                         {
                             if (u.connections != null)
                             {
@@ -1937,7 +1936,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("tagLine") || request.Contains("all"))
+                        if (requestAll || request.Contains("tagLine"))
                         {
                             if (u.tagLine != null)
                             {
@@ -1945,7 +1944,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("title") || request.Contains("all"))
+                        if (requestAll || request.Contains("title"))
                         {
                             if (u.title != null)
                             {
@@ -1953,7 +1952,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("school") || request.Contains("all"))
+                        if (requestAll || request.Contains("school"))
                         {
                             if (u.school != null)
                             {
@@ -1961,7 +1960,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("description") || request.Contains("all"))
+                        if (requestAll || request.Contains("description"))
                         {
                             if (u.description != null)
                             {
@@ -1969,7 +1968,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("resume") || request.Contains("all"))
+                        if (requestAll || request.Contains("resume"))
                         {
                             if (u.resume != null)
                             {
@@ -1977,7 +1976,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("profilePicture") || request.Contains("all"))
+                        if (requestAll || request.Contains("profilePicture"))
                         {
                             if (u.profilePicture != null)
                             {
@@ -1985,7 +1984,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("profilePictureThumbnail") || request.Contains("all"))
+                        if (requestAll || request.Contains("profilePictureThumbnail"))
                         {
                             if (u.profilePictureThumbnail != null)
                             {
@@ -1993,7 +1992,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("stats") || request.Contains("all"))
+                        if (requestAll || request.Contains("stats"))
                         {
                             JsonModels.UserStats stats = userManager.getUserStats(ID);
                             if (stats != null)
@@ -2002,7 +2001,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("links") || request.Contains("all"))
+                        if (requestAll || request.Contains("links"))
                         {
                             JsonModels.Links links = userManager.getUserLinks(ID);
                             if (links != null)
@@ -2011,7 +2010,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("experiences") || request.Contains("all"))
+                        if (requestAll || request.Contains("experiences"))
                         {
                             List<JsonModels.Experience> experiences = userManager.GetUserExperiences(ID);
                             if (experiences != null && experiences.Count != 0)
@@ -2020,7 +2019,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("references") || request.Contains("all"))
+                        if (requestAll || request.Contains("references"))
                         {
                             List<JsonModels.Reference> references = userManager.GetUserReferences(ID);
                             if (references != null && references.Count != 0)
@@ -2029,7 +2028,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("tags") || request.Contains("all"))
+                        if (requestAll || request.Contains("tags"))
                         {
                             List<JsonModels.UserTag> tags = userManager.GetUserTags(ID);
                             if (tags != null && tags.Count != 0)
@@ -2038,7 +2037,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("projects") || request.Contains("all"))
+                        if (requestAll || request.Contains("projects"))
                         {
                             List<JsonModels.ProjectShell> projects = projectManager.GetProjectShells(ID);
                             if (projects != null && projects.Count != 0)
@@ -2047,7 +2046,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("todo") || request.Contains("all"))
+                        if (requestAll || request.Contains("todo"))
                         {
                             List<JsonModels.Todo> todoList = userManager.GetTodo(ID);
                             if (todoList != null && todoList.Count != 0)
@@ -2056,7 +2055,7 @@ namespace UserClientMembers.Controllers
                                 add = 1;
                             }
                         }
-                        if (request.Contains("recentActivity") || request.Contains("all"))
+                        if (requestAll || request.Contains("recentActivity"))
                         {
                             List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(ID);
                             if (recentActivity != null && recentActivity.Count != 0)
