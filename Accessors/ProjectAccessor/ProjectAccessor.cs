@@ -114,7 +114,8 @@ namespace Accessor
                 }
                 else
                 {
-                    project.projectElementOrder += "," + pe.id;
+                    //project.projectElementOrder += "," + pe.id;
+                    project.projectElementOrder = pe.id + "," + project.projectElementOrder; // add new element to the begininning of the order
                 }
                 VestnDB db = new VestnDB();
                 db.Entry(project).State = EntityState.Modified;

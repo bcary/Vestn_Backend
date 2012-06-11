@@ -37,27 +37,73 @@ namespace UserClientMembers.Controllers
         /// Identifies the user and creates and adds a Project Entity bound to the User.
         /// </summary>
         /// <returns>JsonResult</returns>
-        [Authorize]
-        [HttpPost]
-        public JsonResult CreateProject()
+        [AcceptVerbs("POST", "OPTIONS")]
+        public string AddProject(string token, string name=null, string description=null )
         {
-            try
+            Response.AddHeader("Access-Control-Allow-Origin", "*");
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                User user = userManager.GetUser(User.Identity.Name);
-                Project project = projectManager.CreateProject(user, new List<ProjectElement>());
-
-                ViewData = projectIdDataDictionary(user);
-
-                //refresh the user object with the changes
-                user = userManager.GetUser(User.Identity.Name);
-
-                return Json(new { UpdatedPartial = RenderPartialViewToString("_Projects_Owner", new ProfileModel(user)), ProjectId = project.id });
+                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
+                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+                return null;
             }
-            catch (Exception ex)
+            else
             {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return Json( new{ Error = "Unexpected Error" });
-            }
+                try
+                {
+                    int userId = authenticationEngine.authenticate(token);
+                    if (userId < 0)
+                    {
+                        return GetFailureMessage("You are not authenticated, please log in!");
+                    }
+
+                        User user = userManager.GetUser(userId);
+                        Project project = projectManager.CreateProject(user, new List<ProjectElement>());
+
+                        //refresh the user object with the changes
+                        user = userManager.GetUser(userId);
+                        JsonModels.CompleteProject response = new JsonModels.CompleteProject();
+                        if (name == null)
+                        {
+                            response.name = "New Project";
+                        }
+                        else
+                        {
+                            response.name = name;
+                        }
+                        if (description == null)
+                        {
+                            response.description = "New Project";
+                        }
+                        else
+                        {
+                            response.description = description;
+                        }
+                        response.id = project.id;
+                        response.artifacts = null;
+                        response.projectTags = null;
+                        response.elementOrder = "";
+                        string returnVal;
+                        try
+                        {
+                            returnVal = Serialize(response);
+                        }
+                        catch (Exception exception)
+                        {
+                            return GetFailureMessage(exception.Message);
+                        }
+                        return AddSuccessHeaders(returnVal);
+                    }
+                    catch (Exception ex)
+                    {
+                        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                        return GetFailureMessage("Something went wrong while creating this project");
+                    }
+                }
         }
 
         /// <summary>
@@ -103,44 +149,58 @@ namespace UserClientMembers.Controllers
         /// </summary>
         /// <param name="int projectId"></param>
         /// <returns>JsonResult</returns>
-        [Authorize]
-        [HttpPost]
-        public JsonResult DeleteProject(int projectId)
+        [AcceptVerbs("POST", "OPTIONS")]
+        public string DeleteProject(int projectId, string token)
         {
-
-            User user = userManager.GetUser(User.Identity.Name);
-
-            try
+            Response.AddHeader("Access-Control-Allow-Origin", "*");
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                Project project = projectManager.GetProject(projectId);
-                if (!projectManager.IsUserOwnerOfProject(projectId, user))
-                {
-                    return Json(new { Error = "Couldn't delete element at this time", UpdatedPartial = RenderPartialViewToString("_Projects_Owner", new ProfileModel(user)) });
-                }
-
-                //don't delete if it is the About "project"
-                if (project.name == "About")
-                {
-                    return Json(new { Error = "Couldn't delete project.<br /><br />Unexpected Error", UpdatedPartial = RenderPartialViewToString("_Projects_Owner", new ProfileModel(user)) });
-                }
-
-                projectManager.DeleteProject(project);
-                projectManager.deleteProjectFromOrder(user, projectId);
-                userManager.UpdateUser(user);
-
-                ViewData = projectIdDataDictionary(user);
-
-                //refresh the user object with the changes
-                user = userManager.GetUser(User.Identity.Name);
-
-                aa.CreateAnalytic("Delete Project", DateTime.Now, user.userName, "Number of elements: " + project.projectElements.Count());
-
-                return Json(new { Success = "Success" });
+                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
+                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+                return null;
             }
-            catch (Exception ex)
+            else
             {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return Json(new { Error = "Couldn't delete project.<br /><br />Unexpected Error", UpdatedPartial = RenderPartialViewToString("_Projects_Owner", new ProfileModel(user)) });
+                try
+                {
+                    int userId = authenticationEngine.authenticate(token);
+                    if (userId < 0)
+                    {
+                        return GetFailureMessage("User not authenticated, please log in!");
+                    }
+                    User user = userManager.GetUser(userId);
+
+                    Project project = projectManager.GetProject(projectId);
+                    if (!projectManager.IsUserOwnerOfProject(projectId, user))
+                    {
+                        return GetFailureMessage("User not authorized to delete this project");
+                    }
+
+                    if (project.name == "About")
+                    {
+                        return GetFailureMessage("Cannot Delete About Project");
+                    }
+
+                    projectManager.DeleteProject(project);
+                    projectManager.deleteProjectFromOrder(user, projectId);
+                    userManager.UpdateUser(user);
+
+                    //refresh the user object with the changes
+                    user = userManager.GetUser(userId);
+
+                    aa.CreateAnalytic("Delete Project", DateTime.Now, user.userName, "Number of elements: " + project.projectElements.Count());
+
+                    return AddSuccessHeaders("Successfully deleted project");
+                }
+                catch (Exception ex)
+                {
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    return GetFailureMessage("Something went wrong while deleting this project.");
+                }
             }
         }
         
@@ -491,7 +551,6 @@ namespace UserClientMembers.Controllers
         [AcceptVerbs("POST", "OPTIONS")]
         public string AddArtifact_Media(int projectId, string token, string qqfile=null)
         {
-            int userId = authenticationEngine.authenticate(token);
             Response.AddHeader("Access-Control-Allow-Origin", "*");
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
@@ -507,128 +566,108 @@ namespace UserClientMembers.Controllers
             {
                 try
                 {
+                    int userId = authenticationEngine.authenticate(token);
+                    if (userId < 0)
+                    {
+                        return GetFailureMessage("You are not authenticated, please log in!");
+                    }
                     //int newProjectElementId = -1;
                     JsonModels.UploadReponse response = new JsonModels.UploadReponse();
                     User user = userManager.GetUser(userId);
-
+                    string artifactType = "null";
                     if (!projectManager.IsUserOwnerOfProject(projectId, user))
                     {
                         //return Json(new { Error = "Can't add picture at this time" });
                         return GetFailureMessage("You are not authorized to add this picture");
                     }
-
                     if (Request != null)
                     {
+                        if (Request.ContentLength == 0)
+                        {
+                            return GetFailureMessage("No files submitted to server");
+                        }
+
                         var length = Request.ContentLength;
                         var bytes = new byte[length];
                         Request.InputStream.Read(bytes, 0, length);
                         Stream s = new MemoryStream(bytes);
-                        response = projectManager.UploadPictureElement(projectId, s, qqfile);
-                        string returnVal1;
-                        try
+                        
+                        if (qqfile.Contains(".jpeg") || qqfile.Contains(".jpg") || qqfile.Contains(".png") || qqfile.Contains(".bmp") || qqfile.Contains(".JPEG") || qqfile.Contains(".JPG") || qqfile.Contains(".PNG") || qqfile.Contains(".BMP"))
                         {
-                            returnVal1 = Serialize(response);
-                            return AddSuccessHeaders(returnVal1);
-                        }
-                        catch (Exception exception)
-                        {
-                            return GetFailureMessage(exception.Message);
-                        }
-
-                        if (Request.Files.Count == 0)
-                        {
-                            //return Json(new { Error = "No files submitted to server" });
-                            //return GetFailureMessage("No files submitted to server");
-                        }
-                        else if (Request.Files[0].ContentLength == 0)
-                        {
-                            //return Json(new { Error = "No files submitted to server" });
-                            //return GetFailureMessage("No files submitted to server");
-                        }
-
-                        foreach (string inputFileId in Request.Files)
-                        {
-                            HttpPostedFileBase file = Request.Files[inputFileId];
-                            if (file.ContentLength > 0)
+                            response = projectManager.UploadPictureElement(projectId, s, qqfile);
+                            if (response == null)
                             {
-                                if (ValidationEngine.ValidatePicture(file) != ValidationEngine.Success)
-                                {
-                                    //return Json(new { Error = ValidationEngine.ValidatePicture(file) });
-                                    return GetFailureMessage(ValidationEngine.ValidatePicture(file));
-                                }
-
-                                System.IO.Stream fs = file.InputStream;
-                                if (file.FileName.Contains(".jpeg") || file.FileName.Contains(".jpg") || file.FileName.Contains(".png") || file.FileName.Contains(".bmp") || file.FileName.Contains(".JPEG") || file.FileName.Contains(".JPG") || file.FileName.Contains(".PNG") || file.FileName.Contains(".BMP"))
-                                {
-
-                                        response = projectManager.UploadPictureElement(projectId, fs, file.FileName);
-                                        if (response == null)
-                                        {
-                                            //return Json(new { Error = "An error occured saving the docuement." });
-                                            return GetFailureMessage("An error occured saving the docuement.");
-                                        }
-                                        aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, file.FileName);
-                                    
-                                }
-                                else if (file.FileName.Contains(".doc") || file.FileName.Contains(".docx") || file.FileName.Contains(".ppt") || file.FileName.Contains(".pptx") || file.FileName.Contains(".xls") || file.FileName.Contains(".xlsx") || file.FileName.Contains(".txt") || file.FileName.Contains(".rtf") || file.FileName.Contains(".DOC") || file.FileName.Contains(".DOCX") || file.FileName.Contains(".PPT") || file.FileName.Contains(".PPTX") || file.FileName.Contains(".XLS") || file.FileName.Contains(".XLSX") || file.FileName.Contains(".TXT") || file.FileName.Contains(".RTF"))
-                                {
-                                    response = projectManager.AddDocumentElement(projectId, null, fs, file.FileName, user.userName);
-
-                                    //check if this is development enviroment or LIVE
-                                    var account = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("BlobConnectionString"));
-
-                                    if (account.BlobEndpoint.IsLoopback)
-                                    {
-                                        response.pdfURL = @"http://127.0.0.1:10000/devstoreaccount1/pdfs/" + response.pdfURL;
-                                    }
-                                    else
-                                    {
-                                        response.pdfURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.pdfURL;//TODO change this when it goes live to vestnstorage
-                                    }
-
-
-                                    //--------------------------
-
-                                    if (response == null)
-                                    {
-                                        return GetFailureMessage("File type not accepted");
-                                    }
-                                    aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, file.FileName);
-                                }
-                                else
-                                {
-                                    //return Json(new { Error = "File type not accepted" });
-                                    return GetFailureMessage("You did not upload an accepted picture or document type: (jpeg, jpg, png, bmp, doc, docx, ppt, pptx, xls, xlsx, txt,rtf");
-                                }
+                                return GetFailureMessage("An error occured saving the docuement.");
                             }
+                            aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, qqfile);
+                            artifactType = "picture";
+                        }
+                        else if (qqfile.Contains(".doc") || qqfile.Contains(".docx") || qqfile.Contains(".ppt") || qqfile.Contains(".pptx") || qqfile.Contains(".xls") || qqfile.Contains(".xlsx") || qqfile.Contains(".txt") || qqfile.Contains(".rtf") || qqfile.Contains(".DOC") || qqfile.Contains(".DOCX") || qqfile.Contains(".PPT") || qqfile.Contains(".PPTX") || qqfile.Contains(".XLS") || qqfile.Contains(".XLSX") || qqfile.Contains(".TXT") || qqfile.Contains(".RTF"))
+                        {
+                            response = projectManager.AddDocumentElement(projectId, null, s, qqfile, user.userName);
+
+                            //check if this is development enviroment or LIVE
+                            var account = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("BlobConnectionString"));
+                            if (account.BlobEndpoint.IsLoopback)
+                            {
+                                response.pdfURL = @"http://127.0.0.1:10000/devstoreaccount1/pdfs/" + response.pdfURL;
+                            }
+                            else
+                            {
+                                response.pdfURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.pdfURL;//TODO change this when it goes live to vestnstorage
+                            }
+                            //--------------------------
+                            if (response == null)
+                            {
+                                return GetFailureMessage("File type not accepted");
+                            }
+                            aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, qqfile);
+                            artifactType = "document";
+                        }
+                        else
+                        {
+                            return GetFailureMessage("You did not upload an accepted picture or document type: (jpeg, jpg, png, bmp, doc, docx, ppt, pptx, xls, xlsx, txt, rtf");
                         }
                     }
                     else
                     {
-                        //return Json(new { Error = "Server did not receive file post" });
                         return GetFailureMessage("Server did not receive file post");
                     }
-
                     //refresh the user object with the changes
                     user = userManager.GetUser(userId);
-                    string returnVal;
+                    //build the artifact response
+                    JsonModels.Artifact artifactResponse = new JsonModels.Artifact();
+                    artifactResponse.id = response.id;
+                    artifactResponse.location = response.URL;
+                    if (response.pdfURL != null)
+                    {
+                        artifactResponse.pdfLocation = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.pdfURL;
+                    }
+                    
+                    if (response.thumbnailURL != null)
+                    {
+                        artifactResponse.thumbnailLocation = "https://vestnstaging.blob.core.windows.net/thumbnails" + response.thumbnailURL;
+                    }
+                    artifactResponse.title = response.name;
+                    artifactResponse.type = artifactType;
+                    artifactResponse.creationDate = DateTime.Now.ToString();
+                    artifactResponse.description = "This is an artifact!";
+                    //string returnVal;
+                    string realReturnVal;
                     try
                     {
-                        returnVal = Serialize(response);
+                        //returnVal = Serialize(response);
+                        realReturnVal = Serialize(artifactResponse);
                     }
                     catch (Exception exception)
                     {
                         return GetFailureMessage(exception.Message);
                     }
-                    DateTime now = DateTime.Now;
-                    logAccessor.CreateLog(now, "610 PC", response.ToString());
-                    return AddSuccessHeaders(returnVal);
-                    //return Json(new { UpdatedPartial = RenderPartialViewToString("_Projects_Owner", new ProfileModel(user)), ProjectElementId = newProjectElementId });
+                    return AddSuccessHeaders(realReturnVal);
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    //return Json(new { Error = "Problem saving media to cloud storage" });
                     return GetFailureMessage("Problem saving media to cloud storage");
                 }
             }
@@ -1092,8 +1131,7 @@ namespace UserClientMembers.Controllers
         /// <param name="int projectId"></param>
         /// <param name="int projectElementId"></param>
         /// <returns></returns>
-        [Authorize]
-        [HttpPost]
+        [AcceptVerbs("POST", "OPTIONS")]
         public JsonResult DeleteProjectElement(int projectId, int projectElementId)
         {
 
@@ -1122,6 +1160,53 @@ namespace UserClientMembers.Controllers
             {
                 logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
                 return Json(new { Error = "Couldn't delete project element.<br /><br />Unexpected Error", UpdatedPartial = RenderPartialViewToString("_Projects_Owner", new ProfileModel(user)) });
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        public string DeleteArtifact(int projectId, int projectElementId, string token)
+        {
+            Response.AddHeader("Access-Control-Allow-Origin", "*");
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
+                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+                return null;
+            }
+            else
+            {
+                try
+                {
+                    int userId = authenticationEngine.authenticate(token);
+                    if (userId < 0)
+                    {
+                        return GetFailureMessage("You are not authenticated, please log in!");
+                    }
+                    User user = userManager.GetUser(userId);
+                    if (!projectManager.IsUserOwnerOfProject(projectId, user))
+                    {
+                        return GetFailureMessage("You are not authorized to delete this artifact, :(");
+                    }
+
+                    Project p = projectManager.GetProject(projectId);
+                    ProjectElement e = projectManager.GetProjectElement(projectElementId);
+                    p.projectElements.RemoveAll(pr => pr.id == e.id);
+                    DeleteElementOrder(p, e);
+                    p = projectManager.UpdateProject(p);
+                    projectManager.DeleteProjectElement(e);
+                    //refresh the user object with the changes
+                    user = userManager.GetUser(userId);
+                    return AddSuccessHeaders("This artifact was successfully removed from the specified project");
+                }
+                catch (Exception ex)
+                {
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    return GetFailureMessage("Something went wrong while deleting this artifact, whoops!");
+                }
             }
         }
 
@@ -1222,47 +1307,72 @@ namespace UserClientMembers.Controllers
             }
         }
 
-        [AllowCrossSiteJson]
-        [Authorize]
-        [HttpGet]
-        public string UpdateArtifactOrder(int id, string order)
+        [AcceptVerbs("POST", "OPTIONS")]
+        public string UpdateArtifactOrder(int projectId, string order, string token)
         {
-            User u = userManager.GetUser(User.Identity.Name);
-            if (projectManager.IsUserOwnerOfProject(id, u))
+            Response.AddHeader("Access-Control-Allow-Origin", "*");
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-
-                Project p = projectManager.GetProject(id);
-                ReorderEngine re = new ReorderEngine();
-                List<int> ListOrder = re.stringOrderToList(order);
-                List<int> currentArtifactIds = new List<int>();
-                bool add = true;
-                foreach (ProjectElement pe in p.projectElements)
-                {
-                    currentArtifactIds.Add(pe.id);
-                }
-                foreach (int i in ListOrder)
-                {
-                    if (!currentArtifactIds.Contains(i))
-                    {
-                        add = false;
-                    }
-                }
-
-                if (add == false)
-                {
-                    //????????you cant do that
-                    return GetFailureMessage("Update Failed.");
-                }
-                else
-                {
-                    p.projectElementOrder = order;
-                    p = projectManager.UpdateProject(p);
-                }
-                return AddSuccessHeaders("\"Order updated\"");
+                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
+                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+                return null;
             }
             else
             {
-                return GetFailureMessage("Nice try - please log in");
+                try
+                {
+                    int userId = authenticationEngine.authenticate(token);
+                    if (userId < 0)
+                    {
+                        return GetFailureMessage("You are not authenticated, please log in!");
+                    }
+
+                    User u = userManager.GetUser(userId);
+                    if (projectManager.IsUserOwnerOfProject(projectId, u))
+                    {
+                        Project p = projectManager.GetProject(projectId);
+                        ReorderEngine re = new ReorderEngine();
+                        List<int> ListOrder = re.stringOrderToList(order);
+                        List<int> currentArtifactIds = new List<int>();
+                        bool add = true;
+                        foreach (ProjectElement pe in p.projectElements)
+                        {
+                            currentArtifactIds.Add(pe.id);
+                        }
+                        foreach (int i in ListOrder)
+                        {
+                            if (!currentArtifactIds.Contains(i))
+                            {
+                                add = false;
+                            }
+                        }
+
+                        if (add == false)
+                        {
+                            //????????you cant do that
+                            return GetFailureMessage("Update Failed.");
+                        }
+                        else
+                        {
+                            p.projectElementOrder = order;
+                            p = projectManager.UpdateProject(p);
+                        }
+                        return AddSuccessHeaders("\"Order updated\"");
+                    }
+                    else
+                    {
+                        return GetFailureMessage("User not authorized to update Artifact order");
+                    }
+                }
+                catch(Exception ex)
+                {
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    return GetFailureMessage("Something went wrong while updating the Artifact Order");
+                }
             }
         }
 

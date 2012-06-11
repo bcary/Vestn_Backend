@@ -207,6 +207,8 @@ namespace Entity
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string thumbnailLocation { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string pdfLocation { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string title { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public int id { get; set; }
