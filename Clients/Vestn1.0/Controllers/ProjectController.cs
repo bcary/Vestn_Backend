@@ -1488,7 +1488,7 @@ namespace UserClientMembers.Controllers
         /// <returns>A serialized list of Projects</returns>
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string GetProject(int[] id, string token)
+        public string GetProject(int[] projectId, string token)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
