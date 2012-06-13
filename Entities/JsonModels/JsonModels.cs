@@ -203,11 +203,11 @@ namespace Entity
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string creationDate { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string location { get; set; }
+            public string fileLocation { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string thumbnailLocation { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string pdfLocation { get; set; }
+            public string artifactLocation { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string title { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
@@ -250,13 +250,13 @@ namespace Entity
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string name { get; set; }//document, picture, video
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string URL { get; set; }
+            public string fileURL { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public int id { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string pdfURL { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string thumbnailURL { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string artifactURL { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string galeriaURL { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]

@@ -72,7 +72,7 @@ namespace BackgroundProcesses
                         {
                             UploadManager uploadManager = new UploadManager();
 
-                            string thumbnailURI = uploadManager.generateThumbnail(mediaURI, ID, type, displayWidth, displayHeight);
+                            string thumbnailURI = uploadManager.generateThumbnail(mediaURI, ID, type, displayWidth, displayHeight, presetDocURL);
                         }
                         else if (operation.Equals("documentConversion"))
                         {

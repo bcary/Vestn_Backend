@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="ProjectElement_Audio.cs" />
     <Compile Include="ProjectElement.cs" />
+    <Compile Include="ProjectElement_Code.cs" />
     <Compile Include="ProjectElement_Document.cs" />
     <Compile Include="ProjectElement_Experience.cs" />
     <Compile Include="ProjectElement_Information.cs" />

@@ -67,9 +67,9 @@ namespace Accessor
         {
             return Save(test, stream, "images", ".jpeg", "image/jpeg");
         }
-        public Uri uploadThumbnail(Stream stream, bool test)
+        public Uri uploadThumbnail(Stream stream, bool test, string presetURL)
         {
-            return Save(test, stream, "thumbnails", ".jpeg", "image/jpeg");
+            return Save(test, stream, "thumbnails", ".jpeg", "image/jpeg", presetURL);
         }
         public Uri uploadPDF(Stream stream, bool test)
         {

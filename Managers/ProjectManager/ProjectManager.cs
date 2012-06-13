@@ -121,7 +121,7 @@ namespace Manager
                 videoId = id
             };
             int pID = pa.AddProjectElement(p, pe);
-            return new JsonModels.UploadReponse { id = pID, name = pe.title, URL = pe.videoId };
+            return new JsonModels.UploadReponse { id = pID, name = pe.title, fileURL = pe.videoId };
         }
 
         public JsonModels.UploadReponse UploadPictureElement(int projectId, Stream pictureStream, string fileName)
@@ -151,31 +151,16 @@ namespace Manager
             }
 
             String FileNameThumb = Guid.NewGuid().ToString();
-            string presetThumbURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
+            string artifactURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
             String FileNameGaleria = Guid.NewGuid().ToString();
-            string presetGaleriaURL = string.Format("{0}{1}", FileNameGaleria, ".jpeg");
+            string galleryURL = string.Format("{0}{1}", FileNameGaleria, ".jpeg");
 
-            CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement", 440, 330, "", presetThumbURL));
-            CloudQueueMessage message2 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement_Galleria", 1000, 750, "", presetGaleriaURL));
+            CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement", 635, 397, "", artifactURL));
+            CloudQueueMessage message2 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement_Galleria", 1000, 750, "", galleryURL));
             queue.AddMessage(message);
             queue.AddMessage(message2);
 
-            //string thumbnailURL = uploadManager.generateThumbnail(imageURI, pe.id, "PictureElement", 440, 330);
-            //string galeriaURL = uploadManager.generateThumbnail(imageURI, pe.id, "PictureElement_Galleria", 1000, 750);
-            return new JsonModels.UploadReponse { id = projectElementId, URL = imageURI.Replace("\"",""), name = fileName, galeriaURL = presetGaleriaURL, thumbnailURL = presetThumbURL, description="default description" };
-            //return peId;
-        }
-
-        public Project AddQueuedProjectPicture(int projectId, Stream stream, string fileName)
-        {
-            BlobStorageAccessor blobStorageAccessor = new BlobStorageAccessor();
-            UploadManager uploadManager = new UploadManager();
-            ProjectAccessor projectAccessor = new ProjectAccessor();
-
-            string imageURI = blobStorageAccessor.uploadImage(stream, false).ToString();
-            Project p = pa.GetProject(projectId);
-            uploadManager.generateThumbnail(imageURI, p.id, "ProjectPicture", 200, 200);
-            return p;
+            return new JsonModels.UploadReponse { id = projectElementId, fileURL = imageURI, name = fileName, galeriaURL = galleryURL, artifactURL = artifactURL, description="default description" };
         }
 
         public JsonModels.UploadReponse AddAudioElement(int projectId, string description, Stream fileStream, string fileName)
@@ -221,7 +206,7 @@ namespace Manager
                 title = fileName,
             };
             int pID = pa.AddProjectElement(p, pe);
-            return new JsonModels.UploadReponse { id = pID, URL = location, name = fileName };
+            return new JsonModels.UploadReponse { id = pID, fileURL = location, name = fileName };
 
         }
 
@@ -322,9 +307,9 @@ namespace Manager
             }
             if (extention == "pdf")
             {
-                return new JsonModels.UploadReponse { id = projectElementId, URL = location, name = fileName };
+                return new JsonModels.UploadReponse { id = projectElementId, fileURL = location, name = fileName };
             }
-            return new JsonModels.UploadReponse { id = projectElementId, URL = location, pdfURL = uniqueBlobName, name = fileName };
+            return new JsonModels.UploadReponse { id = projectElementId, fileURL = location, artifactURL = uniqueBlobName, name = fileName };
         }
 
         //This method is use by uploadVideo page when the user upload the video
@@ -722,39 +707,50 @@ namespace Manager
 
         public List<JsonModels.ProjectShell> GetProjectShells(int ID)
         {
-            UserAccessor userAccessor = new UserAccessor();
-            List<Project> projects = reorderEngine.ReOrderProjects(userAccessor.GetUser(ID)).projects;
-            List<JsonModels.ProjectShell> shells = new List<JsonModels.ProjectShell>();
-            foreach (Project p in projects)
+            try
             {
-                if (p.isActive == true && p.name != "About")
+                UserAccessor userAccessor = new UserAccessor();
+                List<Project> projects = reorderEngine.ReOrderProjects(userAccessor.GetUser(ID)).projects;
+                List<JsonModels.ProjectShell> shells = new List<JsonModels.ProjectShell>();
+                foreach (Project p in projects)
                 {
-                    JsonModels.ProjectShell ps = new JsonModels.ProjectShell();
-                    ps.id = p.id;
-                    if (p.name != null)
+                    if (p.isActive == true && p.name != "About")
                     {
-                        ps.name = p.name;
-                    }
-                    if (p.tagIds != "" && p.tagIds != null)
-                    {
-                        ps.projectTags = GetProjectTags(p.id);
-                    }
-                    List<JsonModels.ArtifactShell> artifactShells = new List<JsonModels.ArtifactShell>();
-                    foreach (ProjectElement pe in p.projectElements)
-                    {
-                        JsonModels.ArtifactShell aShell = new JsonModels.ArtifactShell();
-                        aShell.id = pe.id;
-                        if (pe.title != null)
+                        JsonModels.ProjectShell ps = new JsonModels.ProjectShell();
+                        ps.id = p.id;
+                        if (p.name != null)
                         {
-                            aShell.title = pe.title;
+                            ps.name = p.name;
                         }
-                        artifactShells.Add(aShell);
+                        if (p.tagIds != "" && p.tagIds != null)
+                        {
+                            ps.projectTags = GetProjectTags(p.id);
+                        }
+                        List<JsonModels.ArtifactShell> artifactShells = new List<JsonModels.ArtifactShell>();
+                        foreach (ProjectElement pe in p.projectElements)
+                        {
+                            if (pe == null)
+                            {
+                                continue;
+                            }
+                            JsonModels.ArtifactShell aShell = new JsonModels.ArtifactShell();
+                            aShell.id = pe.id;
+                            if (pe.title != null)
+                            {
+                                aShell.title = pe.title;
+                            }
+                            artifactShells.Add(aShell);
+                        }
+                        ps.artifacts = artifactShells;
+                        shells.Add(ps);
                     }
-                    ps.artifacts = artifactShells;
-                    shells.Add(ps);
                 }
+                return shells;
             }
-            return shells;
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         private List<JsonModels.ProjectTag> GetProjectTags(int p)//doesnt yet return only unique tags
@@ -794,11 +790,17 @@ namespace Manager
                         ProjectElement_Document ped = (ProjectElement_Document)pe;
                         if (ped.documentThumbnailLocation != null)
                         {
-                            a.location = ped.documentThumbnailLocation;
+                            a.artifactLocation = ped.documentThumbnailLocation;
+                            
                         }
                         if (ped.documentThumbnailLocation == null && ped.documentLocation != null)
                         {
-                            a.location = ped.documentLocation;
+                            a.artifactLocation = ped.documentLocation;
+                            
+                        }
+                        if (ped.documentLocation != null)
+                        {
+                            a.fileLocation = ped.documentLocation;
                         }
                         a.creationDate = "?/?/????";
                         if (ped.description != null)
@@ -815,13 +817,13 @@ namespace Manager
                     {
                         a.type = "picture";
                         ProjectElement_Picture pep = (ProjectElement_Picture)pe;
+                        if (pep.pictureThumbnailLocation != null)
+                        {
+                            a.artifactLocation = pep.pictureThumbnailLocation;
+                        }
                         if (pep.pictureLocation != null)
                         {
-                            a.location = pep.pictureLocation;
-                        }
-                        if (pep.pictureGalleriaThumbnailLocation != null)
-                        {
-                            a.thumbnailLocation = pep.pictureGalleriaThumbnailLocation;
+                            a.fileLocation = pep.pictureLocation;
                         }
                         a.creationDate = "?/?/????";
                         if (pep.description != null)
@@ -840,7 +842,7 @@ namespace Manager
                         ProjectElement_Video pev = (ProjectElement_Video)pe;
                         if (pev.videoId != null)
                         {
-                            a.location = pev.videoId;
+                            a.artifactLocation = pev.videoId;
                         }
                         if (pev.description != null)
                         {
@@ -859,7 +861,7 @@ namespace Manager
                         ProjectElement_Audio pea = (ProjectElement_Audio)pe;
                         if (pea.audioLocation != null)
                         {
-                            a.location = pea.audioLocation;
+                            a.artifactLocation = pea.audioLocation;
                         }
                         if (pea.description != null)
                         {
@@ -940,7 +942,7 @@ namespace Manager
                         ProjectElement_Document ped = (ProjectElement_Document)pe;
                         if (ped.documentThumbnailLocation != null)
                         {
-                            a.location = ped.documentThumbnailLocation;
+                            a.artifactLocation = ped.documentThumbnailLocation;
                         }
                         a.creationDate = "?/?/????";
                         if (ped.description != null)
@@ -959,7 +961,7 @@ namespace Manager
                         ProjectElement_Picture pep = (ProjectElement_Picture)pe;
                         if (pep.pictureLocation != null)
                         {
-                            a.location = pep.pictureLocation;
+                            a.artifactLocation = pep.pictureLocation;
                         }
                         if (pep.pictureGalleriaThumbnailLocation != null)
                         {
@@ -982,7 +984,7 @@ namespace Manager
                         ProjectElement_Video pev = (ProjectElement_Video)pe;
                         if (pev.videoId != null)
                         {
-                            a.location = pev.videoId;
+                            a.artifactLocation = pev.videoId;
                         }
                         if (pev.description != null)
                         {
@@ -1001,7 +1003,7 @@ namespace Manager
                         ProjectElement_Audio pea = (ProjectElement_Audio)pe;
                         if (pea.audioLocation != null)
                         {
-                            a.location = pea.audioLocation;
+                            a.artifactLocation = pea.audioLocation;
                         }
                         if (pea.description != null)
                         {

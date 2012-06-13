@@ -144,28 +144,28 @@ namespace UserClientMembers
             while (x < etfs.Length);
         }
 
-        private void updatePictureElementsForImageGallery()
-        {
-            UploadManager uploadManager = new UploadManager();
-            ProjectManager projectManager = new ProjectManager();
-            List<ProjectElement> projectElements = new VestnDB().projectElements.ToList();
-            List<ProjectElement_Picture> pictureElements = new List<ProjectElement_Picture>();
-            foreach (ProjectElement element in projectElements)
-            {
-                if (element.GetType() == typeof(ProjectElement_Picture))
-                {
-                    pictureElements.Add((ProjectElement_Picture)element);
-                }
-            }
-            foreach (ProjectElement_Picture picture in pictureElements)
-            {
-                if (picture.pictureGalleriaThumbnailLocation == null)
-                {
-                    picture.pictureGalleriaThumbnailLocation = uploadManager.generateThumbnail(picture.pictureLocation, picture.id, "PictureElement_Galleria", 1000, 700);
-                    projectManager.UpdateProjectElement(picture);
-                }
-            }
-        }
+        //private void updatePictureElementsForImageGallery()
+        //{
+        //    UploadManager uploadManager = new UploadManager();
+        //    ProjectManager projectManager = new ProjectManager();
+        //    List<ProjectElement> projectElements = new VestnDB().projectElements.ToList();
+        //    List<ProjectElement_Picture> pictureElements = new List<ProjectElement_Picture>();
+        //    foreach (ProjectElement element in projectElements)
+        //    {
+        //        if (element.GetType() == typeof(ProjectElement_Picture))
+        //        {
+        //            pictureElements.Add((ProjectElement_Picture)element);
+        //        }
+        //    }
+        //    foreach (ProjectElement_Picture picture in pictureElements)
+        //    {
+        //        if (picture.pictureGalleriaThumbnailLocation == null)
+        //        {
+        //            picture.pictureGalleriaThumbnailLocation = uploadManager.generateThumbnail(picture.pictureLocation, picture.id, "PictureElement_Galleria", 1000, 700);
+        //            projectManager.UpdateProjectElement(picture);
+        //        }
+        //    }
+        //}
 
         private void InitializeConnections()
         {

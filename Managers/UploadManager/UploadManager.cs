@@ -40,7 +40,7 @@ namespace Manager
             return "success";
         }
 
-        public string generateThumbnail(string imageURI, int entityId, string type, int displayWidth, int displayHeight)
+        public string generateThumbnail(string imageURI, int entityId, string type, int displayWidth, int displayHeight, string presetURL)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace Manager
                 {
                     // Save image to stream.
                     image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
-                    uri = BSAccessor.uploadThumbnail(stream, false);
+                    uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
                 }
                 if (type == "User")
                 {

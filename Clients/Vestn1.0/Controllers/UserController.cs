@@ -27,7 +27,6 @@ namespace UserClientMembers.Controllers
 {
     public class UserController : BaseController
     {
-
         UserManager userManager = new UserManager();
         ProjectManager projectManager = new ProjectManager();
         UploadManager uploadManager = new UploadManager();
@@ -41,21 +40,61 @@ namespace UserClientMembers.Controllers
         {
             return View();
         }
-
-        public JsonResult CheckFileExist(String url)
-        {        
-            try
+        [AcceptVerbs("POST", "OPTIONS")]
+        public string CheckFileExist(String url, string token)
+        {
+            Response.AddHeader("Access-Control-Allow-Origin", "*");
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(url);
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
+                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+                return null;
+            }
+            else
+            {
+                try
                 {
-                    return Json(new { status = response.StatusCode });
+                    //int userId = authenticationEngine.authenticate(token);
+                    //if (userId < 0)
+                    //{
+                    //    return GetFailureMessage("You are not authenticated, please log in!");
+                    //}
+                    HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(url);
+                    bool found = false;
+                    int counter = 0;
+                    while (!found)
+                    {
+                        try
+                        {
+                            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                            if (response.StatusCode != HttpStatusCode.NotFound)
+                            {
+                                found = true;
+                            }
+
+                        }
+                        catch (System.Net.WebException)
+                        {
+                            Thread.Sleep(500);
+                            counter++;
+                            if (counter > 30)
+                            {
+                                return GetFailureMessage("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
+                            }
+                        }
+                    }
+                    return AddSuccessHeaders("File Exists", true);
+                }
+                catch (Exception ex)
+                {
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    return GetFailureMessage("Unknown error - CheckFileExist");
                 }
             }
-            catch (System.Net.WebException)
-            {
-                return Json(new { status = "File not exist" });
-            }                 
         }
 
 
@@ -169,7 +208,7 @@ namespace UserClientMembers.Controllers
         //        {
         //            TempData["MessageBar"] = "A user with that username already exists in our database";
         //            return GetFailureMessage("A user with that username already exists in our database");
-                    
+
         //            //return View(model);
         //        }
         //        if (ValidationEngine.ValidatePassword(model.Password) != ValidationEngine.Success)
@@ -182,7 +221,7 @@ namespace UserClientMembers.Controllers
         //        {
         //            TempData["MessageBar"] = "Password fields do not match";
         //            return GetFailureMessage("Password fields do not match");
-                    
+
         //            //return View(model);
         //        }
         //        if (ModelState.IsValid)
@@ -277,7 +316,7 @@ namespace UserClientMembers.Controllers
                 {
                     return GetFailureMessage("Error creating account.");
                 }
-                
+
                 //return RedirectToAction("Profile", "User");
             }
             catch (Exception ex)
@@ -317,11 +356,12 @@ namespace UserClientMembers.Controllers
         {
             TagManager tm = new TagManager();
             string type;
-            if(tm.GetAllSTagValues().Contains(value))
+            if (tm.GetAllSTagValues().Contains(value))
             {
                 type = "s";
             }
-            else{
+            else
+            {
                 type = "f";
             }
             string result = tm.AddTag("User", value, type, userManager.GetUser(User.Identity.Name).id);
@@ -557,7 +597,7 @@ namespace UserClientMembers.Controllers
             }
         }
 
-        
+
         //The log on function used by the new Front End.
         /// <summary>
         /// LogOn POST function. Authenticates the user, and returns a token value that must be stored by the client application and used on every subsequesnt authorized request
@@ -928,8 +968,8 @@ namespace UserClientMembers.Controllers
                         projectManager.UpdateProject(p);
                     }
                 }
-                
-                ProfileModel model = new ProfileModel(user);                
+
+                ProfileModel model = new ProfileModel(user);
                 List<string> tagValues = new List<string>();
                 //Put user's tags on the ProfileModel
                 /*
@@ -952,19 +992,19 @@ namespace UserClientMembers.Controllers
 
                     //User is going to their own profile
                     ViewBag.IsOwner = true;
-                        model.connections = new List<User>();
-                        if (user.connections != null)
+                    model.connections = new List<User>();
+                    if (user.connections != null)
+                    {
+                        foreach (string userId in user.connections.Split(','))
                         {
-                            foreach (string userId in user.connections.Split(','))
+                            if (userId.Trim() != "")
                             {
-                                if (userId.Trim() != "")
-                                {
-                                    int userIdInt = Convert.ToInt32(userId);
-                                    User connection = userManager.GetUser(userIdInt);
-                                    model.connections.Add(connection);
-                                }
+                                int userIdInt = Convert.ToInt32(userId);
+                                User connection = userManager.GetUser(userIdInt);
+                                model.connections.Add(connection);
                             }
                         }
+                    }
 
                     /*//depreciated. can't use .CompleteProfilePrompt any more. will have to deal with tags some other way
                      * if (userManager.IsProfilePartiallyComplete(user))
@@ -990,7 +1030,7 @@ namespace UserClientMembers.Controllers
                     ViewBag.IsOwner = false;
                 }
 
-                
+
                 //------------------------------------------------------------
                 return View(model);
             }
@@ -1001,9 +1041,9 @@ namespace UserClientMembers.Controllers
             }
 
         }
-        
 
-      
+
+
         //Edit a User's Profile
 
         //Update profile method written eliquently by Skyler
@@ -1076,52 +1116,52 @@ namespace UserClientMembers.Controllers
                 //uncomment this when authentication works
                 //if (user.userName == User.Identity.Name)
                 //{
-                    if (user == null)
-                    {
-                        return Json(new { Status = 0 });
-                    }
+                if (user == null)
+                {
+                    return Json(new { Status = 0 });
+                }
 
-                    System.Reflection.PropertyInfo pi = user.GetType().GetProperty(id);
+                System.Reflection.PropertyInfo pi = user.GetType().GetProperty(id);
 
-                    if (pi == null)
+                if (pi == null)
+                {
+                    return Json(new { Status = 0 });
+                }
+                else
+                {
+                    try
                     {
-                        return Json(new { Status = 0 });
-                    }
-                    else
-                    {
-                        try
+
+                        switch (id)
                         {
-
-                            switch (id)
-                            {
-                                case "profileURL":
-                                    if (user.profileURL != value)
-                                    {
-                                        if (ValidationEngine.ValidateProfileURL(value) == ValidationEngine.Success)
-                                        {
-                                            pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
-                                        }
-                                        else
-                                        {
-                                            return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateProfileURL(value) });
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //return Json(new { Status = 0, Id = id, Error = "URL is currently in use." });
-                                    }
-                                break;
-                                case "school":
-                                if (ValidationEngine.ValidateSchool(value) == ValidationEngine.Success)
+                            case "profileURL":
+                                if (user.profileURL != value)
+                                {
+                                    if (ValidationEngine.ValidateProfileURL(value) == ValidationEngine.Success)
                                     {
                                         pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
                                     }
                                     else
                                     {
-                                        return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateSchool(value) });
+                                        return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateProfileURL(value) });
                                     }
+                                }
+                                else
+                                {
+                                    //return Json(new { Status = 0, Id = id, Error = "URL is currently in use." });
+                                }
                                 break;
-                                case "email":
+                            case "school":
+                                if (ValidationEngine.ValidateSchool(value) == ValidationEngine.Success)
+                                {
+                                    pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
+                                }
+                                else
+                                {
+                                    return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateSchool(value) });
+                                }
+                                break;
+                            case "email":
                                 if (value != user.email)
                                 {
                                     if (ValidationEngine.ValidateEmail(value) == ValidationEngine.Success && ValidationEngine.IsDuplicateEmail(value) == false)
@@ -1138,7 +1178,7 @@ namespace UserClientMembers.Controllers
                                     //return Json(new { Status = 0, Id = id, Error = "This is already your email." });
                                 }
                                 break;
-                                case "location":
+                            case "location":
                                 if (ValidationEngine.ValidateLocation(value) == ValidationEngine.Success)
                                 {
                                     pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
@@ -1148,7 +1188,7 @@ namespace UserClientMembers.Controllers
                                     return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateLocation(value) });
                                 }
                                 break;
-                                case "firstName":
+                            case "firstName":
                                 if (ValidationEngine.ValidateFirstName(value) == ValidationEngine.Success)
                                 {
                                     pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
@@ -1158,7 +1198,7 @@ namespace UserClientMembers.Controllers
                                     return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateFirstName(value) });
                                 }
                                 break;
-                                case "lastName":
+                            case "lastName":
                                 if (ValidationEngine.ValidateLastName(value) == ValidationEngine.Success)
                                 {
                                     pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
@@ -1168,7 +1208,7 @@ namespace UserClientMembers.Controllers
                                     return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateLastName(value) });
                                 }
                                 break;
-                                case "title":
+                            case "title":
                                 if (ValidationEngine.ValidateTitle(value) == ValidationEngine.Success)
                                 {
                                     pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
@@ -1178,7 +1218,7 @@ namespace UserClientMembers.Controllers
                                     return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateTitle(value) });
                                 }
                                 break;
-                                case "major":
+                            case "major":
                                 if (ValidationEngine.ValidateMajor(value) == ValidationEngine.Success)
                                 {
                                     pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
@@ -1188,7 +1228,7 @@ namespace UserClientMembers.Controllers
                                     return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateMajor(value) });
                                 }
                                 break;
-                                case "connections":
+                            case "connections":
                                 if (ValidationEngine.ValidateMajor(value) == ValidationEngine.Success)
                                 {
                                     pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
@@ -1198,7 +1238,7 @@ namespace UserClientMembers.Controllers
                                     return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateMajor(value) });
                                 }
                                 break;
-                                case "description":
+                            case "description":
                                 if (ValidationEngine.ValidateDescription(value) == ValidationEngine.Success)
                                 {
                                     pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
@@ -1208,7 +1248,7 @@ namespace UserClientMembers.Controllers
                                     return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateDescription(value) });
                                 }
                                 break;
-                                case "tagLine":
+                            case "tagLine":
                                 if (ValidationEngine.ValidateDescription(value) == ValidationEngine.Success)
                                 {
                                     pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
@@ -1219,20 +1259,20 @@ namespace UserClientMembers.Controllers
                                 }
                                 break;
 
-                            }
-                            //persist user model to DB with manager updateUser method
-                            user = userManager.UpdateUser(user);
-                            ProfileModel model = new ProfileModel(user);
-                            AnalyticsAccessor aa = new AnalyticsAccessor();
-                            aa.CreateAnalytic("User Update", DateTime.Now, user.userName, "Information updated: " + pi.PropertyType.ToString());
+                        }
+                        //persist user model to DB with manager updateUser method
+                        user = userManager.UpdateUser(user);
+                        ProfileModel model = new ProfileModel(user);
+                        AnalyticsAccessor aa = new AnalyticsAccessor();
+                        aa.CreateAnalytic("User Update", DateTime.Now, user.userName, "Information updated: " + pi.PropertyType.ToString());
 
-                            return Json(new { Status = 1, Value = value, Id = id });
-                        }
-                        catch (Exception)
-                        {
-                            return Json(new { Status = 0 });
-                        }
+                        return Json(new { Status = 1, Value = value, Id = id });
                     }
+                    catch (Exception)
+                    {
+                        return Json(new { Status = 0 });
+                    }
+                }
                 //}
                 //else
                 //{
@@ -1628,7 +1668,7 @@ namespace UserClientMembers.Controllers
             }
         }
 
-        
+
 
         [Authorize]
         public JsonResult UpdateResume()
@@ -1737,9 +1777,9 @@ namespace UserClientMembers.Controllers
                 else if (subject == "Feedback")
                 {
                     CommunicationManager cm = new CommunicationManager();
-                    cm.SendSiteFeedbackEmail(name, userEmail, message);                    
+                    cm.SendSiteFeedbackEmail(name, userEmail, message);
                 }
-                   
+
                 return Json(new { FeedbackStatus = "success" });
             }
             catch (Exception ex)
@@ -1780,7 +1820,7 @@ namespace UserClientMembers.Controllers
                 {
                     logAccessor.CreateLog(DateTime.Now, System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), e.ToString());
                 }
-                        
+
                 CommunicationManager cm = new CommunicationManager();
                 if (cm.SendShareEmail(link, email, senderName))
                 {
@@ -1791,7 +1831,7 @@ namespace UserClientMembers.Controllers
                     return Json(new { Error = "Email failed to send." });
                 }
 
-                
+
             }
             catch (Exception ex)
             {
@@ -1817,7 +1857,9 @@ namespace UserClientMembers.Controllers
                     else if (user.firstName == null)
                     {
                         userFirstName = user.userName;
-                    }else{
+                    }
+                    else
+                    {
                         userFirstName = userManager.GetUser(User.Identity.Name).firstName;
                     }
 
@@ -1828,7 +1870,7 @@ namespace UserClientMembers.Controllers
                 {
                     logAccessor.CreateLog(DateTime.Now, System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), e.ToString());
                 }
-                
+
                 CommunicationManager cm = new CommunicationManager();
                 cm.SendFeedbackToUserEmail(userFirstName, friendFirstName, friendEmail, message);
 
@@ -1882,253 +1924,285 @@ namespace UserClientMembers.Controllers
         /// <param name="List<string> requestObjects"></param>
         /// <returns>Json Object of UserInformation class</returns>
         /// 
-        [AllowCrossSiteJson]
-        [HttpGet]
+        [AcceptVerbs("POST", "OPTIONS")]
         public string GetUserInformation(int[] id, string[] request, string token)
         {
-            //authenticate via token
-            int authenticate = authenticationEngine.authenticate(token);
-            if (authenticate < 0)
+            Response.AddHeader("Access-Control-Allow-Origin", "*");
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                Response.StatusCode = 500;
-                return "Not Authenticated";
+                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
+                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+                return null;
             }
-            string returnVal;
-            try
+            else
             {
-                bool requestAll = false;
-                if (request == null || request.Contains("all"))
-                {
-                    requestAll = true;
-                }
-
-                List<JsonModels.UserInformation> userInformationList = new List<JsonModels.UserInformation>();
-                int add = 0;
-                foreach (int ID in id)
-                {
-                    User u = userManager.GetUser(ID);
-                    if (u != null)
-                    {
-                        add = 0;
-                        //TODO add company
-                        JsonModels.UserInformation ui = new JsonModels.UserInformation();
-                        if (requestAll || request.Contains("firstName"))
-                        {
-                            if (u.firstName != null)
-                            {
-                                ui.firstName = u.firstName;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("lastName"))
-                        {
-                            if (u.lastName != null)
-                            {
-                                ui.lastName = u.lastName;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("connections"))
-                        {
-                            if (u.connections != null)
-                            {
-                                ui.connections = u.connections;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("tagLine"))
-                        {
-                            if (u.tagLine != null)
-                            {
-                                ui.tagLine = u.tagLine;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("title"))
-                        {
-                            if (u.title != null)
-                            {
-                                ui.title = u.title;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("school"))
-                        {
-                            if (u.school != null)
-                            {
-                                ui.school = u.school;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("description"))
-                        {
-                            if (u.description != null)
-                            {
-                                ui.description = u.description;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("resume"))
-                        {
-                            if (u.resume != null)
-                            {
-                                ui.resume = u.resume;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("profilePicture"))
-                        {
-                            if (u.profilePicture != null)
-                            {
-                                ui.profilePicture = u.profilePicture;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("profilePictureThumbnail"))
-                        {
-                            if (u.profilePictureThumbnail != null)
-                            {
-                                ui.profilePictureThumbnail = u.profilePictureThumbnail;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("stats"))
-                        {
-                            JsonModels.UserStats stats = userManager.getUserStats(ID);
-                            if (stats != null)
-                            {
-                                ui.stats = stats;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("links"))
-                        {
-                            JsonModels.Links links = userManager.getUserLinks(ID);
-                            if (links != null)
-                            {
-                                ui.links = links;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("experiences"))
-                        {
-                            List<JsonModels.Experience> experiences = userManager.GetUserExperiences(ID);
-                            if (experiences != null && experiences.Count != 0)
-                            {
-                                ui.experiences = experiences;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("references"))
-                        {
-                            List<JsonModels.Reference> references = userManager.GetUserReferences(ID);
-                            if (references != null && references.Count != 0)
-                            {
-                                ui.references = references;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("tags"))
-                        {
-                            List<JsonModels.UserTag> tags = userManager.GetUserTags(ID);
-                            if (tags != null && tags.Count != 0)
-                            {
-                                ui.tags = tags;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("projects"))
-                        {
-                            List<JsonModels.ProjectShell> projects = projectManager.GetProjectShells(ID);
-                            if (projects != null && projects.Count != 0)
-                            {
-                                ui.projects = projects;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("todo"))
-                        {
-                            List<JsonModels.Todo> todoList = userManager.GetTodo(ID);
-                            if (todoList != null && todoList.Count != 0)
-                            {
-                                ui.todo = todoList;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("recentActivity"))
-                        {
-                            List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(ID);
-                            if (recentActivity != null && recentActivity.Count != 0)
-                            {
-                                ui.recentActivity = recentActivity;
-                                add = 1;
-                            }
-                        }
-                        if (add == 1)
-                        {
-                            userInformationList.Add(ui);
-                        }
-                    }
-                }
-                
+                //authenticate via token
+                string returnVal;
                 try
                 {
-                    returnVal = Serialize(userInformationList);
-                }
-                catch (Exception exception)
+                int authenticate = authenticationEngine.authenticate(token);
+                if (authenticate < 0)
                 {
-                    return GetFailureMessage(exception.Message);
+                    Response.StatusCode = 500;
+                    return GetFailureMessage("Not Authenticated");
                 }
-            }
-            catch (Exception e)
-            {
-                return GetFailureMessage("Bad Request");
-            }
-            return AddSuccessHeaders(returnVal);
-        }
+                
 
-        //[Authorize]
-        [AllowCrossSiteJson]
-        [HttpGet]
-        public string UpdateProjectOrder(int id, string order)
-        {
-            
-            User u = userManager.GetUser(id);
-            
-            //int loggedUserId = userManager.GetUser(User.Identity.Name).id;
-            //if (id == loggedUserId)
-            //{
-                ReorderEngine re = new ReorderEngine();
-                List<int> ListOrder = re.stringOrderToList(order);
-                List<int> currentProjectIds = new List<int>();
-                bool add = true;
-                foreach (Project p in u.projects)
-                {
-                    currentProjectIds.Add(p.id);
-                }
-                foreach (int i in ListOrder)
-                {
-                    if (!currentProjectIds.Contains(i))
+                    bool requestAll = false;
+                    if (request == null || request.Contains("all"))
                     {
-                        add = false;
+                        requestAll = true;
+                    }
+
+                    List<JsonModels.UserInformation> userInformationList = new List<JsonModels.UserInformation>();
+                    int add = 0;
+                    foreach (int ID in id)
+                    {
+                        User u = userManager.GetUser(ID);
+                        if (u != null)
+                        {
+                            add = 0;
+                            //TODO add company
+                            JsonModels.UserInformation ui = new JsonModels.UserInformation();
+                            if (requestAll || request.Contains("firstName"))
+                            {
+                                if (u.firstName != null)
+                                {
+                                    ui.firstName = u.firstName;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("lastName"))
+                            {
+                                if (u.lastName != null)
+                                {
+                                    ui.lastName = u.lastName;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("connections"))
+                            {
+                                if (u.connections != null)
+                                {
+                                    ui.connections = u.connections;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("tagLine"))
+                            {
+                                if (u.tagLine != null)
+                                {
+                                    ui.tagLine = u.tagLine;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("title"))
+                            {
+                                if (u.title != null)
+                                {
+                                    ui.title = u.title;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("school"))
+                            {
+                                if (u.school != null)
+                                {
+                                    ui.school = u.school;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("description"))
+                            {
+                                if (u.description != null)
+                                {
+                                    ui.description = u.description;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("resume"))
+                            {
+                                if (u.resume != null)
+                                {
+                                    ui.resume = u.resume;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("profilePicture"))
+                            {
+                                if (u.profilePicture != null)
+                                {
+                                    ui.profilePicture = u.profilePicture;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("profilePictureThumbnail"))
+                            {
+                                if (u.profilePictureThumbnail != null)
+                                {
+                                    ui.profilePictureThumbnail = u.profilePictureThumbnail;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("stats"))
+                            {
+                                JsonModels.UserStats stats = userManager.getUserStats(ID);
+                                if (stats != null)
+                                {
+                                    ui.stats = stats;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("links"))
+                            {
+                                JsonModels.Links links = userManager.getUserLinks(ID);
+                                if (links != null)
+                                {
+                                    ui.links = links;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("experiences"))
+                            {
+                                List<JsonModels.Experience> experiences = userManager.GetUserExperiences(ID);
+                                if (experiences != null && experiences.Count != 0)
+                                {
+                                    ui.experiences = experiences;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("references"))
+                            {
+                                List<JsonModels.Reference> references = userManager.GetUserReferences(ID);
+                                if (references != null && references.Count != 0)
+                                {
+                                    ui.references = references;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("tags"))
+                            {
+                                List<JsonModels.UserTag> tags = userManager.GetUserTags(ID);
+                                if (tags != null && tags.Count != 0)
+                                {
+                                    ui.tags = tags;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("projects"))
+                            {
+                                List<JsonModels.ProjectShell> projects = projectManager.GetProjectShells(ID);
+                                if (projects != null && projects.Count != 0)
+                                {
+                                    ui.projects = projects;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("todo"))
+                            {
+                                List<JsonModels.Todo> todoList = userManager.GetTodo(ID);
+                                if (todoList != null && todoList.Count != 0)
+                                {
+                                    ui.todo = todoList;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("recentActivity"))
+                            {
+                                List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(ID);
+                                if (recentActivity != null && recentActivity.Count != 0)
+                                {
+                                    ui.recentActivity = recentActivity;
+                                    add = 1;
+                                }
+                            }
+                            if (add == 1)
+                            {
+                                userInformationList.Add(ui);
+                            }
+                        }
+                    }
+
+                    try
+                    {
+                        returnVal = Serialize(userInformationList);
+                    }
+                    catch (Exception ex)
+                    {
+                        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                        return GetFailureMessage(ex.Message);
                     }
                 }
-                if (add == false)
+                catch (Exception ex)
                 {
-                    //????????you cant do that
-                    return GetFailureMessage("Update Failed.");
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    return GetFailureMessage("Bad Request");
                 }
-                else
+                return AddSuccessHeaders(returnVal);
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        public string UpdateProjectOrder(string order, string token)
+        {
+            Response.AddHeader("Access-Control-Allow-Origin", "*");
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
+                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+                return null;
+            }
+            else
+            {
+                try
                 {
-                    u.projectOrder = order;
-                    u = userManager.UpdateUser(u);
+                    int userId = authenticationEngine.authenticate(token);
+                    if (userId < 0)
+                    {
+                        return GetFailureMessage("You are not authenticated, please log in!");
+                    }
+                    User u = userManager.GetUser(userId);
+                    ReorderEngine re = new ReorderEngine();
+                    List<int> ListOrder = re.stringOrderToList(order);
+                    List<int> currentProjectIds = new List<int>();
+                    bool add = true;
+                    foreach (Project p in u.projects)
+                    {
+                        currentProjectIds.Add(p.id);
+                    }
+                    foreach (int i in ListOrder)
+                    {
+                        if (!currentProjectIds.Contains(i))
+                        {
+                            add = false;
+                        }
+                    }
+                    if (add == false)
+                    {
+                        //????????you cant do that
+                        return GetFailureMessage("Update Failed.");
+                    }
+                    else
+                    {
+                        u.projectOrder = order;
+                        u = userManager.UpdateUser(u);
+                    }
+                    return AddSuccessHeaders("Order updated", true);
                 }
-                return AddSuccessHeaders("\"Order updated\"");
-           // }
-            //else
-            //{
-             //   return GetFailureMessage("Nice try - please log in");
-            //}
+                catch (Exception ex)
+                {
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    return GetFailureMessage("Something went wrong while updating the Project Order");
+                }
+            }
         }
 
         public ActionResult testNewRegister()

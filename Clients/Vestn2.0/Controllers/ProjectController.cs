@@ -109,11 +109,11 @@ namespace Controllers
 
                                     if (account.BlobEndpoint.IsLoopback)
                                     {
-                                        response.pdfURL = @"http://127.0.0.1:10000/devstoreaccount1/pdfs/" + response.pdfURL;
+                                        response.artifactURL = @"http://127.0.0.1:10000/devstoreaccount1/pdfs/" + response.artifactURL;
                                     }
                                     else
                                     {
-                                        response.pdfURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.pdfURL;//TODO change this when it goes live to vestnstorage
+                                        response.artifactURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
                                     }
 
 

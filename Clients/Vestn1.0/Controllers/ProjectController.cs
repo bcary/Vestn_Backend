@@ -194,7 +194,7 @@ namespace UserClientMembers.Controllers
 
                     aa.CreateAnalytic("Delete Project", DateTime.Now, user.userName, "Number of elements: " + project.projectElements.Count());
 
-                    return AddSuccessHeaders("Successfully deleted project");
+                    return AddSuccessHeaders("Successfully deleted project", true);
                 }
                 catch (Exception ex)
                 {
@@ -204,81 +204,81 @@ namespace UserClientMembers.Controllers
             }
         }
         
-        /// <summary>
-        /// Updates the project cover picture of the specified project
-        /// </summary>
-        /// <param name="int projectId"></param>
-        /// <returns>JsonResult</returns>
-        [Authorize]
-        [HttpPost]
-        public JsonResult UpdateProjectPicture(int projectId)
-        {
-            try
-            {
-                User user = userManager.GetUser(User.Identity.Name);
-                Project project;
+        ///// <summary>
+        ///// Updates the project cover picture of the specified project
+        ///// </summary>
+        ///// <param name="int projectId"></param>
+        ///// <returns>JsonResult</returns>
+        //[Authorize]
+        //[HttpPost]
+        //public JsonResult UpdateProjectPicture(int projectId)
+        //{
+        //    try
+        //    {
+        //        User user = userManager.GetUser(User.Identity.Name);
+        //        Project project;
 
-                if (!projectManager.IsUserOwnerOfProject(projectId, user))
-                {
-                    return Json(new { Error = "Can't update picture at this time" });
-                }
+        //        if (!projectManager.IsUserOwnerOfProject(projectId, user))
+        //        {
+        //            return Json(new { Error = "Can't update picture at this time" });
+        //        }
 
-                if (Request != null)
-                {
-                    if (Request.Files.Count == 0)
-                    {
-                        return Json(new { Error = "No files submitted to server" });
-                    }
-                    else if (Request.Files[0].ContentLength == 0)
-                    {
-                        return Json(new { Error = "No files submitted to server" });
-                    }
+        //        if (Request != null)
+        //        {
+        //            if (Request.Files.Count == 0)
+        //            {
+        //                return Json(new { Error = "No files submitted to server" });
+        //            }
+        //            else if (Request.Files[0].ContentLength == 0)
+        //            {
+        //                return Json(new { Error = "No files submitted to server" });
+        //            }
 
-                    foreach (string inputFileId in Request.Files)
-                    {
-                        HttpPostedFileBase file = Request.Files[inputFileId];
-                        if (file.ContentLength > 0)
-                        {
-                            if (ValidationEngine.ValidatePicture(file) != ValidationEngine.Success)
-                            {
-                                return Json(new { Error = ValidationEngine.ValidatePicture(file) });
-                            }
+        //            foreach (string inputFileId in Request.Files)
+        //            {
+        //                HttpPostedFileBase file = Request.Files[inputFileId];
+        //                if (file.ContentLength > 0)
+        //                {
+        //                    if (ValidationEngine.ValidatePicture(file) != ValidationEngine.Success)
+        //                    {
+        //                        return Json(new { Error = ValidationEngine.ValidatePicture(file) });
+        //                    }
 
-                            System.IO.Stream fs = file.InputStream;
+        //                    System.IO.Stream fs = file.InputStream;
                             
 
-                            if (file.FileName.Contains(".jpeg") || file.FileName.Contains(".jpg") || file.FileName.Contains(".png") || file.FileName.Contains(".bmp") || file.FileName.Contains(".JPEG") || file.FileName.Contains(".JPG") || file.FileName.Contains(".PNG") || file.FileName.Contains(".BMP"))
-                            {
-                                project = projectManager.GetProject(projectId);
+        //                    if (file.FileName.Contains(".jpeg") || file.FileName.Contains(".jpg") || file.FileName.Contains(".png") || file.FileName.Contains(".bmp") || file.FileName.Contains(".JPEG") || file.FileName.Contains(".JPG") || file.FileName.Contains(".PNG") || file.FileName.Contains(".BMP"))
+        //                    {
+        //                        project = projectManager.GetProject(projectId);
 
-                                projectManager.AddQueuedProjectPicture(projectId, fs, file.FileName);
+        //                        projectManager.AddQueuedProjectPicture(projectId, fs, file.FileName);
 
-                                aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, file.FileName);
-                                return Json(new { ProjectId = projectId, PictureLocation = "http://vestnstorage.blob.core.windows.net/images/uploadSuccessful2.png" });
-                            }
-                            else
-                            {
-                                return Json(new { Error = "File type not accepted" });
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    return Json(new { Error = "Server did not receive file post" });
-                }
+        //                        aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, file.FileName);
+        //                        return Json(new { ProjectId = projectId, PictureLocation = "http://vestnstorage.blob.core.windows.net/images/uploadSuccessful2.png" });
+        //                    }
+        //                    else
+        //                    {
+        //                        return Json(new { Error = "File type not accepted" });
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return Json(new { Error = "Server did not receive file post" });
+        //        }
 
-                //refresh the user object with the changes
-                user = userManager.GetUser(User.Identity.Name);
+        //        //refresh the user object with the changes
+        //        user = userManager.GetUser(User.Identity.Name);
 
-                return Json(new { UpdatedPartial = RenderPartialViewToString("_Projects_Owner", new ProfileModel(user)) });
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return Json(new { Error = "Problem saving media to cloud storage" });
-            }
-        }
+        //        return Json(new { UpdatedPartial = RenderPartialViewToString("_Projects_Owner", new ProfileModel(user)) });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+        //        return Json(new { Error = "Problem saving media to cloud storage" });
+        //    }
+        //}
 
         /// <summary>
         /// Adds an experience project element to the specified project (will always be added to the first project, i.e. the About Project)
@@ -496,11 +496,11 @@ namespace UserClientMembers.Controllers
 
                                 if (account.BlobEndpoint.IsLoopback)
                                 {
-                                    response.pdfURL = @"http://127.0.0.1:10000/devstoreaccount1/pdfs/" + response.pdfURL;
+                                    response.artifactURL = @"http://127.0.0.1:10000/devstoreaccount1/pdfs/" + response.artifactURL;
                                 }
                                 else
                                 {
-                                    response.pdfURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.pdfURL;//TODO change this when it goes live to vestnstorage
+                                    response.artifactURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
                                 }
                                 
                                 
@@ -608,14 +608,14 @@ namespace UserClientMembers.Controllers
 
                             //check if this is development enviroment or LIVE
                             var account = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("BlobConnectionString"));
-                            if (account.BlobEndpoint.IsLoopback)
-                            {
-                                response.pdfURL = @"http://127.0.0.1:10000/devstoreaccount1/pdfs/" + response.pdfURL;
-                            }
-                            else
-                            {
-                                response.pdfURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.pdfURL;//TODO change this when it goes live to vestnstorage
-                            }
+                            //if (account.BlobEndpoint.IsLoopback)
+                            //{
+                            //    response.artifactURL = @"http://127.0.0.1:10000/devstoreaccount1/pdfs/" + response.artifactURL;
+                            //}
+                            //else
+                            //{
+                            //    response.artifactURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
+                            //}
                             //--------------------------
                             if (response == null)
                             {
@@ -636,27 +636,27 @@ namespace UserClientMembers.Controllers
                     //refresh the user object with the changes
                     user = userManager.GetUser(userId);
                     //build the artifact response
+
                     JsonModels.Artifact artifactResponse = new JsonModels.Artifact();
                     artifactResponse.id = response.id;
-                    artifactResponse.location = response.URL;
-                    if (response.pdfURL != null)
+                    artifactResponse.fileLocation = response.fileURL;
+                    if(artifactType == "picture")
                     {
-                        artifactResponse.pdfLocation = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.pdfURL;
+                        artifactResponse.artifactLocation = "https://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL;
                     }
-                    
-                    if (response.thumbnailURL != null)
+                    else if (artifactType == "document")
                     {
-                        artifactResponse.thumbnailLocation = "https://vestnstaging.blob.core.windows.net/thumbnails" + response.thumbnailURL;
+                        artifactResponse.artifactLocation = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.artifactURL;
                     }
+
                     artifactResponse.title = response.name;
                     artifactResponse.type = artifactType;
                     artifactResponse.creationDate = DateTime.Now.ToString();
                     artifactResponse.description = "This is an artifact!";
-                    //string returnVal;
+
                     string realReturnVal;
                     try
                     {
-                        //returnVal = Serialize(response);
                         realReturnVal = Serialize(artifactResponse);
                     }
                     catch (Exception exception)
@@ -1200,7 +1200,7 @@ namespace UserClientMembers.Controllers
                     projectManager.DeleteProjectElement(e);
                     //refresh the user object with the changes
                     user = userManager.GetUser(userId);
-                    return AddSuccessHeaders("This artifact was successfully removed from the specified project");
+                    return AddSuccessHeaders("This artifact was successfully removed from the specified project", true);
                 }
                 catch (Exception ex)
                 {
@@ -1361,7 +1361,7 @@ namespace UserClientMembers.Controllers
                             p.projectElementOrder = order;
                             p = projectManager.UpdateProject(p);
                         }
-                        return AddSuccessHeaders("\"Order updated\"");
+                        return AddSuccessHeaders("Order updated", true);
                     }
                     else
                     {
@@ -1486,35 +1486,47 @@ namespace UserClientMembers.Controllers
         /// </summary>
         /// <param name="int[] id"></param>
         /// <returns>A serialized list of Projects</returns>
-        [HttpGet]
+        [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string GetProject(int[] id)
+        public string GetProject(int[] id, string token)
         {
-            string returnVal;
-            try
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(id);
-                if (projects != null)
+                return null;
+            }
+            else
+            {
+                int userId = authenticationEngine.authenticate(token);
+                if (userId < 0)
                 {
-                    try
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                string returnVal;
+                try
+                {
+                    List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(id);
+                    if (projects != null)
                     {
-                        returnVal = Serialize(projects);
+                        try
+                        {
+                            returnVal = Serialize(projects);
+                        }
+                        catch (Exception exception)
+                        {
+                            return GetFailureMessage(exception.Message);
+                        }
                     }
-                    catch (Exception exception)
+                    else
                     {
-                        return GetFailureMessage(exception.Message);
+                        return GetFailureMessage("No Information Found");
                     }
                 }
-                else
+                catch (Exception e)
                 {
-                    return GetFailureMessage("No Information Found");
+                    return GetFailureMessage("Bad Request");
                 }
+                return AddSuccessHeaders(returnVal);
             }
-            catch (Exception e)
-            {
-                return GetFailureMessage("Bad Request");
-            }
-            return AddSuccessHeaders(returnVal);
         }
         /// <summary>
         /// Searches a specific user's projects for a given query
