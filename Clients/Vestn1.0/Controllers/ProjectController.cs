@@ -700,7 +700,7 @@ namespace UserClientMembers.Controllers
                 string videoID = id;
                 ViewBag.VideoID = id;
 
-                JsonModels.UploadReponse response = projectManager.AddVideoElement(nProjectID, "Description goes here", videoID);
+                JsonModels.Artifact response = projectManager.AddVideoElement(nProjectID, "Description goes here", videoID);
                 AnalyticsAccessor aa = new AnalyticsAccessor();
                 aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, "Video file");
 
@@ -728,39 +728,55 @@ namespace UserClientMembers.Controllers
         /// <param name="int id"></param>
         /// <param name="string newVideoLinkUpload"></param>
         /// <returns></returns>
-        [Authorize]
-        public string AddVideoElementByLink(int id, string newVideoLinkUpload)
+        [AcceptVerbs("POST","OPTIONS")]
+        [AllowCrossSiteJson]
+        public string AddArtifact_Video(int projectId, string videoLink, string token)
         {
-            try
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                User user = userManager.GetUser(User.Identity.Name);
-
-                if (!projectManager.IsUserOwnerOfProject(id, user))
-                {
-                    //return Json(new { Error = "Can't add video at this time" });
-                    return GetFailureMessage("Can't add video at this time");
-                }
-
-                string sVideoID = projectManager.ProcessYoutubeURL(newVideoLinkUpload);
-
-                JsonModels.UploadReponse response = projectManager.AddVideoElement(id, "Description goes here", sVideoID);
-         
-                aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, "Video link");
-                string returnVal;
+                return null;
+            }
+            else
+            {
                 try
                 {
-                    returnVal = Serialize(response);
+                    int userId = authenticationEngine.authenticate(token);
+                    if (userId < 0)
+                    {
+                        return GetFailureMessage("User is not authenticated, please log in!");
+                    }
+                    User user = userManager.GetUser(userId);
+
+                    if (!projectManager.IsUserOwnerOfProject(projectId, user))
+                    {
+                        //return Json(new { Error = "Can't add video at this time" });
+                        return GetFailureMessage("User is not authorized to complete this action");
+                    }
+                    string sVideoID = videoLink;
+                    if (videoLink.Contains("youtu"))
+                    {
+                         sVideoID = projectManager.ProcessYoutubeURL(videoLink);
+                    }
+
+                    JsonModels.Artifact response = projectManager.AddVideoElement(projectId, "Video Description", sVideoID);
+
+                    aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, "Video link");
+                    string returnVal;
+                    try
+                    {
+                        returnVal = Serialize(response);
+                    }
+                    catch (Exception exception)
+                    {
+                        return GetFailureMessage(exception.Message);
+                    }
+                    return AddSuccessHeaders(returnVal);
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
-                    return GetFailureMessage(exception.Message);
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    return GetFailureMessage("Error occured uploading your video");
                 }
-                return AddSuccessHeaders(returnVal);
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return GetFailureMessage("Error occured uploading your video");
             }
         }
 
@@ -858,35 +874,35 @@ namespace UserClientMembers.Controllers
         /// </summary>
         /// <param name="ProjectModel projectModel"></param>
         /// <returns></returns>
-        [Authorize]
-        [HttpPost]
-        public JsonResult UpdateProject(ProjectModel projectModel)
-        {
-            try
-            {
-                Project project = projectModel.toProject();
+        //[Authorize]
+        //[HttpPost]
+        //public JsonResult UpdateProject(ProjectModel projectModel)
+        //{
+        //    try
+        //    {
+        //        Project project = projectModel.toProject();
 
-                if (ValidationEngine.ValidateTitle(project.name) != ValidationEngine.Success)
-                {
-                    return Json(new { Error = ValidationEngine.ValidateTitle(project.name) });
-                }
+        //        if (ValidationEngine.ValidateTitle(project.name) != ValidationEngine.Success)
+        //        {
+        //            return Json(new { Error = ValidationEngine.ValidateTitle(project.name) });
+        //        }
 
-                projectManager.UpdateProject(project);
-                User user = userManager.GetUser(User.Identity.Name);
+        //        projectManager.UpdateProject(project);
+        //        User user = userManager.GetUser(User.Identity.Name);
 
-                ViewData = projectIdDataDictionary(user);
+        //        ViewData = projectIdDataDictionary(user);
 
-                //refresh the user object with the changes
-                user = userManager.GetUser(User.Identity.Name);
+        //        //refresh the user object with the changes
+        //        user = userManager.GetUser(User.Identity.Name);
 
-                return Json(new { UpdatedPartial = RenderPartialViewToString("_Projects_Owner", new ProfileModel(user)) });
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return Json(new { Error = "Unexpected Error" });
-            }
-        }
+        //        return Json(new { UpdatedPartial = RenderPartialViewToString("_Projects_Owner", new ProfileModel(user)) });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+        //        return Json(new { Error = "Unexpected Error" });
+        //    }
+        //}
 
        
         // this only encompasses editing a project element
@@ -897,114 +913,78 @@ namespace UserClientMembers.Controllers
         /// <param name="string id"></param>
         /// <param name="string value"></param>
         /// <returns></returns>
-        [Authorize]
-        [HttpPost]
-        public JsonResult EditProjectElement(int projectElementId, string id, string value)
+        [AcceptVerbs("POST","OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateArtifact(int artifactId, string propertyId, string propertyValue, string token)
         {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
             try
             {
-                User user = userManager.GetUser(User.Identity.Name);
-
-                if (!projectManager.IsUserOwnerOfProjectElement(projectElementId, user))
+                int userId = authenticationEngine.authenticate(token);
+                if (userId < 0)
                 {
-                    return Json(new { Error = "Can't edit information at this time" });
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                User user = userManager.GetUser(userId);
+                if (!projectManager.IsUserOwnerOfProjectElement(artifactId, user))
+                {
+                    return GetFailureMessage("User not authorized to edit this artifact");
+                }
+                if (propertyValue != null)
+                {
+                    //strip value of \n characters and replace with <br />
+                    propertyValue = StripNewLineAndReplaceWithLineBreaks(propertyValue);
+                }
+                else
+                {
+                    return GetFailureMessage("You must pass in a propertyValue to set");
                 }
 
-                //strip value of \n characters and replace with <br />
-                value = StripNewLineAndReplaceWithLineBreaks(value);
-
-                ProjectElement projectElement = projectManager.GetProjectElement(projectElementId);
+                ProjectElement projectElement = projectManager.GetProjectElement(artifactId);
                 string elementType = projectElement.GetType().ToString().Substring(projectElement.GetType().ToString().LastIndexOf('.') + 1);
 
                 if (projectElement == null)
                 {
-                    return Json(new { UpdateStatus = "notUpdated", ProjectElementType = elementType, UpdateType = id });
+                    return GetFailureMessage("Artifact not found");
                 }
 
-                System.Reflection.PropertyInfo pi = projectElement.GetType().GetProperty(id);
+                System.Reflection.PropertyInfo pi = projectElement.GetType().GetProperty(propertyId);
 
-                string returnText = "";
                 if (pi == null)
                 {
-                    return Json(new { UpdateStatus = "notUpdated", ProjectElementType = elementType, UpdateType = id });
+                    return GetFailureMessage("Invalid propertyId");
                 }
                 else
                 {
                     try
                     {
                         //save changes in local model
-                        if (id == "startDate" || id == "endDate")
-                        {
-                            if (value.ToLower() == "current" || value.ToLower() == "now" || value.ToLower() == "present")
-                            {
-                                returnText = "Present";
-                                value = "11/11/1811";
-                            }
-                        }
-                        pi.SetValue(projectElement, Convert.ChangeType(value, pi.PropertyType), null);
+                        pi.SetValue(projectElement, Convert.ChangeType(propertyValue, pi.PropertyType), null);
                         
-
-                        if (id == "title")
+                        if (propertyId == "title")
                         {
                                 if (ValidationEngine.ValidateTitle(projectElement.title) != ValidationEngine.Success)
                                 {
-                                    return Json(new { UpdateStatus = "notUpdated_TooLong", ProjectElementType = elementType, UpdateType = "Title", UpdateValue = value });
+                                    return GetFailureMessage("Title exceeded 100 character limit, artifact not updated");
                                 }
                         }
 
-                        if (id == "name")
+                        if (propertyId == "name")
                         {
-                            if (ValidationEngine.ValidateTitle(value) != ValidationEngine.Success)
+                            if (ValidationEngine.ValidateTitle(propertyValue) != ValidationEngine.Success)
                             {
-                                return Json(new { UpdateStatus = "notUpdated_TooLong", ProjectElementType = elementType, UpdateType = "Name", UpdateValue = value });
+                                return GetFailureMessage("Name exceeded 100 character limit, artifact not updated");
                             }
                         }
+
+                        //TODO validate description
 
                         if (projectElement.GetType() == typeof(ProjectElement_Document))
                         {
                             ProjectElement_Document document = (ProjectElement_Document)projectElement;
-                        }
-                        else if (projectElement.GetType() == typeof(ProjectElement_Experience))
-                        {
-                            ProjectElement_Experience experience = (ProjectElement_Experience)projectElement;
-                            //experience.company;
-                            //experience.startDate;
-                            //experience.endDate;
-                            if (ValidationEngine.ValidateCity(experience.city) != ValidationEngine.Success)
-                            {
-                                return Json(new { UpdateStatus = "notUpdated_TooLong", ProjectElementType = elementType, UpdateType = "City", UpdateValue = value });
-                            }
-
-                            if (ValidationEngine.ValidateState(experience.state) != ValidationEngine.Success)
-                            {
-                                return Json(new { UpdateStatus = "notUpdated_TooLong", ProjectElementType = elementType, UpdateType = "State", UpdateValue = value });
-                            }
-
-                            if (ValidationEngine.ValidateCompany(experience.company) != ValidationEngine.Success)
-                            {
-                                return Json(new { UpdateStatus = "notUpdated_TooLong", ProjectElementType = elementType, UpdateType = "Company", UpdateValue = value });
-                            }
-
-                            if (ValidationEngine.ValidateDate(experience.startDate) != ValidationEngine.Success)
-                            {
-                                return Json(new { UpdateStatus = "notUpdated_DateError", ProjectElementType = elementType, UpdateType = "Start date", UpdateValue = value });
-                            }
-
-                            if (ValidationEngine.ValidateDate(experience.endDate) != ValidationEngine.Success)
-                            {
-                                return Json(new { UpdateStatus = "notUpdated_DateError", ProjectElementType = elementType, UpdateType = "End date", UpdateValue = value });
-                            }
-
-                            if (ValidationEngine.ValidateTitle(experience.jobTitle) != ValidationEngine.Success)
-                            {
-                                return Json(new { UpdateStatus = "notUpdated_TooLong", ProjectElementType = elementType, UpdateType = "Job title", UpdateValue = value });
-                            }
-                        }
-                        else if (projectElement.GetType() == typeof(ProjectElement_Information))
-                        {
-                            ProjectElement_Information information = (ProjectElement_Information)projectElement;
-                            //shouldn't really get here i don't think
-                            //this should use the User/EditProfile method
                         }
                         else if (projectElement.GetType() == typeof(ProjectElement_Picture))
                         {
@@ -1014,29 +994,21 @@ namespace UserClientMembers.Controllers
                         {
                             ProjectElement_Video video = (ProjectElement_Video)projectElement;
                         }
-
                         //persist user model to DB with manager updateUser method
                         projectElement = projectManager.UpdateProjectElement(projectElement);
-                        //ProjectModel model = new ProjectModel(projectElement);
-                        if (returnText == "")
-                        {
-                            return Json(new { UpdateStatus = "updated", ProjectElementType = elementType, UpdateValue = value, UpdateType = id });
-                        }
-                        else
-                        {
-                            return Json(new { UpdateStatus = "updated", ProjectElementType = elementType, UpdateValue = returnText, UpdateType = id });
-                        }
+                        return AddSuccessHeaders("Artifact with id:"+artifactId +" successfully updated",true);
                     }
-                    catch (Exception)
+                    catch (Exception exc)
                     {
-                        return Json(new { UpdateStatus = "notUpdated", ProjectElementType = elementType, UpdateType = id });
+                        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), exc.ToString());
+                        return GetFailureMessage("Something went wrong while updating this artifact.");
                     }
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return Json(new { Error = "An unknown error occured" });
+                return GetFailureMessage("Something went wrong while updating this artifact.");
             }
 
         }
@@ -1049,79 +1021,99 @@ namespace UserClientMembers.Controllers
         /// <param name="string id"></param>
         /// <param name="string value"></param>
         /// <returns></returns>
-        [Authorize]
-        [HttpPost]
-        public JsonResult EditProject(int projectId, string id, string value)
+        [AcceptVerbs("POST","OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateProject(int projectId, string propertyId, string propertyValue, string token)
         {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
             try
             {
-                User user = userManager.GetUser(User.Identity.Name);
-
+                int userId = authenticationEngine.authenticate(token);
+                if (userId < 0)
+                {
+                    return GetFailureMessage("User not authenticated, please log in!");
+                }
+                User user = userManager.GetUser(userId);
                 if (!projectManager.IsUserOwnerOfProject(projectId, user))
                 {
-                    return Json(new { Error = "Can't edit project at this time" });
+                    return GetFailureMessage("User not authorized to update this project!");
                 }
 
                 //strip value of \n characters and replace with <br />
-                value = StripNewLineAndReplaceWithLineBreaks(value);
+                propertyValue = StripNewLineAndReplaceWithLineBreaks(propertyValue);
 
                 Project project = projectManager.GetProject(projectId);
 
                 if (project == null)
                 {
-                    return Json(new { UpdateStatus = "notUpdated", UpdateType = id });
+                    return GetFailureMessage("Project not found");
                 }
 
-                System.Reflection.PropertyInfo pi = project.GetType().GetProperty(id);
+                System.Reflection.PropertyInfo pi = null;
+                if (propertyId != null)
+                {
+                    pi = project.GetType().GetProperty(propertyId);
+                }
+                else
+                {
+                    GetFailureMessage("You must pass in a propertyId to set");
+                }
 
                 if (pi == null)
                 {
-                    return Json(new { UpdateStatus = "notUpdated", UpdateType = id });
+                    return GetFailureMessage("Invalid propertyId");
                 }
                 else
                 {
                     try
                     {
                         //save changes in local model
-                        pi.SetValue(project, Convert.ChangeType(value, pi.PropertyType), null);
+                        pi.SetValue(project, Convert.ChangeType(propertyValue, pi.PropertyType), null);
 
-                        if (id == "title")
+                        if (propertyId == "title")
                         {
-                            if (ValidationEngine.ValidateTitle(value) != ValidationEngine.Success)
+                            if (ValidationEngine.ValidateTitle(propertyValue) != ValidationEngine.Success)
                             {
-                                return Json(new { UpdateStatus = "notUpdated_TooLong", UpdateType = "Title", UpdateValue = value });
+                                return GetFailureMessage("Title exceeded 100 character limit, project not updated");
                             }
                         }
 
-                        if (id == "name")
+                        if (propertyId == "name")
                         {
-                            if (ValidationEngine.ValidateTitle(value) != ValidationEngine.Success)
+                            if (ValidationEngine.ValidateTitle(propertyValue) != ValidationEngine.Success)
                             {
-                                return Json(new { UpdateStatus = "notUpdated_TooLong", UpdateType = "Name", UpdateValue = value });
+                                return GetFailureMessage("Name exceeded 100 character limit, project not updated");
                             }
                         }
+
+                        //TODO validate description
+
                         //persist user model to DB with manager updateUser method
                         project = projectManager.UpdateProject(project);
-                        //ProjectModel model = new ProjectModel(projectElement);
                         if (project != null)
                         {
-                            return Json(new { UpdateStatus = "updated", UpdateValue = value, UpdateType = id });
+                            return AddSuccessHeaders("Project with id:"+projectId+" successfully updated",true);
                         }
                         else
                         {
-                            return Json(new { UpdateStatus = "notUpdated", UpdateType = id });
+                            return GetFailureMessage("Update Failed");
                         }
                     }
-                    catch (Exception)
+                    catch (Exception exc)
                     {
-                        return Json(new { UpdateStatus = "notUpdated", UpdateType = id });
+                        
+                        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), exc.ToString());
+                        return GetFailureMessage("Something went wrong while updating this project");
                     }
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return Json(new { Error = "An unknown error occured" });
+                return GetFailureMessage("Something went wrong while updating this project");
             }
         }
 
@@ -1504,7 +1496,7 @@ namespace UserClientMembers.Controllers
                 string returnVal;
                 try
                 {
-                    List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(id);
+                    List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(projectId);
                     if (projects != null)
                     {
                         try

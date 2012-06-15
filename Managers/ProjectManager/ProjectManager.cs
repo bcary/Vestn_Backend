@@ -111,7 +111,7 @@ namespace Manager
 
         }
 
-        public JsonModels.UploadReponse AddVideoElement(int projectId, string description, string id)
+        public JsonModels.Artifact AddVideoElement(int projectId, string description, string id)
         {
             Project p = pa.GetProject(projectId);
             ProjectElement_Video pe = new ProjectElement_Video
@@ -121,7 +121,7 @@ namespace Manager
                 videoId = id
             };
             int pID = pa.AddProjectElement(p, pe);
-            return new JsonModels.UploadReponse { id = pID, name = pe.title, fileURL = pe.videoId };
+            return new JsonModels.Artifact { id = pID, artifactLocation = pe.videoId, title = pe.title, fileLocation = pe.videoId, type = "video", description = "This is a video artifact!" };
         }
 
         public JsonModels.UploadReponse UploadPictureElement(int projectId, Stream pictureStream, string fileName)
@@ -397,7 +397,10 @@ namespace Manager
             {
                 foreach (ProjectElement pe in p.projectElements)
                 {
-                    projectElementIds.Add(pe.id);
+                    if (pe != null)
+                    {
+                        projectElementIds.Add(pe.id);
+                    }
                 }
             }
             if (projectElementIds.Contains(projectElementId))

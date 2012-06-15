@@ -1102,188 +1102,207 @@ namespace UserClientMembers.Controllers
         }
 
         //[Authorize]
-        [HttpPost]
+        [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
-        public JsonResult EditProfile(int userId, string id, string value)
+        public string UpdateUser(int userId, string propertyId, string propertyValue, string token)
         {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
             try
             {
-                //strip value of \n characters and replace with <br />
-                value = StripNewLineAndReplaceWithLineBreaks(value);
-
-                //get Model
+                int authUserId = authenticationEngine.authenticate(token);
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
                 User user = userManager.GetUser(userId);
                 //uncomment this when authentication works
-                //if (user.userName == User.Identity.Name)
-                //{
-                if (user == null)
+                if (userId == authUserId)
                 {
-                    return Json(new { Status = 0 });
-                }
+                    if (user == null)
+                    {
+                        return GetFailureMessage("User not found");
+                    }
 
-                System.Reflection.PropertyInfo pi = user.GetType().GetProperty(id);
+                    System.Reflection.PropertyInfo pi = null;
+                    if (propertyId != null)
+                    {
+                        pi = user.GetType().GetProperty(propertyId);
+                    }
+                    else
+                    {
+                        GetFailureMessage("You must pass in a propertyId to set");
+                    }
 
-                if (pi == null)
-                {
-                    return Json(new { Status = 0 });
+                    if (pi == null)
+                    {
+                        return GetFailureMessage("Invalid propertyId");
+                    }
+                    else
+                    {
+                        try
+                        {
+                            if (propertyValue != null)
+                            {
+                                propertyValue = StripNewLineAndReplaceWithLineBreaks(propertyValue);
+                            }
+                            else
+                            {
+                                return GetFailureMessage("You must pass in a propertyValue to set");
+                            }
+                            switch (propertyId)
+                            {
+                                case "profileURL":
+                                    if (user.profileURL != propertyValue)
+                                    {
+                                        if (ValidationEngine.ValidateProfileURL(propertyValue) == ValidationEngine.Success)
+                                        {
+                                            pi.SetValue(user, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                                        }
+                                        else
+                                        {
+                                            return GetFailureMessage("profileURL not valid, user not updated");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return GetFailureMessage("profileURL already in use, user not updated");
+                                    }
+                                    break;
+                                case "school":
+                                    if (ValidationEngine.ValidateSchool(propertyValue) == ValidationEngine.Success)
+                                    {
+                                        pi.SetValue(user, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                                    }
+                                    else
+                                    {
+                                        return GetFailureMessage("school not valid, user not updated");
+                                    }
+                                    break;
+                                case "email":
+                                    if (propertyValue != user.email)
+                                    {
+                                        if (ValidationEngine.ValidateEmail(propertyValue) == ValidationEngine.Success && ValidationEngine.IsDuplicateEmail(propertyValue) == false)
+                                        {
+                                            pi.SetValue(user, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                                        }
+                                        else
+                                        {
+                                            return GetFailureMessage("email not valid, user not updated");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return GetFailureMessage("email match, user not updated");
+                                    }
+                                    break;
+                                case "location":
+                                    if (ValidationEngine.ValidateLocation(propertyValue) == ValidationEngine.Success)
+                                    {
+                                        pi.SetValue(user, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                                    }
+                                    else
+                                    {
+                                        return GetFailureMessage("location not valid, user not updated");
+                                    }
+                                    break;
+                                case "firstName":
+                                    if (ValidationEngine.ValidateFirstName(propertyValue) == ValidationEngine.Success)
+                                    {
+                                        pi.SetValue(user, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                                    }
+                                    else
+                                    {
+                                        return GetFailureMessage("firstName not valid, user not updated");
+                                    }
+                                    break;
+                                case "lastName":
+                                    if (ValidationEngine.ValidateLastName(propertyValue) == ValidationEngine.Success)
+                                    {
+                                        pi.SetValue(user, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                                    }
+                                    else
+                                    {
+                                        return GetFailureMessage("lastName not valid, user not updated");
+                                    }
+                                    break;
+                                case "title":
+                                    if (ValidationEngine.ValidateTitle(propertyValue) == ValidationEngine.Success)
+                                    {
+                                        pi.SetValue(user, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                                    }
+                                    else
+                                    {
+                                        return GetFailureMessage("title not valid, user not updated");
+                                    }
+                                    break;
+                                case "major":
+                                    if (ValidationEngine.ValidateMajor(propertyValue) == ValidationEngine.Success)
+                                    {
+                                        pi.SetValue(user, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                                    }
+                                    else
+                                    {
+                                        return GetFailureMessage("major not valid, user not updated");
+                                    }
+                                    break;
+                                case "connections":
+                                    if (ValidationEngine.ValidateMajor(propertyValue) == ValidationEngine.Success)
+                                    {
+                                        pi.SetValue(user, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                                    }
+                                    else
+                                    {
+                                        return GetFailureMessage("connections not valid, user not updated");
+                                    }
+                                    break;
+                                case "description":
+                                    if (ValidationEngine.ValidateDescription(propertyValue) == ValidationEngine.Success)
+                                    {
+                                        pi.SetValue(user, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                                    }
+                                    else
+                                    {
+                                        return GetFailureMessage("description not valid, user not updated");
+                                    }
+                                    break;
+                                case "tagLine":
+                                    if (ValidationEngine.ValidateDescription(propertyValue) == ValidationEngine.Success)
+                                    {
+                                        pi.SetValue(user, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                                    }
+                                    else
+                                    {
+                                        return GetFailureMessage("tagLine not valid, user not updated");
+                                    }
+                                    break;
+
+                            }
+                            //persist user model to DB with manager updateUser method
+                            user = userManager.UpdateUser(user);
+                            AnalyticsAccessor aa = new AnalyticsAccessor();
+                            aa.CreateAnalytic("User Update", DateTime.Now, user.userName, "Information updated: " + pi.PropertyType.ToString());
+
+                            return AddSuccessHeaders("UserId:"+userId+" successfully updated", true);
+                        }
+                        catch (Exception exc)
+                        {
+                            logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), exc.ToString());
+                            return GetFailureMessage("Something went wrong while updating this user");
+                        }
+                    }
                 }
                 else
                 {
-                    try
-                    {
-
-                        switch (id)
-                        {
-                            case "profileURL":
-                                if (user.profileURL != value)
-                                {
-                                    if (ValidationEngine.ValidateProfileURL(value) == ValidationEngine.Success)
-                                    {
-                                        pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
-                                    }
-                                    else
-                                    {
-                                        return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateProfileURL(value) });
-                                    }
-                                }
-                                else
-                                {
-                                    //return Json(new { Status = 0, Id = id, Error = "URL is currently in use." });
-                                }
-                                break;
-                            case "school":
-                                if (ValidationEngine.ValidateSchool(value) == ValidationEngine.Success)
-                                {
-                                    pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
-                                }
-                                else
-                                {
-                                    return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateSchool(value) });
-                                }
-                                break;
-                            case "email":
-                                if (value != user.email)
-                                {
-                                    if (ValidationEngine.ValidateEmail(value) == ValidationEngine.Success && ValidationEngine.IsDuplicateEmail(value) == false)
-                                    {
-                                        pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
-                                    }
-                                    else
-                                    {
-                                        return Json(new { Status = 0, Id = id, Error = "Email is currently in use by another user." });
-                                    }
-                                }
-                                else
-                                {
-                                    //return Json(new { Status = 0, Id = id, Error = "This is already your email." });
-                                }
-                                break;
-                            case "location":
-                                if (ValidationEngine.ValidateLocation(value) == ValidationEngine.Success)
-                                {
-                                    pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
-                                }
-                                else
-                                {
-                                    return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateLocation(value) });
-                                }
-                                break;
-                            case "firstName":
-                                if (ValidationEngine.ValidateFirstName(value) == ValidationEngine.Success)
-                                {
-                                    pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
-                                }
-                                else
-                                {
-                                    return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateFirstName(value) });
-                                }
-                                break;
-                            case "lastName":
-                                if (ValidationEngine.ValidateLastName(value) == ValidationEngine.Success)
-                                {
-                                    pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
-                                }
-                                else
-                                {
-                                    return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateLastName(value) });
-                                }
-                                break;
-                            case "title":
-                                if (ValidationEngine.ValidateTitle(value) == ValidationEngine.Success)
-                                {
-                                    pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
-                                }
-                                else
-                                {
-                                    return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateTitle(value) });
-                                }
-                                break;
-                            case "major":
-                                if (ValidationEngine.ValidateMajor(value) == ValidationEngine.Success)
-                                {
-                                    pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
-                                }
-                                else
-                                {
-                                    return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateMajor(value) });
-                                }
-                                break;
-                            case "connections":
-                                if (ValidationEngine.ValidateMajor(value) == ValidationEngine.Success)
-                                {
-                                    pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
-                                }
-                                else
-                                {
-                                    return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateMajor(value) });
-                                }
-                                break;
-                            case "description":
-                                if (ValidationEngine.ValidateDescription(value) == ValidationEngine.Success)
-                                {
-                                    pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
-                                }
-                                else
-                                {
-                                    return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateDescription(value) });
-                                }
-                                break;
-                            case "tagLine":
-                                if (ValidationEngine.ValidateDescription(value) == ValidationEngine.Success)
-                                {
-                                    pi.SetValue(user, Convert.ChangeType(value, pi.PropertyType), null);
-                                }
-                                else
-                                {
-                                    return Json(new { Status = 0, Id = id, Error = ValidationEngine.ValidateDescription(value) });
-                                }
-                                break;
-
-                        }
-                        //persist user model to DB with manager updateUser method
-                        user = userManager.UpdateUser(user);
-                        ProfileModel model = new ProfileModel(user);
-                        AnalyticsAccessor aa = new AnalyticsAccessor();
-                        aa.CreateAnalytic("User Update", DateTime.Now, user.userName, "Information updated: " + pi.PropertyType.ToString());
-
-                        return Json(new { Status = 1, Value = value, Id = id });
-                    }
-                    catch (Exception)
-                    {
-                        return Json(new { Status = 0 });
-                    }
+                    return GetFailureMessage("User not authorized to edit this user");
                 }
-                //}
-                //else
-                //{
-                //    //TODO return something to the frontend saying you can't do that
-                //    return null;
-                //}
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return Json(new { Error = "An unknown error occured" });
+                return GetFailureMessage("Something went wrong while updating this user");
             }
         }
 
