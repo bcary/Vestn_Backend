@@ -725,6 +725,10 @@ namespace Manager
                         {
                             ps.name = p.name;
                         }
+                        if (p.description != null)
+                        {
+                            ps.description = p.description;
+                        }
                         if (p.tagIds != "" && p.tagIds != null)
                         {
                             ps.projectTags = GetProjectTags(p.id);

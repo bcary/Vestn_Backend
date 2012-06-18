@@ -52,7 +52,7 @@ namespace Manager
                 CloudBlob inputBlob = blobContainer.GetBlobReference(imageURI);
                 Stream input = inputBlob.OpenRead();
                 Bitmap image = TEngine.CreateThumbnail(input, displayWidth, displayHeight);
-                Uri uri;
+                Uri uri = null;
                 using (MemoryStream stream = new MemoryStream())
                 {
                     // Save image to stream.

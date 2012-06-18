@@ -74,6 +74,7 @@ namespace UserClientMembers.Controllers
                             if (response.StatusCode != HttpStatusCode.NotFound)
                             {
                                 found = true;
+                                Thread.Sleep(300);
                             }
 
                         }
@@ -81,7 +82,7 @@ namespace UserClientMembers.Controllers
                         {
                             Thread.Sleep(500);
                             counter++;
-                            if (counter > 30)
+                            if (counter > 40)
                             {
                                 return GetFailureMessage("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
                             }
@@ -2059,11 +2060,27 @@ namespace UserClientMembers.Controllers
                                     add = 1;
                                 }
                             }
+                            if (requestAll || request.Contains("aboutPicture"))
+                            {
+                                if (u.aboutPicture != null)
+                                {
+                                    ui.aboutPicture = u.aboutPicture;
+                                    add = 1;
+                                }
+                            }
                             if (requestAll || request.Contains("profilePictureThumbnail"))
                             {
                                 if (u.profilePictureThumbnail != null)
                                 {
                                     ui.profilePictureThumbnail = u.profilePictureThumbnail;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("aboutPictureThumbnail"))
+                            {
+                                if (u.aboutPictureThumbnail != null)
+                                {
+                                    ui.aboutPictureThumbnail = u.aboutPictureThumbnail;
                                     add = 1;
                                 }
                             }

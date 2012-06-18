@@ -42,6 +42,12 @@ namespace Entity
             public string profilePictureThumbnail { get; set; }
 
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string aboutPicture { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string aboutPictureThumbnail { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public UserStats stats { get; set; }
 
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
@@ -139,6 +145,8 @@ namespace Entity
             public List<ProjectTag> projectTags { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public List<ArtifactShell> artifacts { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string description { get; set; }
         }
 
         [DataContract]
