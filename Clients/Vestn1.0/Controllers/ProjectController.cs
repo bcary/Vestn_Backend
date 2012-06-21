@@ -780,6 +780,73 @@ namespace UserClientMembers.Controllers
             }
         }
 
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string AddArtifact_Code(int projectId = -1, string code = null, string type = null, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            else
+            {
+                try
+                {
+                    int userId = -1;
+                    if (token != null)
+                    {
+                        userId = authenticationEngine.authenticate(token);
+                    }
+                    else
+                    {
+                        return GetFailureMessage("A token must be passed in");
+                    }
+                    if (userId < 0)
+                    {
+                        return GetFailureMessage("User is not authenticated, please log in!");
+                    }
+                    User user = userManager.GetUser(userId);
+                    if (projectId != null)
+                    {
+                        if (!projectManager.IsUserOwnerOfProject(projectId, user))
+                        {
+                            //return Json(new { Error = "Can't add video at this time" });
+                            return GetFailureMessage("User is not authorized to complete this action");
+                        }
+                    }
+                    else
+                    {
+                        return GetFailureMessage("A projectId must be passed in");
+                    }
+                    JsonModels.Artifact response = new JsonModels.Artifact();
+                    if (code != null && type != null)
+                    {
+                        response = projectManager.AddCodeElement(projectId, code, type);
+                        aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, "Code Sample");
+                    }
+                    else
+                    {
+                        return GetFailureMessage("code and type must be passed in");
+                    }
+                    string returnVal;
+                    try
+                    {
+                        returnVal = Serialize(response);
+                    }
+                    catch (Exception exception)
+                    {
+                        return GetFailureMessage(exception.Message);
+                    }
+                    return AddSuccessHeaders(returnVal);
+                }
+                catch (Exception ex)
+                {
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    return GetFailureMessage("Error occured uploading your video");
+                }
+            }
+        }
+
         /// <summary>
         /// Adds an audio project element to the specified project
         /// </summary>
@@ -1023,7 +1090,7 @@ namespace UserClientMembers.Controllers
         /// <returns></returns>
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
-        public string UpdateProject(int projectId, string propertyId, string propertyValue, string token)
+        public string UpdateProject(int projectId = -1, string propertyId = null, string propertyValue = null, string token = "notset", string qqfile = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -1031,21 +1098,33 @@ namespace UserClientMembers.Controllers
             }
             try
             {
-                int userId = authenticationEngine.authenticate(token);
+                int userId = -1;
+                if (token != null)
+                {
+                    userId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
                 if (userId < 0)
                 {
-                    return GetFailureMessage("User not authenticated, please log in!");
+                    return GetFailureMessage("You are not authenticated, please log in!");
                 }
                 User user = userManager.GetUser(userId);
+                Project project;
+                if (projectId > 0)
+                {
+                    project = projectManager.GetProject(projectId);
+                }
+                else
+                {
+                    return GetFailureMessage("Invalid projectId");
+                }
                 if (!projectManager.IsUserOwnerOfProject(projectId, user))
                 {
                     return GetFailureMessage("User not authorized to update this project!");
                 }
-
-                //strip value of \n characters and replace with <br />
-                propertyValue = StripNewLineAndReplaceWithLineBreaks(propertyValue);
-
-                Project project = projectManager.GetProject(projectId);
 
                 if (project == null)
                 {
@@ -1070,9 +1149,35 @@ namespace UserClientMembers.Controllers
                 {
                     try
                     {
-                        //save changes in local model
-                        pi.SetValue(project, Convert.ChangeType(propertyValue, pi.PropertyType), null);
-
+                        if (qqfile != null || Request.Files.Count != 0)
+                        {
+                            if (propertyId == "coverPicture")
+                            {
+                                var length = Request.ContentLength;
+                                var bytes = new byte[length];
+                                Request.InputStream.Read(bytes, 0, length);
+                                Stream s = new MemoryStream(bytes);
+                                JsonModels.UploadReponse response = new JsonModels.UploadReponse();
+                                response = projectManager.UploadPictureElement(projectId, s, "coverPicture", true);
+                                if (response == null)
+                                {
+                                    return GetFailureMessage("An error occured saving the docuement.");
+                                }
+                                else
+                                {
+                                    return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
+                                }
+                            }
+                        }
+                        if (propertyValue != null)
+                        {
+                            //strip value of \n characters and replace with <br />
+                            propertyValue = StripNewLineAndReplaceWithLineBreaks(propertyValue);
+                        }
+                        else
+                        {
+                            return GetFailureMessage("propertyValue not set");
+                        }
                         if (propertyId == "title")
                         {
                             if (ValidationEngine.ValidateTitle(propertyValue) != ValidationEngine.Success)
@@ -1080,7 +1185,6 @@ namespace UserClientMembers.Controllers
                                 return GetFailureMessage("Title exceeded 100 character limit, project not updated");
                             }
                         }
-
                         if (propertyId == "name")
                         {
                             if (ValidationEngine.ValidateTitle(propertyValue) != ValidationEngine.Success)
@@ -1088,14 +1192,13 @@ namespace UserClientMembers.Controllers
                                 return GetFailureMessage("Name exceeded 100 character limit, project not updated");
                             }
                         }
-
                         //TODO validate description
-
+                        pi.SetValue(project, Convert.ChangeType(propertyValue, pi.PropertyType), null);
                         //persist user model to DB with manager updateUser method
                         project = projectManager.UpdateProject(project);
                         if (project != null)
                         {
-                            return AddSuccessHeaders("Project with id:"+projectId+" successfully updated",true);
+                            return AddSuccessHeaders("Project with id:" + projectId + " successfully updated", true);
                         }
                         else
                         {
@@ -1104,7 +1207,7 @@ namespace UserClientMembers.Controllers
                     }
                     catch (Exception exc)
                     {
-                        
+
                         logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), exc.ToString());
                         return GetFailureMessage("Something went wrong while updating this project");
                     }

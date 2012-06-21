@@ -277,6 +277,40 @@ namespace Manager
 
             return PDFLocation;
         }
+        public string convertUserDocument(string location, string type, int userId, string userName, string presetDocURL)
+        {
+            string PDFLocation = "unassigned";
+            UserAccessor userAccessor = new UserAccessor();
+            User u = userAccessor.GetUser(userId);
+            WebClient client = new WebClient();
+            byte[] data = client.DownloadData(location);
+            MemoryStream outStream = new MemoryStream();
+            try
+            {
+                Word2Pdf convertApi = new Word2Pdf(667067036);
+                //Word2Pdf convertApi = new Word2Pdf();
+                convertApi.ConvertFileByte(data, location.Substring(location.Length - 6, 6), outStream, type);
+                if (userName != "")
+                {
+                    PDFLocation = BSAccessor.uploadPDF(outStream, false).ToString();
+                    PDFLocation = stampThatShit(PDFLocation, userName, presetDocURL);
+                }
+                else
+                {
+                    PDFLocation = BSAccessor.uploadPDF(outStream, false, presetDocURL).ToString();
+                }
+                u.resume = PDFLocation;
+                userAccessor.UpdateFromWorker(u);
+            }
+            catch (Exception e)
+            {
+                return "dummy";
+            }
+
+            outStream.Close();
+
+            return PDFLocation;
+        }
         
     }
 }

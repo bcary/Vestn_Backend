@@ -1105,7 +1105,7 @@ namespace UserClientMembers.Controllers
         //[Authorize]
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
-        public string UpdateUser(int userId, string propertyId, string propertyValue, string token)
+        public string UpdateUser(int userId = -1, string propertyId = null, string propertyValue = null, string token = null, string qqfile = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -1113,23 +1113,33 @@ namespace UserClientMembers.Controllers
             }
             try
             {
-                int authUserId = authenticationEngine.authenticate(token);
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
                 if (authUserId < 0)
                 {
                     return GetFailureMessage("You are not authenticated, please log in!");
                 }
                 User user = userManager.GetUser(userId);
-                //uncomment this when authentication works
+                if (user == null)
+                {
+                    return GetFailureMessage("User not found");
+                }
                 if (userId == authUserId)
                 {
-                    if (user == null)
-                    {
-                        return GetFailureMessage("User not found");
-                    }
-
                     System.Reflection.PropertyInfo pi = null;
                     if (propertyId != null)
                     {
+                        if (propertyId == "coverPicture")
+                        {
+                            propertyId = "aboutPicture";//Its called a coverPicture on the site, but an aboutPicture in the database
+                        }
                         pi = user.GetType().GetProperty(propertyId);
                     }
                     else
@@ -1149,9 +1159,92 @@ namespace UserClientMembers.Controllers
                             {
                                 propertyValue = StripNewLineAndReplaceWithLineBreaks(propertyValue);
                             }
+                            else if (propertyId == "profilePicture" || propertyId == "aboutPicture")
+                            {
+                                //its OK for propertyValue to be null
+                            }
                             else
                             {
                                 return GetFailureMessage("You must pass in a propertyValue to set");
+                            }
+                            bool postedFile = false;
+                            if (qqfile != null || Request.Files.Count == 1)
+                            {
+                                postedFile = true;
+                            }
+                            if (postedFile)
+                            {
+                                if (propertyId == "aboutPicture")
+                                {
+                                    var length = Request.ContentLength;
+                                    var bytes = new byte[length];
+                                    Request.InputStream.Read(bytes, 0, length);
+                                    Stream s = new MemoryStream(bytes);
+                                    string returnPic = userManager.UploadUserPicture(user, s, "About");
+                                    return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                                }
+                                else if (propertyId == "profilePicture")
+                                {
+                                    var length = Request.ContentLength;
+                                    var bytes = new byte[length];
+                                    Request.InputStream.Read(bytes, 0, length);
+                                    Stream s = new MemoryStream(bytes);
+                                    if (user.profilePicture != null && user.profilePictureThumbnail != null)
+                                    {
+                                        userManager.DeleteProfilePicture(user);
+                                    }
+                                    string returnPic = userManager.UploadUserPicture(user, s, "Profile");
+                                    return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                                }
+                                else if (propertyId == "resume")
+                                {
+                                    string fileName = null;
+                                    if (qqfile == null)
+                                    {
+                                        fileName = Request.Files.Get(0).FileName;
+                                    }
+                                    else
+                                    {
+                                        fileName = qqfile;
+                                    }
+                                    var length = Request.ContentLength;
+                                    var bytes = new byte[length];
+                                    Request.InputStream.Read(bytes, 0, length);
+                                    Stream fs = new MemoryStream(bytes);
+                                    string[] s2 = fileName.Split('.');
+                                    string fileType = s2[s2.Count() - 1].ToLower();
+
+                                    string resumeUri = null;
+                                    if (String.Compare(fileType, "pdf", true) == 0)
+                                    {
+                                        resumeUri = userManager.UploadResumePDF(user, fs);
+                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                    }
+                                    else if (String.Compare(fileType, "doc", true) == 0)
+                                    {
+                                        resumeUri = userManager.UploadResumeDoc(user, fs);
+                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                    }
+                                    else if (String.Compare(fileType, "docx", true) == 0)
+                                    {
+                                        resumeUri = userManager.UploadResumeDocx(user, fs);
+                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                    }
+                                    else if (String.Compare(fileType, "rtf", true) == 0)
+                                    {
+                                        resumeUri = userManager.UploadResumeRTF(user, fs);
+                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                    }
+                                    else if (String.Compare(fileType, "txt", true) == 0)
+                                    {
+                                        resumeUri = userManager.UploadResumeTXT(user, fs);
+                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                    }
+                                    else
+                                    {
+                                        return GetFailureMessage("Document Type not supported");
+                                    }
+                                }
                             }
                             switch (propertyId)
                             {
@@ -1632,139 +1725,139 @@ namespace UserClientMembers.Controllers
         //    return userManager.GetUser(user.id);
         //}
 
-        [Authorize]
-        [HttpPost]
-        public JsonResult UpdateProfilePicture()
-        {
-            try
-            {
-                User user = userManager.GetUser(User.Identity.Name);
+        //[Authorize]
+        //[HttpPost]
+        //public JsonResult UpdateProfilePicture()
+        //{
+        //    try
+        //    {
+        //        User user = userManager.GetUser(User.Identity.Name);
 
-                if (Request != null)
-                {
-                    if (Request.Files.Count == 0)
-                    {
-                        return Json(new { Error = "No files submitted to server" });
-                    }
-                    else if (Request.Files[0].ContentLength == 0)
-                    {
-                        return Json(new { Error = "No files submitted to server" });
-                    }
+        //        if (Request != null)
+        //        {
+        //            if (Request.Files.Count == 0)
+        //            {
+        //                return Json(new { Error = "No files submitted to server" });
+        //            }
+        //            else if (Request.Files[0].ContentLength == 0)
+        //            {
+        //                return Json(new { Error = "No files submitted to server" });
+        //            }
 
-                    foreach (string inputFileId in Request.Files)
-                    {
-                        HttpPostedFileBase file = Request.Files[inputFileId];
-                        if (file.ContentLength > 0)
-                        {
+        //            foreach (string inputFileId in Request.Files)
+        //            {
+        //                HttpPostedFileBase file = Request.Files[inputFileId];
+        //                if (file.ContentLength > 0)
+        //                {
 
-                            System.IO.Stream fs = file.InputStream;
+        //                    System.IO.Stream fs = file.InputStream;
 
-                            if (ValidationEngine.ValidatePicture(file) != ValidationEngine.Success)
-                            {
-                                return Json(new { Error = ValidationEngine.ValidatePicture(file) });
-                            }
+        //                    if (ValidationEngine.ValidatePicture(file) != ValidationEngine.Success)
+        //                    {
+        //                        return Json(new { Error = ValidationEngine.ValidatePicture(file) });
+        //                    }
 
-                            if (user.profilePicture != null && user.profilePictureThumbnail != null)
-                            {
-                                userManager.DeleteProfilePicture(user);
-                            }
-                            user = userManager.UploadUserPicture(user, fs, "Profile");
-                        }
-                    }
-                }
-                else
-                {
-                    return Json(new { Error = "Server did not receive file post" });
-                }
+        //                    if (user.profilePicture != null && user.profilePictureThumbnail != null)
+        //                    {
+        //                        userManager.DeleteProfilePicture(user);
+        //                    }
+        //                    user = userManager.UploadUserPicture(user, fs, "Profile");
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return Json(new { Error = "Server did not receive file post" });
+        //        }
 
-                return Json(new { PictureLocation = "http://vestnstorage.blob.core.windows.net/images/uploadSuccessful2.png" });
+        //        return Json(new { PictureLocation = "http://vestnstorage.blob.core.windows.net/images/uploadSuccessful2.png" });
 
-                //return Json(new { Status = "success", responseText = RedirectToAction("Profile", "User", new ProfileModel(user)) });
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return Json(new { Error = "Problem saving to cloud" });
-            }
-        }
+        //        //return Json(new { Status = "success", responseText = RedirectToAction("Profile", "User", new ProfileModel(user)) });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+        //        return Json(new { Error = "Problem saving to cloud" });
+        //    }
+        //}
 
 
 
-        [Authorize]
-        public JsonResult UpdateResume()
-        {
-            try
-            {
-                User user = userManager.GetUser(User.Identity.Name);
+        //[Authorize]
+        //public JsonResult UpdateResume()
+        //{
+        //    try
+        //    {
+        //        User user = userManager.GetUser(User.Identity.Name);
 
-                if (Request != null)
-                {
-                    if (Request.Files.Count == 0)
-                    {
-                        return Json(new { Error = "No files submitted to server" });
-                    }
-                    else if (Request.Files[0].ContentLength == 0)
-                    {
-                        return Json(new { Error = "No files submitted to server" });
-                    }
+        //        if (Request != null)
+        //        {
+        //            if (Request.Files.Count == 0)
+        //            {
+        //                return Json(new { Error = "No files submitted to server" });
+        //            }
+        //            else if (Request.Files[0].ContentLength == 0)
+        //            {
+        //                return Json(new { Error = "No files submitted to server" });
+        //            }
 
-                    foreach (string inputFileId in Request.Files)
-                    {
-                        HttpPostedFileBase file = Request.Files[inputFileId];
-                        if (file.ContentLength > 0)
-                        {
-                            System.IO.Stream fs = file.InputStream;
-                            string s = file.FileName;
-                            string[] s2 = s.Split('.');
-                            string fileType = s2[s2.Count() - 1].ToLower();
+        //            foreach (string inputFileId in Request.Files)
+        //            {
+        //                HttpPostedFileBase file = Request.Files[inputFileId];
+        //                if (file.ContentLength > 0)
+        //                {
+        //                    System.IO.Stream fs = file.InputStream;
+        //                    string s = file.FileName;
+        //                    string[] s2 = s.Split('.');
+        //                    string fileType = s2[s2.Count() - 1].ToLower();
 
-                            if (ValidationEngine.ValidateDocument(file) != ValidationEngine.Success)
-                            {
-                                return Json(new { Error = ValidationEngine.ValidateDocument(file) });
-                            }
+        //                    if (ValidationEngine.ValidateDocument(file) != ValidationEngine.Success)
+        //                    {
+        //                        return Json(new { Error = ValidationEngine.ValidateDocument(file) });
+        //                    }
 
-                            if (fileType == "pdf")
-                            {
-                                user = userManager.UploadResumePDF(user, fs);
-                            }
-                            else if (fileType == "doc")
-                            {
-                                user = userManager.UploadResumeDoc(user, fs);
-                            }
-                            else if (fileType == "docx")
-                            {
-                                user = userManager.UploadResumeDocx(user, fs);
-                            }
-                            else if (fileType == "rtf")
-                            {
-                                user = userManager.UploadResumeRTF(user, fs);
-                            }
-                            else if (fileType == "txt")
-                            {
-                                user = userManager.UploadResumeTXT(user, fs);
-                            }
-                            else
-                            {
-                                return Json(new { Error = "File type not supported for resumes." });
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    return Json(new { Error = "Server did not receive file post" });
-                }
+        //                    if (fileType == "pdf")
+        //                    {
+        //                        user = userManager.UploadResumePDF(user, fs);
+        //                    }
+        //                    else if (fileType == "doc")
+        //                    {
+        //                        user = userManager.UploadResumeDoc(user, fs);
+        //                    }
+        //                    else if (fileType == "docx")
+        //                    {
+        //                        user = userManager.UploadResumeDocx(user, fs);
+        //                    }
+        //                    else if (fileType == "rtf")
+        //                    {
+        //                        user = userManager.UploadResumeRTF(user, fs);
+        //                    }
+        //                    else if (fileType == "txt")
+        //                    {
+        //                        user = userManager.UploadResumeTXT(user, fs);
+        //                    }
+        //                    else
+        //                    {
+        //                        return Json(new { Error = "File type not supported for resumes." });
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return Json(new { Error = "Server did not receive file post" });
+        //        }
 
-                return Json(new { UpdatedPartial = RenderPartialViewToString("_UserResume", new ProfileModel(user)) });
+        //        return Json(new { UpdatedPartial = RenderPartialViewToString("_UserResume", new ProfileModel(user)) });
 
-                //return Json(new { Status = "success", responseText = RedirectToAction("Profile", "User", new ProfileModel(user)) });
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return Json(new { Error = "Problem saving to cloud" });
-            }
-        }
+        //        //return Json(new { Status = "success", responseText = RedirectToAction("Profile", "User", new ProfileModel(user)) });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+        //        return Json(new { Error = "Problem saving to cloud" });
+        //    }
+        //}
 
         //This get use by both add feedback and Get help request
         public JsonResult AddFeedback(string message, string subject)
@@ -1945,7 +2038,7 @@ namespace UserClientMembers.Controllers
         /// <returns>Json Object of UserInformation class</returns>
         /// 
         [AcceptVerbs("POST", "OPTIONS")]
-        public string GetUserInformation(int[] id, string[] request, string token)
+        public string  GetUserInformation(int[] id, string[] request, string token)
         {
             Response.AddHeader("Access-Control-Allow-Origin", "*");
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request

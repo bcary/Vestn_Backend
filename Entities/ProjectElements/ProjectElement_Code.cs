@@ -5,8 +5,10 @@ using System.Text;
 
 namespace Entity
 {
-    class ProjectElement_Code : ProjectElement
+    public class ProjectElement_Code : ProjectElement
     {
-        
+        public string code { get; set; }
+        public string type { get; set; }
+        public string fileLocation { get; set;}
     }
 }

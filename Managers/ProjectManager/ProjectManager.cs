@@ -124,7 +124,7 @@ namespace Manager
             return new JsonModels.Artifact { id = pID, artifactLocation = pe.videoId, title = pe.title, fileLocation = pe.videoId, type = "video", description = "This is a video artifact!" };
         }
 
-        public JsonModels.UploadReponse UploadPictureElement(int projectId, Stream pictureStream, string fileName)
+        public JsonModels.UploadReponse UploadPictureElement(int projectId, Stream pictureStream, string fileName, bool isCoverPicture = false)
         {
             BlobStorageAccessor blobStorageAccessor = new BlobStorageAccessor();
             UploadManager uploadManager = new UploadManager();
@@ -138,29 +138,38 @@ namespace Manager
         
             string imageURI = blobStorageAccessor.uploadImage(pictureStream, false).ToString();
             Project p = pa.GetProject(projectId);
-
-            ProjectElement_Picture pe = new ProjectElement_Picture
+            if (isCoverPicture)
             {
-                title = GetTitle(fileName),
-                pictureLocation = imageURI
-            };
-            int projectElementId = pa.AddProjectElement(p, pe);
-            if (projectElementId == -1)
-            {
-                return null;
+                string FileNameThumb1 = Guid.NewGuid().ToString();
+                string artifactURL1 = string.Format("{0}{1}", FileNameThumb1, ".jpeg");
+                CloudQueueMessage message3 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, p.id, "thumbnail", "ProjectPicture", 635, 397, "", artifactURL1));
+                queue.AddMessage(message3);
+                return new JsonModels.UploadReponse { id = p.id, fileURL = imageURI, name = fileName, galeriaURL = "noGalleryURL", artifactURL = artifactURL1, description = "default description" };
             }
+            else
+            {
+                ProjectElement_Picture pe = new ProjectElement_Picture
+                {
+                    title = GetTitle(fileName),
+                    pictureLocation = imageURI
+                };
+                int projectElementId = pa.AddProjectElement(p, pe);
+                if (projectElementId == -1)
+                {
+                    return null;
+                }
 
-            String FileNameThumb = Guid.NewGuid().ToString();
-            string artifactURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
-            String FileNameGaleria = Guid.NewGuid().ToString();
-            string galleryURL = string.Format("{0}{1}", FileNameGaleria, ".jpeg");
+                string FileNameThumb = Guid.NewGuid().ToString();
+                string artifactURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
+                string FileNameGaleria = Guid.NewGuid().ToString();
+                string galleryURL = string.Format("{0}{1}", FileNameGaleria, ".jpeg");
 
-            CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement", 635, 397, "", artifactURL));
-            CloudQueueMessage message2 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement_Galleria", 1000, 750, "", galleryURL));
-            queue.AddMessage(message);
-            queue.AddMessage(message2);
-
-            return new JsonModels.UploadReponse { id = projectElementId, fileURL = imageURI, name = fileName, galeriaURL = galleryURL, artifactURL = artifactURL, description="default description" };
+                CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement", 635, 397, "", artifactURL));
+                CloudQueueMessage message2 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement_Galleria", 1000, 750, "", galleryURL));
+                queue.AddMessage(message);
+                queue.AddMessage(message2);
+                return new JsonModels.UploadReponse { id = projectElementId, fileURL = imageURI, name = fileName, galeriaURL = galleryURL, artifactURL = artifactURL, description = "default description" };
+            }
         }
 
         public JsonModels.UploadReponse AddAudioElement(int projectId, string description, Stream fileStream, string fileName)
@@ -310,6 +319,21 @@ namespace Manager
                 return new JsonModels.UploadReponse { id = projectElementId, fileURL = location, name = fileName };
             }
             return new JsonModels.UploadReponse { id = projectElementId, fileURL = location, artifactURL = uniqueBlobName, name = fileName };
+        }
+
+        public JsonModels.Artifact AddCodeElement(int projectId, string code, string type)
+        {
+            Project p = pa.GetProject(projectId);
+            ProjectElement_Code pe = new ProjectElement_Code
+            {
+                code = code,
+                type = "code",
+                description = "New Artifact Description",
+                fileLocation = type,
+                title = "New Code Sample"
+            };
+            int projectElementId = pa.AddProjectElement(p, pe);
+            return new JsonModels.Artifact { id = pe.id, artifactLocation = code, description = pe.description, title = pe.title, type = pe.type, fileLocation = type };
         }
 
         //This method is use by uploadVideo page when the user upload the video

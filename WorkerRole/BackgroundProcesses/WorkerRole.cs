@@ -79,6 +79,11 @@ namespace BackgroundProcesses
                             UploadManager uploadManager = new UploadManager();
                             uploadManager.convertDocument(mediaURI, type, ID, userFullName, presetDocURL);
                         }
+                        else if (operation.Equals("userDocumentConversion"))
+                        {
+                            UploadManager uploadManager = new UploadManager();
+                            uploadManager.convertUserDocument(mediaURI, type, ID, userFullName, presetDocURL);
+                        }
                         queue.DeleteMessage(msg);
                     }
 

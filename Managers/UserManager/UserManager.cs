@@ -24,8 +24,12 @@ namespace Manager
 
         UserAccessor userAccessor = new UserAccessor();
         BlobStorageAccessor blobStorageAccessor = new BlobStorageAccessor();
+        CloudQueueClient queueClient;
+        CloudQueue queue;
+        CloudStorageAccount storageAccount;
+        string messageQueueName = "uploadqueue";
 
-        public User UploadUserPicture(User user, Stream stmPicture, string type)
+        public string UploadUserPicture(User user, Stream stmPicture, string type)
         {
             string messageQueueName = "uploadqueue"; //queue name must be in lower case
             CloudQueueClient queueClient;
@@ -41,25 +45,33 @@ namespace Manager
             }
             else if (stmPicture == null)
             {
-                return user;//return user without updating
+                return "error saving picture - userManager";//return user without updating
             }
-
+            string photoURL = "notset";
             if (CheckImageSize(stmPicture, 10000000))
             {
                 CloudQueueMessage message = null;
                 if (type == "Profile")
                 {
+                    
+                    String FileNameThumb = Guid.NewGuid().ToString();
+                    string artifactURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
                     user.profilePicture = blobStorageAccessor.uploadImage(stmPicture, false).ToString();
-                    message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5}", user.profilePicture, user.id, "thumbnail", "User", "175","175"));
+                    photoURL = artifactURL;
+                    message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", user.profilePicture, user.id, "thumbnail", "User", 100, 100, "", artifactURL));
                 }
                 else if (type == "About")
                 {
-                    message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5}", user.aboutPicture, user.id, "thumbnail", "About", "175", "175"));
+                    String FileNameThumb = Guid.NewGuid().ToString();
+                    string artifactURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
                     user.aboutPicture = blobStorageAccessor.uploadImage(stmPicture, false).ToString();
+                    photoURL = artifactURL;
+                    message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", user.aboutPicture, user.id, "thumbnail", "About", 266, 266, "", artifactURL));
+                    
                 }
                 user = UpdateUser(user);
                 queue.AddMessage(message);
-                return user;
+                return photoURL;
             }
             else
                 return null;
@@ -349,66 +361,98 @@ namespace Manager
             return u;
         }
 
-        public User UploadResumeDoc(User user, Stream stmDoc)
+        public string UploadResumeDoc(User user, Stream stmDoc)
         {
 
             if (CheckImageSize(stmDoc, 20000000))
             {
-                user.resume = blobStorageAccessor.uploadDOC(stmDoc, false, ".doc").ToString();
-                user = UpdateUser(user);
-                return user;
+                storageAccount = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("BlobConnectionString"));
+                queueClient = storageAccount.CreateCloudQueueClient();
+                queue = queueClient.GetQueueReference(messageQueueName);
+                queue.CreateIfNotExist();
+                string fullName = user.firstName + " " + user.lastName;
+                String FileName = Guid.NewGuid().ToString();
+                string uniqueBlobName = string.Format("{0}{1}", FileName, ".pdf");
+                string resumeLocation = blobStorageAccessor.uploadDOC(stmDoc, false, ".doc").ToString();
+                CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", resumeLocation, user.id, "userDocumentConversion", @"http://do.convertapi.com/Word2Pdf", 0, 0, fullName, uniqueBlobName));
+                queue.AddMessage(message);
+                return uniqueBlobName;
             }
             else
                 return null;
         }
 
-        public User UploadResumeDocx(User user, Stream stmDoc)
+        public string UploadResumeDocx(User user, Stream stmDoc)
         {
 
             if (CheckImageSize(stmDoc, 20000000))
             {
-                user.resume = blobStorageAccessor.uploadDOC(stmDoc, false, ".docx").ToString();
-                user = UpdateUser(user);
-                return user;
+                storageAccount = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("BlobConnectionString"));
+                queueClient = storageAccount.CreateCloudQueueClient();
+                queue = queueClient.GetQueueReference(messageQueueName);
+                queue.CreateIfNotExist();
+                string fullName = user.firstName + " " + user.lastName;
+                String FileName = Guid.NewGuid().ToString();
+                string uniqueBlobName = string.Format("{0}{1}", FileName, ".pdf");
+                string resumeLocation = blobStorageAccessor.uploadDOC(stmDoc, false, ".docx").ToString();
+                CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", resumeLocation, user.id, "userDocumentConversion", @"http://do.convertapi.com/Word2Pdf", 0, 0, fullName, uniqueBlobName));
+                queue.AddMessage(message);
+                return uniqueBlobName;
             }
             else
                 return null;
         }
 
-        public User UploadResumePDF(User user, Stream s)
+        public string UploadResumePDF(User user, Stream s)
         {
 
             if (CheckImageSize(s, 20000000))
             {
                 user.resume = blobStorageAccessor.uploadPDF(s, false).ToString();
                 user = UpdateUser(user);
-                return user;
+                return user.resume;
             }
             else
                 return null;
         }
 
-        public User UploadResumeRTF(User user, Stream s)
+        public string UploadResumeRTF(User user, Stream s)
         {
 
             if (CheckImageSize(s, 20000000))
             {
-                user.resume = blobStorageAccessor.uploadUnknown(s, false, "rtf").ToString();
-                user = UpdateUser(user);
-                return user;
+                storageAccount = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("BlobConnectionString"));
+                queueClient = storageAccount.CreateCloudQueueClient();
+                queue = queueClient.GetQueueReference(messageQueueName);
+                queue.CreateIfNotExist();
+                string fullName = user.firstName + " " + user.lastName;
+                String FileName = Guid.NewGuid().ToString();
+                string uniqueBlobName = string.Format("{0}{1}", FileName, ".pdf");
+                string resumeLocation = blobStorageAccessor.uploadUnknown(s, false, "rtf").ToString();
+                CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", resumeLocation, user.id, "userDocumentConversion", @"http://do.convertapi.com/RichText2Pdf", 0, 0, fullName, uniqueBlobName));
+                queue.AddMessage(message);
+                return uniqueBlobName;
             }
             else
                 return null;
         }
 
-        public User UploadResumeTXT(User user, Stream s)
+        public string UploadResumeTXT(User user, Stream s)
         {
 
             if (CheckImageSize(s, 20000000))
             {
-                user.resume = blobStorageAccessor.uploadUnknown(s, false, "txt").ToString();
-                user = UpdateUser(user);
-                return user;
+                storageAccount = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("BlobConnectionString"));
+                queueClient = storageAccount.CreateCloudQueueClient();
+                queue = queueClient.GetQueueReference(messageQueueName);
+                queue.CreateIfNotExist();
+                string fullName = user.firstName + " " + user.lastName;
+                String FileName = Guid.NewGuid().ToString();
+                string uniqueBlobName = string.Format("{0}{1}", FileName, ".pdf");
+                string resumeLocation = blobStorageAccessor.uploadUnknown(s, false, "txt").ToString();
+                CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", resumeLocation, user.id, "userDocumentConversion", @"http://do.convertapi.com/Text2Pdf", 0, 0, fullName, uniqueBlobName));
+                queue.AddMessage(message);
+                return uniqueBlobName;
             }
             else
                 return null;
