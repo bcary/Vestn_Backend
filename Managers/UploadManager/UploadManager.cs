@@ -304,7 +304,7 @@ namespace Manager
             }
             catch (Exception e)
             {
-                return "dummy";
+                return e.StackTrace;
             }
 
             outStream.Close();

@@ -905,40 +905,63 @@ namespace Manager
                         }
                         add = 1;
                     }
-                    else if (pe.GetType() == typeof(ProjectElement_Experience))
+                    else if (pe.GetType() == typeof(ProjectElement_Code))
                     {
-                        a.type = "experience";
-                        ProjectElement_Experience pee = (ProjectElement_Experience)pe;
-                        if (pee.city != null)
+                        a.type = "code";
+                        ProjectElement_Code pec = (ProjectElement_Code)pe;
+                        if (pec.code != null)
                         {
-                            a.city = pee.city;
+                            a.artifactLocation = pec.code;
                         }
-                        if (pee.description != null)
+                        if (pec.description != null)
                         {
-                            a.description = pee.description;
+                            a.description = pec.description;
                         }
-                        if (pee.jobTitle != null)
+                        a.creationDate = "?/?/????";
+                        if (pec.title != null)
                         {
-                            a.title = pee.jobTitle;
+                            a.title = pec.title;
                         }
-                        if (pee.company != null)
+                        if (pec.fileLocation != null)
                         {
-                            a.company = pee.company;
-                        }
-                        if (pee.endDate != null)
-                        {
-                            a.endDate = pee.endDate.ToShortDateString();
-                        }
-                        if (pee.startDate != null)
-                        {
-                            a.startDate = pee.startDate.ToShortDateString();
-                        }
-                        if (pee.state != null)
-                        {
-                            a.state = pee.state;
+                            a.fileLocation = pec.fileLocation;
                         }
                         add = 1;
                     }
+                    //else if (pe.GetType() == typeof(ProjectElement_Experience))
+                    //{
+                    //    a.type = "experience";
+                    //    ProjectElement_Experience pee = (ProjectElement_Experience)pe;
+                    //    if (pee.city != null)
+                    //    {
+                    //        a.city = pee.city;
+                    //    }
+                    //    if (pee.description != null)
+                    //    {
+                    //        a.description = pee.description;
+                    //    }
+                    //    if (pee.jobTitle != null)
+                    //    {
+                    //        a.title = pee.jobTitle;
+                    //    }
+                    //    if (pee.company != null)
+                    //    {
+                    //        a.company = pee.company;
+                    //    }
+                    //    if (pee.endDate != null)
+                    //    {
+                    //        a.endDate = pee.endDate.ToShortDateString();
+                    //    }
+                    //    if (pee.startDate != null)
+                    //    {
+                    //        a.startDate = pee.startDate.ToShortDateString();
+                    //    }
+                    //    if (pee.state != null)
+                    //    {
+                    //        a.state = pee.state;
+                    //    }
+                    //    add = 1;
+                    //}
                 }
                 if (add == 1)
                 {

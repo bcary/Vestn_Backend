@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ServiceDefinition name="Vestn1.0.Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition">
   <WebRole name="Vestn1.0" vmsize="Small">
-    <Sites>
+    <!--<Sites>
       <Site name="Web">
         <Bindings>
           <Binding name="Endpoint1" endpointName="Endpoint1" />
         </Bindings>
       </Site>
-    </Sites>
+    </Sites>-->
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />
     </Endpoints>

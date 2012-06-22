@@ -1159,7 +1159,7 @@ namespace UserClientMembers.Controllers
                             {
                                 propertyValue = StripNewLineAndReplaceWithLineBreaks(propertyValue);
                             }
-                            else if (propertyId == "profilePicture" || propertyId == "aboutPicture")
+                            else if (propertyId == "profilePicture" || propertyId == "aboutPicture" || propertyId == "resume")
                             {
                                 //its OK for propertyValue to be null
                             }
