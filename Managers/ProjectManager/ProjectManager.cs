@@ -144,6 +144,7 @@ namespace Manager
                 string artifactURL1 = string.Format("{0}{1}", FileNameThumb1, ".jpeg");
                 CloudQueueMessage message3 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, p.id, "thumbnail", "ProjectPicture", 635, 397, "", artifactURL1));
                 queue.AddMessage(message3);
+                p.coverPictureThumbnail = "https://vestnstaging.blob.core.windows.net/images/thumbnails" + artifactURL1;
                 return new JsonModels.UploadReponse { id = p.id, fileURL = imageURI, name = fileName, galeriaURL = "noGalleryURL", artifactURL = artifactURL1, description = "default description" };
             }
             else

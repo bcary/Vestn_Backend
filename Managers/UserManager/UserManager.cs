@@ -57,6 +57,7 @@ namespace Manager
                     String FileNameThumb = Guid.NewGuid().ToString();
                     string artifactURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
                     user.profilePicture = blobStorageAccessor.uploadImage(stmPicture, false).ToString();
+                    user.profilePictureThumbnail = "http://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL;
                     photoURL = artifactURL;
                     message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", user.profilePicture, user.id, "thumbnail", "User", 100, 100, "", artifactURL));
                 }
@@ -65,6 +66,7 @@ namespace Manager
                     String FileNameThumb = Guid.NewGuid().ToString();
                     string artifactURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
                     user.aboutPicture = blobStorageAccessor.uploadImage(stmPicture, false).ToString();
+                    user.aboutPictureThumbnail = "http://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL;
                     photoURL = artifactURL;
                     message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", user.aboutPicture, user.id, "thumbnail", "About", 266, 266, "", artifactURL));
                     
