@@ -83,27 +83,27 @@ namespace Entity
             public int numberOfArtifacts { get; set; }
         }
 
-        [DataContract]
-        public class Experience
-        {
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string jobTitle { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string jobDescription { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string company { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string startDate { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string endDate { get; set; }
-        }
+        //[DataContract]
+        //public class Experience
+        //{
+        //    [DataMember(IsRequired = false, EmitDefaultValue = false)]
+        //    public string jobTitle { get; set; }
+        //    [DataMember(IsRequired = false, EmitDefaultValue = false)]
+        //    public string jobDescription { get; set; }
+        //    [DataMember(IsRequired = false, EmitDefaultValue = false)]
+        //    public string company { get; set; }
+        //    [DataMember(IsRequired = false, EmitDefaultValue = false)]
+        //    public string startDate { get; set; }
+        //    [DataMember(IsRequired = false, EmitDefaultValue = false)]
+        //    public string endDate { get; set; }
+        //}
 
-        [DataContract]
-        public class Reference
-        {
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string name { get; set; }
-        }
+        //[DataContract]
+        //public class Reference
+        //{
+        //    [DataMember(IsRequired = false, EmitDefaultValue = false)]
+        //    public string name { get; set; }
+        //}
 
         [DataContract]
         public class Links
@@ -269,6 +269,52 @@ namespace Entity
             public string galeriaURL { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string description { get; set; }
+        }
+
+        [DataContract]
+        public class Experience
+        {
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public int id { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string title { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string description { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string startDate { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string endDate { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string city { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string state { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string company { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public int userId { get; set; }
+        }
+
+        [DataContract]
+        public class Reference
+        {
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public int id { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string firstName { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string lastName { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string email { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string company { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string title { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string message { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string videoLink { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public int userId { get; set; }
         }
     }
 }

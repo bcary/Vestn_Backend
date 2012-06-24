@@ -508,8 +508,185 @@ namespace Accessor
             {
                 u.connections = u.connections + "," + connection;
             }
-            
+
             return UpdateUser(u);
+        }
+
+        public Experience AddExperience(Experience experience)
+        {
+            try
+            {
+                if (experience != null)
+                {
+                    VestnDB db = new VestnDB();
+                    db.experience.Add(experience);
+                    db.SaveChanges();
+                    return experience;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userAccessor - AddExperience", e.StackTrace);
+                return null;
+            }
+        }
+        public Experience GetExperience(int experienceId)
+        {
+            try
+            {
+                if (experienceId != null)
+                {
+                    VestnDB db = new VestnDB();
+                    Experience experience = (from c in db.experience where c.id == experienceId select c).FirstOrDefault();
+                    return experience;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception e)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userAccessor - GetExperience", e.StackTrace);
+                return null;
+            }
+        }
+        public Experience UpdateExperience(Experience experience)
+        {
+            try
+            {
+                if (experience != null)
+                {
+                    VestnDB db = new VestnDB();
+                    db.Entry(experience).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return experience;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userAccessor - UpdateExperience", e.StackTrace);
+                return null;
+            }
+        }
+        public bool DeleteExperience(Experience experience)
+        {
+            try
+            {
+                bool wasDeleted = false;
+                if (experience != null)
+                {
+                    VestnDB db = new VestnDB();
+                    db.experience.Remove(experience);
+                    wasDeleted = true;
+                    return wasDeleted;
+                }
+                else
+                {
+                    return wasDeleted;
+                }
+            }
+            catch (Exception e)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userAccessor - deleteExperience", e.StackTrace);
+                return false;
+            }
+        }
+        public Reference AddReference(Reference reference)
+        {
+            try
+            {
+                if (reference != null)
+                {
+                    VestnDB db = new VestnDB();
+                    db.reference.Add(reference);
+                    db.SaveChanges();
+                    return reference;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userAccessor - AddReference", e.StackTrace);
+                return null;
+            }
+        }
+        public Reference GetReference(int referenceId)
+        {
+            try
+            {
+                if (referenceId != null)
+                {
+                    VestnDB db = new VestnDB();
+                    Reference reference = (from c in db.reference where c.id == referenceId select c).FirstOrDefault();
+                    return reference;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userAccessor - GetReference", e.StackTrace);
+                return null;
+            }
+        }
+        public Reference UpdateReference(Reference reference)
+        {
+            try
+            {
+                if (reference != null)
+                {
+                    VestnDB db = new VestnDB();
+                    db.Entry(reference).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return reference;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userAccessor - UpdateReference", e.StackTrace);
+                return null;
+            }
+        }
+        public bool DeleteReference(Reference reference)
+        {
+            try
+            {
+                bool wasDeleted = false;
+                if (reference != null)
+                {
+                    VestnDB db = new VestnDB();
+                    db.reference.Remove(reference);
+                    wasDeleted = true;
+                    return wasDeleted;
+                }
+                else
+                {
+                    return wasDeleted;
+                }
+            }
+            catch (Exception e)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userAccessor - deleteReference", e.StackTrace);
+                return false;
+            }
         }
     }
 }

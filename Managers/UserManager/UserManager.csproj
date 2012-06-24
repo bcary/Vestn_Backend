@@ -111,6 +111,14 @@
       <Project>{F901A9F4-174A-439A-9F25-7F9D3D9FD4F1}</Project>
       <Name>ProjectElements</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Experience\Experience.csproj">
+      <Project>{521D93DE-630B-4883-BCED-B58DE8F4A138}</Project>
+      <Name>Experience</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Reference\Reference.csproj">
+      <Project>{3F32D179-8AE5-4B56-97A2-2718ED0D0522}</Project>
+      <Name>Reference</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProjectManager\ProjectManager.csproj">
       <Project>{C9CDDD0E-C63C-4DD3-8005-1E73A426BAAA}</Project>
       <Name>ProjectManager</Name>

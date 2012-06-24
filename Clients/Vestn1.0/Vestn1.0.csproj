@@ -364,6 +364,10 @@
       <Project>{835E4CCE-E754-4368-9D60-D6D2DC0FDEEE}</Project>
       <Name>DatabaseContext</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Experience\Experience.csproj">
+      <Project>{521D93DE-630B-4883-BCED-B58DE8F4A138}</Project>
+      <Name>Experience</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Managers\CommunicationManager\CommunicationManager.csproj">
       <Project>{1EE4B5CB-CC17-448C-8992-FCB4E2058656}</Project>
       <Name>CommunicationManager</Name>
@@ -431,6 +435,10 @@
     <ProjectReference Include="..\..\Engines\ValidationEngine\ValidationEngine.csproj">
       <Project>{E4F892EF-FB39-4408-928A-05AC3DEFDB87}</Project>
       <Name>ValidationEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Reference\Reference.csproj">
+      <Project>{3F32D179-8AE5-4B56-97A2-2718ED0D0522}</Project>
+      <Name>Reference</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

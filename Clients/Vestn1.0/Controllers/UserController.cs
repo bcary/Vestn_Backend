@@ -2195,24 +2195,24 @@ namespace UserClientMembers.Controllers
                                     add = 1;
                                 }
                             }
-                            if (requestAll || request.Contains("experiences"))
-                            {
-                                List<JsonModels.Experience> experiences = userManager.GetUserExperiences(ID);
-                                if (experiences != null && experiences.Count != 0)
-                                {
-                                    ui.experiences = experiences;
-                                    add = 1;
-                                }
-                            }
-                            if (requestAll || request.Contains("references"))
-                            {
-                                List<JsonModels.Reference> references = userManager.GetUserReferences(ID);
-                                if (references != null && references.Count != 0)
-                                {
-                                    ui.references = references;
-                                    add = 1;
-                                }
-                            }
+                            //if (requestAll || request.Contains("experiences"))
+                            //{
+                            //    List<JsonModels.Experience> experiences = userManager.GetUserExperiences(ID);
+                            //    if (experiences != null && experiences.Count != 0)
+                            //    {
+                            //        ui.experiences = experiences;
+                            //        add = 1;
+                            //    }
+                            //}
+                            //if (requestAll || request.Contains("references"))
+                            //{
+                            //    List<JsonModels.Reference> references = userManager.GetUserReferences(ID);
+                            //    if (references != null && references.Count != 0)
+                            //    {
+                            //        ui.references = references;
+                            //        add = 1;
+                            //    }
+                            //}
                             if (requestAll || request.Contains("tags"))
                             {
                                 List<JsonModels.UserTag> tags = userManager.GetUserTags(ID);
@@ -2331,6 +2331,395 @@ namespace UserClientMembers.Controllers
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
                     return GetFailureMessage("Something went wrong while updating the Project Order");
                 }
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string AddExperience(string title = "Job Title", string description = "Job Description", string startDate = null, string endDate = null, string city = "City", string state = "State", string company = "Company Name", string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                User user = userManager.GetUser(authUserId);
+                DateTime startDateTime = DateTime.Now;
+                if(startDate != null)
+                {
+                    startDateTime = DateTime.Parse(startDate);
+                }
+                DateTime endDateTime = DateTime.Now;
+                if(endDate != null)
+                {
+                    endDateTime = DateTime.Parse(endDate);
+                }
+                JsonModels.Experience exp = userManager.AddExperience(user.id, startDateTime, endDateTime, title, description, city, state, company);
+                return Serialize(exp);
+
+            }
+            catch (Exception e)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userController - AddExperience", e.StackTrace);
+                return GetFailureMessage("Something went wrong while adding the experience");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateExperience(int experienceId = -1, string propertyId = null, string propertyValue = null , string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                Experience exp = new Experience();
+                if (experienceId < 0)
+                {
+                    exp = userManager.GetExperience(experienceId);
+                }
+                else
+                {
+                    return GetFailureMessage("An experienceId must be passed in");
+                }
+                if (exp.userId != authUserId)
+                {
+                    return GetFailureMessage("User is not authorized to exit this experience");
+                }
+                System.Reflection.PropertyInfo pi;
+                if(propertyId == null)
+                {
+                    return GetFailureMessage("A propertyId must be passed in");
+                }
+                else
+                {
+                    pi = exp.GetType().GetProperty(propertyId);
+                }
+                if(propertyValue == null)
+                {
+                    return GetFailureMessage("A propertyValue must be passed in");
+                }
+                else
+                {
+                    if(propertyId == "startDate" || propertyId == "endDate")
+                    {
+                        pi.SetValue(exp, Convert.ChangeType(DateTime.Parse(propertyValue), pi.PropertyType), null);
+                    }
+                    else
+                    {
+                        pi.SetValue(exp, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                    }
+                    userManager.UpdateExperience(exp);
+                    return AddSuccessHeaders("Experience with id: " + exp.id + " has been successfully updated", true);
+                }
+
+            }
+            catch(Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userController - updateExperience", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while updating this experience element");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string GetExperience(int experienceId = -1, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                if (experienceId < 0)
+                {
+                    return GetFailureMessage("An experienceId must be passed in");
+                }
+                else
+                {
+                    return Serialize(userManager.GetExperienceJson(experienceId));
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - GetExperience", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while getting this experience");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string DeleteExperience(int experienceId = -1, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                if (experienceId < 0)
+                {
+                    return GetFailureMessage("An experienceId must be passed in");
+                }
+                else
+                {
+                    Experience experience = userManager.GetExperience(experienceId);
+                    string response = userManager.DeleteExperience(experience);
+                    if (response == null)
+                    {
+                        return GetFailureMessage("Something went wrong while deleting this experience");
+                    }
+                    else
+                    {
+                        return AddSuccessHeaders(response, true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - DeleteExperience", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while deleting this experience");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string AddReference(string firstName = "first name", string lastName = "last name", string email="email", string company = "company", string title = "title", string message = "message", string videoLink = "videoLink" ,string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                User user = userManager.GetUser(authUserId);
+                JsonModels.Reference exp = userManager.AddReference(user.id, firstName, lastName, company, email, title, message, videoLink);
+                return Serialize(exp);
+
+            }
+            catch (Exception e)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userController - AddReference", e.StackTrace);
+                return GetFailureMessage("Something went wrong while adding the experience");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateReference(int referenceId = -1, string propertyId = null, string propertyValue = null , string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                Reference reference = new Reference();
+                if (referenceId < 0)
+                {
+                    reference = userManager.GetReference(referenceId);
+                }
+                else
+                {
+                    return GetFailureMessage("A referenceId must be passed in");
+                }
+                if (reference.userId != authUserId)
+                {
+                    return GetFailureMessage("User is not authorized to exit this reference");
+                }
+                System.Reflection.PropertyInfo pi;
+                if(propertyId == null)
+                {
+                    return GetFailureMessage("A propertyId must be passed in");
+                }
+                else
+                {
+                    pi = reference.GetType().GetProperty(propertyId);
+                }
+                if(propertyValue == null)
+                {
+                    return GetFailureMessage("A propertyValue must be passed in");
+                }
+                else
+                {
+                    pi.SetValue(reference, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                    userManager.UpdateReference(reference);
+                    return AddSuccessHeaders("Experience with id: " + reference.id + " has been successfully updated", true);
+                }
+
+            }
+            catch(Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userController - updateReference", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while updating this reference element");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string GetReference(int referenceId = -1, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                if (referenceId < 0)
+                {
+                    return GetFailureMessage("An experienceId must be passed in");
+                }
+                else
+                {
+                    return Serialize(userManager.GetReferenceJson(referenceId));
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - GetReference", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while getting this reference");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string DeleteReference(int referenceId = -1, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                if (referenceId < 0)
+                {
+                    return GetFailureMessage("An experienceId must be passed in");
+                }
+                else
+                {
+                    Reference reference = userManager.GetReference(referenceId);
+                    string response = userManager.DeleteReference(reference);
+                    if (response == null)
+                    {
+                        return GetFailureMessage("Something went wrong while deleting this reference");
+                    }
+                    else
+                    {
+                        return AddSuccessHeaders(response, true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - DeleteReference", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while deleting this reference");
             }
         }
 

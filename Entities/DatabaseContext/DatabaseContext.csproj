@@ -81,6 +81,14 @@
       <Project>{E638A0C7-AD1E-4C46-A285-2BD1863603F2}</Project>
       <Name>Authentication</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Experience\Experience.csproj">
+      <Project>{521D93DE-630B-4883-BCED-B58DE8F4A138}</Project>
+      <Name>Experience</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Reference\Reference.csproj">
+      <Project>{3F32D179-8AE5-4B56-97A2-2718ED0D0522}</Project>
+      <Name>Reference</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Analytics\Analytics.csproj">
       <Project>{BC962547-338A-4A68-91C3-2C6F2D18F194}</Project>
       <Name>Analytics</Name>

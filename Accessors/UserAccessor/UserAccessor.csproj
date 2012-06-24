@@ -100,6 +100,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Experience\Experience.csproj">
+      <Project>{521D93DE-630B-4883-BCED-B58DE8F4A138}</Project>
+      <Name>Experience</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Reference\Reference.csproj">
+      <Project>{3F32D179-8AE5-4B56-97A2-2718ED0D0522}</Project>
+      <Name>Reference</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AnalyticsAccessor\AnalyticsAccessor.csproj">
       <Project>{0420AA94-F8D8-4081-A893-0D44F15C7C1C}</Project>
       <Name>AnalyticsAccessor</Name>

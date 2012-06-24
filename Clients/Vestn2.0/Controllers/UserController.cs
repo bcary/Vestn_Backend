@@ -255,24 +255,24 @@ namespace Controllers
                                 add = 1;
                             }
                         }
-                        if (requestAll || request.Contains("experiences"))
-                        {
-                            List<JsonModels.Experience> experiences = userManager.GetUserExperiences(ID);
-                            if (experiences != null && experiences.Count != 0)
-                            {
-                                ui.experiences = experiences;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("references"))
-                        {
-                            List<JsonModels.Reference> references = userManager.GetUserReferences(ID);
-                            if (references != null && references.Count != 0)
-                            {
-                                ui.references = references;
-                                add = 1;
-                            }
-                        }
+                        //if (requestAll || request.Contains("experiences"))
+                        //{
+                        //    List<JsonModels.Experience> experiences = userManager.GetUserExperiences(ID);
+                        //    if (experiences != null && experiences.Count != 0)
+                        //    {
+                        //        ui.experiences = experiences;
+                        //        add = 1;
+                        //    }
+                        //}
+                        //if (requestAll || request.Contains("references"))
+                        //{
+                        //    List<JsonModels.Reference> references = userManager.GetUserReferences(ID);
+                        //    if (references != null && references.Count != 0)
+                        //    {
+                        //        ui.references = references;
+                        //        add = 1;
+                        //    }
+                        //}
                         if (requestAll || request.Contains("tags"))
                         {
                             List<JsonModels.UserTag> tags = userManager.GetUserTags(ID);
