@@ -146,7 +146,7 @@ namespace Manager
                     string artifactURL1 = string.Format("{0}{1}", FileNameThumb1, ".jpeg");
                     CloudQueueMessage message3 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, p.id, "thumbnail", "ProjectPicture", 635, 397, "", artifactURL1));
                     queue.AddMessage(message3);
-                    p.coverPictureThumbnail = "https://vestnstaging.blob.core.windows.net/images/thumbnails/" + artifactURL1;
+                    p.coverPictureThumbnail = artifactURL1;
                     return new JsonModels.UploadReponse { id = p.id, fileURL = imageURI, name = fileName, galeriaURL = "noGalleryURL", artifactURL = artifactURL1, description = "default description" };
                 }
                 else
@@ -156,8 +156,8 @@ namespace Manager
                     ProjectElement_Picture pe = new ProjectElement_Picture
                     {
                         title = GetTitle(fileName),
-                        pictureLocation = "https://vestnstaging.blob.core.windows.net/images/images/" + imageURI,
-                        pictureThumbnailLocation = "https://vestnstaging.blob.core.windows.net/images/thumbnails/" + artifactURL
+                        pictureLocation = imageURI,
+                        pictureThumbnailLocation = "https://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL
                     };
                     int projectElementId = pa.AddProjectElement(p, pe);
                     if (projectElementId == -1)
@@ -298,7 +298,7 @@ namespace Manager
                 documentLocation = location,
                 title = fileName,
                 documentText = documentText,
-                documentThumbnailLocation = uniqueBlobName
+                documentThumbnailLocation = "https://vestnstaging.blob.core.windows.net/pdfs/" + uniqueBlobName
             };
             int projectElementId = pa.AddProjectElement(p, pe);
             if (extention == "doc" || extention == "docx")
