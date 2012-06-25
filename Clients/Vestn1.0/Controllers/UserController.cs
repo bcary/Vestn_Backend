@@ -2031,7 +2031,7 @@ namespace UserClientMembers.Controllers
         /// <returns>Json Object of UserInformation class</returns>
         /// 
         [AcceptVerbs("POST", "OPTIONS")]
-        public string  GetUserInformation(int[] id, string[] request, string token)
+        public string  GetUserInformation(int[] id, string[] request, string token = null)
         {
             Response.AddHeader("Access-Control-Allow-Origin", "*");
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
@@ -2050,14 +2050,15 @@ namespace UserClientMembers.Controllers
                 string returnVal;
                 try
                 {
-                int authenticate = authenticationEngine.authenticate(token);
-                if (authenticate < 0)
-                {
-                    Response.StatusCode = 500;
-                    return GetFailureMessage("Not Authenticated");
-                }
-                
-
+                    if (token != null)
+                    {
+                        int authenticate = authenticationEngine.authenticate(token);
+                        if (authenticate < 0)
+                        {
+                            //Response.StatusCode = 500;
+                            //return GetFailureMessage("Not Authenticated");
+                        }
+                    }
                     bool requestAll = false;
                     if (request == null)
                     {
