@@ -582,7 +582,7 @@ namespace UserClientMembers.Controllers
                     }
                     if (Request != null)
                     {
-                        if (Request.ContentLength == 0)
+                        if (qqfile == null || Request.Files.Count == 0)
                         {
                             return GetFailureMessage("No files submitted to server");
                         }
@@ -639,14 +639,15 @@ namespace UserClientMembers.Controllers
 
                     JsonModels.Artifact artifactResponse = new JsonModels.Artifact();
                     artifactResponse.id = response.id;
-                    artifactResponse.fileLocation = response.fileURL;
                     if(artifactType == "picture")
                     {
                         artifactResponse.artifactLocation = "https://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL;
+                        artifactResponse.fileLocation = "https://vestnstaging.blob.core.windows.net/images/" + response.fileURL;
                     }
                     else if (artifactType == "document")
                     {
                         artifactResponse.artifactLocation = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.artifactURL;
+                        artifactResponse.fileLocation = "https://vestnstaging.blob.core.windows.net/documents/" + response.fileURL;
                     }
 
                     artifactResponse.title = response.name;

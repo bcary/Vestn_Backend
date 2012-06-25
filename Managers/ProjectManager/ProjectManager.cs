@@ -126,50 +126,61 @@ namespace Manager
 
         public JsonModels.UploadReponse UploadPictureElement(int projectId, Stream pictureStream, string fileName, bool isCoverPicture = false)
         {
-            BlobStorageAccessor blobStorageAccessor = new BlobStorageAccessor();
-            UploadManager uploadManager = new UploadManager();
-            ProjectAccessor projectAccessor = new ProjectAccessor();
+            try
+            {
+                BlobStorageAccessor blobStorageAccessor = new BlobStorageAccessor();
+                UploadManager uploadManager = new UploadManager();
+                ProjectAccessor projectAccessor = new ProjectAccessor();
 
-            //initiate queue message
-            storageAccount = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("BlobConnectionString"));
-            queueClient = storageAccount.CreateCloudQueueClient();
-            queue = queueClient.GetQueueReference(messageQueueName);
-            queue.CreateIfNotExist();
-        
-            string imageURI = blobStorageAccessor.uploadImage(pictureStream, false).ToString();
-            Project p = pa.GetProject(projectId);
-            if (isCoverPicture)
-            {
-                string FileNameThumb1 = Guid.NewGuid().ToString();
-                string artifactURL1 = string.Format("{0}{1}", FileNameThumb1, ".jpeg");
-                CloudQueueMessage message3 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, p.id, "thumbnail", "ProjectPicture", 635, 397, "", artifactURL1));
-                queue.AddMessage(message3);
-                p.coverPictureThumbnail = "https://vestnstaging.blob.core.windows.net/images/thumbnails" + artifactURL1;
-                return new JsonModels.UploadReponse { id = p.id, fileURL = imageURI, name = fileName, galeriaURL = "noGalleryURL", artifactURL = artifactURL1, description = "default description" };
-            }
-            else
-            {
-                ProjectElement_Picture pe = new ProjectElement_Picture
+                //initiate queue message
+                storageAccount = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("BlobConnectionString"));
+                queueClient = storageAccount.CreateCloudQueueClient();
+                queue = queueClient.GetQueueReference(messageQueueName);
+                queue.CreateIfNotExist();
+
+                string imageURI = blobStorageAccessor.uploadImage(pictureStream, false).ToString();
+                Project p = pa.GetProject(projectId);
+                if (isCoverPicture)
                 {
-                    title = GetTitle(fileName),
-                    pictureLocation = imageURI
-                };
-                int projectElementId = pa.AddProjectElement(p, pe);
-                if (projectElementId == -1)
-                {
-                    return null;
+                    string FileNameThumb1 = Guid.NewGuid().ToString();
+                    string artifactURL1 = string.Format("{0}{1}", FileNameThumb1, ".jpeg");
+                    CloudQueueMessage message3 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, p.id, "thumbnail", "ProjectPicture", 635, 397, "", artifactURL1));
+                    queue.AddMessage(message3);
+                    p.coverPictureThumbnail = "https://vestnstaging.blob.core.windows.net/images/thumbnails/" + artifactURL1;
+                    return new JsonModels.UploadReponse { id = p.id, fileURL = imageURI, name = fileName, galeriaURL = "noGalleryURL", artifactURL = artifactURL1, description = "default description" };
                 }
+                else
+                {
+                    string FileNameThumb = Guid.NewGuid().ToString();
+                    string artifactURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
+                    ProjectElement_Picture pe = new ProjectElement_Picture
+                    {
+                        title = GetTitle(fileName),
+                        pictureLocation = "https://vestnstaging.blob.core.windows.net/images/images/" + imageURI,
+                        pictureThumbnailLocation = "https://vestnstaging.blob.core.windows.net/images/thumbnails/" + artifactURL
+                    };
+                    int projectElementId = pa.AddProjectElement(p, pe);
+                    if (projectElementId == -1)
+                    {
+                        logAccessor.CreateLog(DateTime.Now, "ProjectManager - UploadPictureElement", "problem saving project element - 165 ProjectManager");
+                        return null;
+                    }
 
-                string FileNameThumb = Guid.NewGuid().ToString();
-                string artifactURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
-                string FileNameGaleria = Guid.NewGuid().ToString();
-                string galleryURL = string.Format("{0}{1}", FileNameGaleria, ".jpeg");
 
-                CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement", 635, 397, "", artifactURL));
-                CloudQueueMessage message2 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement_Galleria", 1000, 750, "", galleryURL));
-                queue.AddMessage(message);
-                queue.AddMessage(message2);
-                return new JsonModels.UploadReponse { id = projectElementId, fileURL = imageURI, name = fileName, galeriaURL = galleryURL, artifactURL = artifactURL, description = "default description" };
+                    //string FileNameGaleria = Guid.NewGuid().ToString();
+                    //string galleryURL = string.Format("{0}{1}", FileNameGaleria, ".jpeg");
+
+                    CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement", 635, 397, "", artifactURL));
+                    //CloudQueueMessage message2 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement_Galleria", 1000, 750, "", galleryURL));
+                    queue.AddMessage(message);
+                    //queue.AddMessage(message2);
+                    return new JsonModels.UploadReponse { id = projectElementId, fileURL = imageURI, name = fileName, galeriaURL = "galleryURL", artifactURL = artifactURL, description = "default description" };
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "ProjectManager - UploadPictureElement", ex.StackTrace);
+                return null;
             }
         }
 
@@ -279,17 +290,17 @@ namespace Manager
                     location = result.ToString();
                 }
             }
+            String FileName = Guid.NewGuid().ToString();
+            string uniqueBlobName = string.Format("{0}{1}", FileName, ".pdf");
             ProjectElement_Document pe = new ProjectElement_Document
             {
                 description = description,
                 documentLocation = location,
                 title = fileName,
-                documentText = documentText
+                documentText = documentText,
+                documentThumbnailLocation = uniqueBlobName
             };
             int projectElementId = pa.AddProjectElement(p, pe);
-
-            String FileName = Guid.NewGuid().ToString();
-            string uniqueBlobName = string.Format("{0}{1}", FileName, ".pdf");
             if (extention == "doc" || extention == "docx")
             {
                 CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", location, projectElementId, "documentConversion", @"http://do.convertapi.com/Word2Pdf", 0, 0, fullName, uniqueBlobName));
@@ -929,40 +940,6 @@ namespace Manager
                         }
                         add = 1;
                     }
-                    //else if (pe.GetType() == typeof(ProjectElement_Experience))
-                    //{
-                    //    a.type = "experience";
-                    //    ProjectElement_Experience pee = (ProjectElement_Experience)pe;
-                    //    if (pee.city != null)
-                    //    {
-                    //        a.city = pee.city;
-                    //    }
-                    //    if (pee.description != null)
-                    //    {
-                    //        a.description = pee.description;
-                    //    }
-                    //    if (pee.jobTitle != null)
-                    //    {
-                    //        a.title = pee.jobTitle;
-                    //    }
-                    //    if (pee.company != null)
-                    //    {
-                    //        a.company = pee.company;
-                    //    }
-                    //    if (pee.endDate != null)
-                    //    {
-                    //        a.endDate = pee.endDate.ToShortDateString();
-                    //    }
-                    //    if (pee.startDate != null)
-                    //    {
-                    //        a.startDate = pee.startDate.ToShortDateString();
-                    //    }
-                    //    if (pee.state != null)
-                    //    {
-                    //        a.state = pee.state;
-                    //    }
-                    //    add = 1;
-                    //}
                 }
                 if (add == 1)
                 {
