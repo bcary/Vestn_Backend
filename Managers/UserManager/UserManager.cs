@@ -703,6 +703,7 @@ namespace Manager
                 response.city = city;
                 response.state = state;
                 response.company = company;
+                response.title = title;
                 return response;
 
             }
@@ -729,6 +730,7 @@ namespace Manager
             response.city = experience.city;
             response.state = experience.state;
             response.company = experience.company;
+            response.title = experience.title;
             return response;
 
         }
