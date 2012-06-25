@@ -58,11 +58,7 @@ namespace UserClientMembers.Controllers
             {
                 try
                 {
-                    //int userId = authenticationEngine.authenticate(token);
-                    //if (userId < 0)
-                    //{
-                    //    return GetFailureMessage("You are not authenticated, please log in!");
-                    //}
+
                     HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(url);
                     bool found = false;
                     int counter = 0;
@@ -74,7 +70,16 @@ namespace UserClientMembers.Controllers
                             if (response.StatusCode != HttpStatusCode.NotFound)
                             {
                                 found = true;
-                                Thread.Sleep(300);
+                                return AddSuccessHeaders("File Exists", true);
+                            }
+                            else
+                            {
+                                Thread.Sleep(500);
+                                counter++;
+                                if (counter > 40)
+                                {
+                                    return GetFailureMessage("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
+                                }
                             }
 
                         }
@@ -89,6 +94,7 @@ namespace UserClientMembers.Controllers
                         }
                     }
                     return AddSuccessHeaders("File Exists", true);
+                    
                 }
                 catch (Exception ex)
                 {
@@ -247,57 +253,43 @@ namespace UserClientMembers.Controllers
         //    }
         //}
 
-        [HttpPost]
-        public string Register(string Email, string Password)
+        [AcceptVerbs("POST","OPTIONS")]
+        [AllowCrossSiteJson]
+        public string Register(string email, string password)
         {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
             try
             {
                 CommunicationManager communicationManager = new CommunicationManager();
-                //if (ValidationEngine.ValidateBetaKey(model.betaKey) != ValidationEngine.Success)
-                //{
-                //    TempData["MessageBar"] = ValidationEngine.ValidateBetaKey(model.betaKey);
-                //    return View(model);
-                //}
-                string userName = Email.Substring(0, Email.IndexOf('@'));
+                string userName = email.Substring(0, email.IndexOf('@'));
                 userName = userName.Replace("+", "");
-                RegisterModel model = new RegisterModel { Email = Email, UserName = userName, Password = Password, ConfirmPassword = Password };
-                if (ValidationEngine.ValidateEmail(model.Email) != ValidationEngine.Success || ValidationEngine.IsDuplicateEmail(model.Email) == true)
+                RegisterModel model = new RegisterModel { Email = email, UserName = userName, Password = password, ConfirmPassword = password };
+                if (ValidationEngine.ValidateEmail(model.Email) != ValidationEngine.Success)
                 {
-                    TempData["MessageBar"] = "Invalid Email";
                     return GetFailureMessage("Invalid Email");
-                    //return View(model);
                 }
                 if (!userManager.CheckDuplicateEmail(model.Email))
                 {
-                    TempData["MessageBar"] = "A user with that email already exists in our database";
                     return GetFailureMessage("A user with that email already exists in our database");
-                    //return View(model);
                 }
                 if (ValidationEngine.ValidateUsername(model.UserName) != ValidationEngine.Success)
                 {
-                    TempData["MessageBar"] = ValidationEngine.ValidateUsername(model.UserName);
                     return GetFailureMessage(ValidationEngine.ValidateUsername(model.UserName));
-                    //return View(model);
                 }
                 if (!userManager.CheckDuplicateUsername(model.UserName))
                 {
-                    TempData["MessageBar"] = "A user with that username already exists in our database";
                     return GetFailureMessage("A user with that username already exists in our database");
-
-                    //return View(model);
                 }
                 if (ValidationEngine.ValidatePassword(model.Password) != ValidationEngine.Success)
                 {
-                    TempData["MessageBar"] = ValidationEngine.ValidatePassword(model.Password);
                     return GetFailureMessage(ValidationEngine.ValidateUsername(model.Password));
-                    //return View(model);
                 }
                 if (model.Password != model.ConfirmPassword)
                 {
-                    TempData["MessageBar"] = "Password fields do not match";
                     return GetFailureMessage("Password fields do not match");
-
-                    //return View(model);
                 }
                 if (ModelState.IsValid)
                 {
@@ -309,21 +301,22 @@ namespace UserClientMembers.Controllers
                     userManager.ActivateUser(newUser, true);
                     communicationManager.SendVerificationMail(userManager.GetProviderUserKey(newUser), newUser.userName, newUser.email);
 
-                    FormsAuthentication.SetAuthCookie(newUser.userName, false /* createPersistentCookie */);
-                    JsonModels.LogOnModel logOnModel = new JsonModels.LogOnModel { id = newUser.id };
-                    return AddSuccessHeaders(Serialize(logOnModel));
+                    AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
+                    string token = authEngine.logIn(newUser.id, newUser.userName);
+                    JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
+                    rr.id = newUser.id;
+                    rr.token = token;
+                    return AddSuccessHeaders(Serialize(rr));
                 }
                 else
                 {
-                    return GetFailureMessage("Error creating account.");
+                    return GetFailureMessage("User Model Not Valid");
                 }
-
-                //return RedirectToAction("Profile", "User");
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return GetFailureMessage("Error");
+                return GetFailureMessage("Something went wrong while creating this user");
             }
         }
 

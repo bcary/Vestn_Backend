@@ -276,6 +276,15 @@ namespace Entity
         }
 
         [DataContract]
+        public class RegisterResponse
+        {
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public int id { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string token { get; set; }
+        }
+
+        [DataContract]
         public class Experience
         {
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
