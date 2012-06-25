@@ -1583,7 +1583,7 @@ namespace UserClientMembers.Controllers
         /// <returns>A serialized list of Projects</returns>
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string GetProject(int[] projectId, string token)
+        public string GetProject(int[] projectId, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
@@ -1591,10 +1591,14 @@ namespace UserClientMembers.Controllers
             }
             else
             {
-                int userId = authenticationEngine.authenticate(token);
-                if (userId < 0)
+                if (token != null)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    int userId = authenticationEngine.authenticate(token);
+                    if (userId < 0)
+                    {
+                        // ALLOW NON AUTHENTICATED REQUESTS
+                        //return GetFailureMessage("You are not authenticated, please log in!");
+                    }
                 }
                 string returnVal;
                 try
