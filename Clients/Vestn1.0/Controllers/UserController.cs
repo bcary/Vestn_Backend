@@ -2066,7 +2066,7 @@ namespace UserClientMembers.Controllers
                 
 
                     bool requestAll = false;
-                    if (request == null || request.Contains("all"))
+                    if (request == null)
                     {
                         requestAll = true;
                     }
@@ -2195,24 +2195,24 @@ namespace UserClientMembers.Controllers
                                     add = 1;
                                 }
                             }
-                            //if (requestAll || request.Contains("experiences"))
-                            //{
-                            //    List<JsonModels.Experience> experiences = userManager.GetUserExperiences(ID);
-                            //    if (experiences != null && experiences.Count != 0)
-                            //    {
-                            //        ui.experiences = experiences;
-                            //        add = 1;
-                            //    }
-                            //}
-                            //if (requestAll || request.Contains("references"))
-                            //{
-                            //    List<JsonModels.Reference> references = userManager.GetUserReferences(ID);
-                            //    if (references != null && references.Count != 0)
-                            //    {
-                            //        ui.references = references;
-                            //        add = 1;
-                            //    }
-                            //}
+                            if (requestAll || request.Contains("experiences"))
+                            {
+                                List<JsonModels.Experience> experiences = userManager.GetUserExperiences(ID);
+                                if (experiences != null && experiences.Count != 0)
+                                {
+                                    ui.experiences = experiences;
+                                    add = 1;
+                                }
+                            }
+                            if (requestAll || request.Contains("references"))
+                            {
+                                List<JsonModels.Reference> references = userManager.GetUserReferences(ID);
+                                if (references != null && references.Count != 0)
+                                {
+                                    ui.references = references;
+                                    add = 1;
+                                }
+                            }
                             if (requestAll || request.Contains("tags"))
                             {
                                 List<JsonModels.UserTag> tags = userManager.GetUserTags(ID);
@@ -2369,7 +2369,14 @@ namespace UserClientMembers.Controllers
                     endDateTime = DateTime.Parse(endDate);
                 }
                 JsonModels.Experience exp = userManager.AddExperience(user.id, startDateTime, endDateTime, title, description, city, state, company);
-                return Serialize(exp);
+                if (exp != null)
+                {
+                    return Serialize(exp);
+                }
+                else
+                {
+                    return GetFailureMessage("Something went wrong while attempting to save this experience");
+                }
 
             }
             catch (Exception e)
@@ -2403,7 +2410,7 @@ namespace UserClientMembers.Controllers
                     return GetFailureMessage("You are not authenticated, please log in!");
                 }
                 Experience exp = new Experience();
-                if (experienceId < 0)
+                if (experienceId > 0)
                 {
                     exp = userManager.GetExperience(experienceId);
                 }
@@ -2519,6 +2526,10 @@ namespace UserClientMembers.Controllers
                 else
                 {
                     Experience experience = userManager.GetExperience(experienceId);
+                    if (experience == null)
+                    {
+                        return GetFailureMessage("An experience with the provided experienceId does not exist");
+                    }
                     string response = userManager.DeleteExperience(experience);
                     if (response == null)
                     {
@@ -2596,9 +2607,14 @@ namespace UserClientMembers.Controllers
                     return GetFailureMessage("You are not authenticated, please log in!");
                 }
                 Reference reference = new Reference();
-                if (referenceId < 0)
+                if (referenceId > 0)
                 {
                     reference = userManager.GetReference(referenceId);
+                    if (reference == null)
+                    {
+                        return GetFailureMessage("The reference with the given referenceId does not exist");
+                    }
+                      
                 }
                 else
                 {

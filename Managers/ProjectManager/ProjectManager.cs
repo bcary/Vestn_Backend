@@ -1162,12 +1162,20 @@ namespace Manager
                             int[] ids = IDS.ToArray();
 
                             cp.artifacts = GetArtifacts(ids);
+                            cp.elementOrder = p.projectElementOrder;
                         }
                         else
                         {
                             //get in order
                         }
-                        cp.elementOrder = p.projectElementOrder;
+                        if (p.coverPicture != null)
+                        {
+                            cp.coverPicture = p.coverPicture;
+                        }
+                        if (p.coverPictureThumbnail != null)
+                        {
+                            cp.coverPictureThumbnail = p.coverPictureThumbnail;
+                        }
                         projects.Add(cp);
                     }
                 }

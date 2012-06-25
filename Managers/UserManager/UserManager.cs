@@ -573,39 +573,6 @@ namespace Manager
             }
         }
 
-        //public List<JsonModels.Experience> GetUserExperiences(int ID)
-        //{
-        //    ProjectAccessor pa = new ProjectAccessor();
-        //    List<ProjectElement_Experience> PEexperiences = pa.GetExperiences(userAccessor.GetUser(ID));
-        //    List<JsonModels.Experience> experiences = new List<JsonModels.Experience>();
-        //    foreach (ProjectElement_Experience pe in PEexperiences)
-        //    {
-        //        JsonModels.Experience e = new JsonModels.Experience();
-        //        if (pe.company != null)
-        //        {
-        //            e.company = pe.company;
-        //        }
-        //        if (pe.description != null)
-        //        {
-        //            e.jobDescription = pe.jobDescription;
-        //        }
-        //        if (pe.startDate != null)
-        //        {
-        //            e.startDate = pe.startDate.ToShortDateString();
-        //        }
-        //        if (pe.endDate != null)
-        //        {
-        //            e.endDate = pe.endDate.ToShortDateString();
-        //        }
-        //        if (pe.title != null)
-        //        {
-        //            e.jobTitle = pe.title;
-        //        }
-        //        experiences.Add(e);
-        //    }                
-        //    return experiences;
-        //}
-
         //public List<JsonModels.Reference> GetUserReferences(int ID)
         //{
         //    return new List<JsonModels.Reference> { new JsonModels.Reference { name = "me" } };
@@ -722,7 +689,11 @@ namespace Manager
                     state = state,
                     company = company
                 };
-                userAccessor.AddExperience(experience);
+                Experience exp = userAccessor.AddExperience(experience);
+                if (exp == null)
+                {
+                    return null;
+                }
                 JsonModels.Experience response = new JsonModels.Experience();
                 response.id = experience.id;
                 response.userId = userId;
@@ -764,6 +735,55 @@ namespace Manager
         public Experience GetExperience(int referenceId)
         {
             return userAccessor.GetExperience(referenceId);
+        }
+
+        public List<JsonModels.Experience> GetUserExperiences(int userId)
+        {
+            try
+            {
+                List<Experience> experiences = userAccessor.GetUserExperience(userId);
+                List<JsonModels.Experience> experiencesJson = new List<JsonModels.Experience>();
+                foreach (Experience e in experiences)
+                {
+                    JsonModels.Experience eJson = new JsonModels.Experience();
+                    if (e.company != null)
+                    {
+                        eJson.company = e.company;
+                    }
+                    if (e.description != null)
+                    {
+                        eJson.description = e.description;
+                    }
+                    if (e.startDate != null)
+                    {
+                        eJson.startDate = e.startDate.ToShortDateString();
+                    }
+                    if (e.endDate != null)
+                    {
+                        eJson.endDate = e.endDate.ToShortDateString();
+                    }
+                    if (e.title != null)
+                    {
+                        eJson.title = e.title;
+                    }
+                    if (e.city != null)
+                    {
+                        eJson.city = e.city;
+                    }
+                    if (e.state != null)
+                    {
+                        eJson.state = e.state;
+                    }
+                    experiencesJson.Add(eJson);
+                }
+                return experiencesJson;
+            }
+            catch (Exception ex)
+            {
+                LogAccessor la = new LogAccessor();
+                la.CreateLog(DateTime.Now, "UserManager - GetUserExperiences", ex.StackTrace);
+                return null;
+            }
         }
         public string DeleteExperience(Experience experience)
         {
@@ -840,6 +860,56 @@ namespace Manager
         {
             return userAccessor.GetReference(referenceId);
         }
+
+        public List<JsonModels.Reference> GetUserReferences(int userId)
+        {
+            try
+            {
+                List<Reference> references = userAccessor.GetUserReference(userId);
+                List<JsonModels.Reference> referencesJson = new List<JsonModels.Reference>();
+                foreach (Reference r in references)
+                {
+                    JsonModels.Reference rJson = new JsonModels.Reference();
+                    if (r.company != null)
+                    {
+                        rJson.company = r.company;
+                    }
+                    if (r.firstName != null)
+                    {
+                        rJson.firstName = r.firstName;
+                    }
+                    if (r.lastName != null)
+                    {
+                        rJson.lastName = r.lastName;
+                    }
+                    if (r.message != null)
+                    {
+                        rJson.message = r.message;
+                    }
+                    if (r.title != null)
+                    {
+                        rJson.title = r.title;
+                    }
+                    if (r.videoLink != null)
+                    {
+                        rJson.videoLink = r.videoLink;
+                    }
+                    if (r.email != null)
+                    {
+                        rJson.email = r.email;
+                    }
+                    referencesJson.Add(rJson);
+                }
+                return referencesJson;
+            }
+            catch (Exception ex)
+            {
+                LogAccessor la = new LogAccessor();
+                la.CreateLog(DateTime.Now, "UserManager - GetUserReferences", ex.StackTrace);
+                return null;
+            }
+        }
+
         public string DeleteReference(Reference reference)
         {
             if (userAccessor.DeleteReference(reference))

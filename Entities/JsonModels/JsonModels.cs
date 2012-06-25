@@ -250,6 +250,10 @@ namespace Entity
             public List<Artifact> artifacts { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string elementOrder { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string coverPicture { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string coverPictureThumbnail { get; set; }
         }
 
         [DataContract]

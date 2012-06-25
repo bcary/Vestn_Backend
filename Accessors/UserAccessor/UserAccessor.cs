@@ -585,7 +585,9 @@ namespace Accessor
                 if (experience != null)
                 {
                     VestnDB db = new VestnDB();
+                    db.experience.Attach(experience);
                     db.experience.Remove(experience);
+                    db.SaveChanges();
                     wasDeleted = true;
                     return wasDeleted;
                 }
@@ -600,6 +602,22 @@ namespace Accessor
                 return false;
             }
         }
+
+        public List<Experience> GetUserExperience(int userId)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                List<Experience> experienceList = (from c in db.experience where c.userId == userId select c).ToList();
+                return experienceList;
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userAccessor - GetUserExperience", ex.StackTrace);
+                return null;
+            }
+        }
+
         public Reference AddReference(Reference reference)
         {
             try
@@ -673,7 +691,9 @@ namespace Accessor
                 if (reference != null)
                 {
                     VestnDB db = new VestnDB();
+                    db.reference.Attach(reference);
                     db.reference.Remove(reference);
+                    db.SaveChanges();
                     wasDeleted = true;
                     return wasDeleted;
                 }
@@ -688,5 +708,22 @@ namespace Accessor
                 return false;
             }
         }
+
+        public List<Reference> GetUserReference(int userId)
+        {
+            try
+            {
+                List<Reference> referenceList = new List<Reference>();
+                VestnDB db = new VestnDB();
+                referenceList = (from c in db.reference where c.userId == userId select c).ToList();
+                return referenceList;
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userAccessor - GetUserReference", ex.StackTrace);
+                return null;
+            }
+        }
+
     }
 }
