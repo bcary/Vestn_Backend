@@ -1194,9 +1194,12 @@ namespace UserClientMembers.Controllers
                             }
                         }
                         //TODO validate description
-                        pi.SetValue(project, Convert.ChangeType(propertyValue, pi.PropertyType), null);
-                        //persist user model to DB with manager updateUser method
-                        project = projectManager.UpdateProject(project);
+                        if (propertyId != "coverPicture")
+                        {
+                            pi.SetValue(project, Convert.ChangeType(propertyValue, pi.PropertyType), null);
+                            //persist user model to DB with manager updateUser method
+                            project = projectManager.UpdateProject(project);
+                        }
                         if (project != null)
                         {
                             return AddSuccessHeaders("Project with id:" + projectId + " successfully updated", true);

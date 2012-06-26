@@ -91,6 +91,7 @@ namespace UserClientMembers.Controllers
                             {
                                 return GetFailureMessage("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
                             }
+                            continue;
                         }
                     }
                     return AddSuccessHeaders("File Exists", true);
