@@ -147,6 +147,10 @@ namespace Entity
             public List<ArtifactShell> artifacts { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string description { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string coverPicture { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string coverPictureThumbnail { get; set; }
         }
 
         [DataContract]

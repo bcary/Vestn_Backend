@@ -40,6 +40,41 @@ namespace UserClientMembers.Controllers
         {
             return View();
         }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string CheckFileExistence(String url = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            if(String.IsNullOrEmpty(url))
+            {
+                return GetFailureMessage("No URL specified");
+            }
+            if (url == "about:blank")
+            {
+                return GetFailureMessage("about:blank is not a valid url to check");
+            }
+            if (!url.StartsWith("http://") || !url.StartsWith("https://"))
+            {
+                url = "http://" + url;
+            }
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Timeout = 20000;
+            WebResponse response;
+            try
+            {
+                response = request.GetResponse();
+            }
+            catch (Exception ex)
+            {
+                return GetFailureMessage("This URL either timed out, or does not exist");
+            }
+            return (AddSuccessHeaders("File Exists", true));
+        }
+
         [AcceptVerbs("POST", "OPTIONS")]
         public string CheckFileExist(String url, string token)
         {
@@ -258,9 +293,12 @@ namespace UserClientMembers.Controllers
         [AllowCrossSiteJson]
         public string Register(string email, string password)
         {
-            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            if (Request != null)
             {
-                return null;
+                if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return null;
+                }
             }
             try
             {

@@ -144,7 +144,7 @@ namespace Manager
                 {
                     string FileNameThumb1 = Guid.NewGuid().ToString();
                     string artifactURL1 = string.Format("{0}{1}", FileNameThumb1, ".jpeg");
-                    CloudQueueMessage message3 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, p.id, "thumbnail", "ProjectPicture", 635, 397, "", artifactURL1));
+                    CloudQueueMessage message3 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, p.id, "thumbnail", "ProjectPicture", 266, 266, "", artifactURL1));
                     queue.AddMessage(message3);
                     p.coverPictureThumbnail = "https://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL1;
                     p.coverPicture = imageURI;
@@ -294,13 +294,22 @@ namespace Manager
             }
             String FileName = Guid.NewGuid().ToString();
             string uniqueBlobName = string.Format("{0}{1}", FileName, ".pdf");
+            string docThumb = "";
+            if (extention == "pdf")
+            {
+                docThumb = location;
+            }
+            else
+            {
+                docThumb = "https://vestnstaging.blob.core.windows.net/pdfs/" + uniqueBlobName;
+            }
             ProjectElement_Document pe = new ProjectElement_Document
             {
                 description = description,
                 documentLocation = location,
                 title = fileName,
                 documentText = documentText,
-                documentThumbnailLocation = "https://vestnstaging.blob.core.windows.net/pdfs/" + uniqueBlobName
+                documentThumbnailLocation = docThumb
             };
             int projectElementId = pa.AddProjectElement(p, pe);
             if (extention == "doc" || extention == "docx")
@@ -770,6 +779,14 @@ namespace Manager
                         if (p.tagIds != "" && p.tagIds != null)
                         {
                             ps.projectTags = GetProjectTags(p.id);
+                        }
+                        if (p.coverPicture != null)
+                        {
+                            ps.coverPicture = p.coverPicture;
+                        }
+                        if (p.coverPictureThumbnail != null)
+                        {
+                            ps.coverPictureThumbnail = p.coverPictureThumbnail;
                         }
                         List<JsonModels.ArtifactShell> artifactShells = new List<JsonModels.ArtifactShell>();
                         foreach (ProjectElement pe in p.projectElements)
