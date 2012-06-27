@@ -331,6 +331,8 @@ namespace Entity
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string videoLink { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string videoType { get; set; }
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public int userId { get; set; }
         }
     }

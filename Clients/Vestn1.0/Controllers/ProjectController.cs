@@ -701,7 +701,7 @@ namespace UserClientMembers.Controllers
                 string videoID = id;
                 ViewBag.VideoID = id;
 
-                JsonModels.Artifact response = projectManager.AddVideoElement(nProjectID, "Description goes here", videoID);
+                JsonModels.Artifact response = projectManager.AddVideoElement(nProjectID, "Description goes here", videoID, "unknown");
                 AnalyticsAccessor aa = new AnalyticsAccessor();
                 aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, "Video file");
 
@@ -754,12 +754,33 @@ namespace UserClientMembers.Controllers
                         return GetFailureMessage("User is not authorized to complete this action");
                     }
                     string sVideoID = videoLink;
-                    if (videoLink.Contains("youtu"))
+                    string vType = "unknown";
+                    if (videoLink.Contains("youtube"))
                     {
-                         sVideoID = projectManager.ProcessYoutubeURL(videoLink);
+                        if(videoLink.Contains("http://"))
+                        {
+                            videoLink = videoLink.Substring(31, 11);
+                            vType = "youtube";
+                        }
+                        else
+                        {
+                            videoLink = videoLink.Substring(24, 11);
+                            vType = "youtube";
+                        }
                     }
-
-                    JsonModels.Artifact response = projectManager.AddVideoElement(projectId, "Video Description", sVideoID);
+                    else if (videoLink.Contains("youtu."))
+                    {
+                        videoLink = videoLink.Substring(16);
+                        vType = "youtube";
+                    }
+                    else if (videoLink.Contains("vimeo"))
+                    {
+                        string[] s = videoLink.Split('/');
+                        videoLink = s[s.Count() - 1];
+                        vType = "vimeo";
+                    }
+                    
+                    JsonModels.Artifact response = projectManager.AddVideoElement(projectId, "Video Description", videoLink, vType);
 
                     aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, "Video link");
                     string returnVal;

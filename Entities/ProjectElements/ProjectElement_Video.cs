@@ -8,5 +8,6 @@ namespace Entity
     public class ProjectElement_Video : ProjectElement
     {
         public string videoId { get; set; }
+        public string videoType { get; set; }
     }
 }

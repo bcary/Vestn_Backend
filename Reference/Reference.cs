@@ -15,6 +15,7 @@ namespace Entity
         public string title { get; set; }
         public string message { get; set; }
         public string videoLink { get; set; }
+        public string videoType { get; set; }
         public int userId { get; set; }
     }
 }

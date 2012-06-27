@@ -799,13 +799,40 @@ namespace Manager
             }
         }
 
-        public JsonModels.Reference AddReference(int userId, string firstName = "Reference's First Name", string lastName = "Reference's Last Name", string company = "company", string email = "email", string title = "title", string message = "message", string videoLink = "videoLink")
+        public JsonModels.Reference AddReference(int userId, string firstName = "Reference's First Name", string lastName = "Reference's Last Name", string company = "company", string email = "email", string title = "title", string message = "message", string videoLink = "videoLink", string videoType = "videoType")
         {
             try
             {
                 if (userId == null)
                 {
                     return null;
+                }
+                if (videoLink != "videoLink")
+                {
+                    if(videoLink.Contains("youtube"))
+                    {
+                        if (videoLink.Contains("http://"))
+                        {
+                            videoLink = videoLink.Substring(31, 11);
+                            videoType = "youtube";
+                        }
+                        else
+                        {
+                            videoLink = videoLink.Substring(24, 11);
+                            videoType = "youtube";
+                        }
+                    }
+                    else if (videoLink.Contains("youtu."))
+                    {
+                        videoLink = videoLink.Substring(16);
+                        videoType = "youtube";
+                    }
+                    else if (videoLink.Contains("vimeo"))
+                    {
+                        string[] s = videoLink.Split('/');
+                        videoLink = s[s.Count() - 1];
+                        videoType = "vimeo";
+                    }
                 }
                 Reference reference = new Reference
                 {
@@ -816,7 +843,8 @@ namespace Manager
                     message = message,
                     title = title,
                     company = company,
-                    videoLink = videoLink
+                    videoLink = videoLink,
+                    videoType = videoType
                 };
                 userAccessor.AddReference(reference);
                 JsonModels.Reference response = new JsonModels.Reference();
@@ -829,6 +857,7 @@ namespace Manager
                 response.company = company;
                 response.title = title;
                 response.videoLink = videoLink;
+                response.videoType = videoType;
                 return response;
 
             }
@@ -856,6 +885,7 @@ namespace Manager
             response.company = reference.company;
             response.title = reference.title;
             response.videoLink = reference.videoLink;
+            response.videoType = reference.videoType;
             return response;
         }
         public Reference GetReference(int referenceId)
@@ -899,6 +929,10 @@ namespace Manager
                     if (r.email != null)
                     {
                         rJson.email = r.email;
+                    }
+                    if (r.videoType != null)
+                    {
+                        rJson.videoType = r.videoType;
                     }
                     referencesJson.Add(rJson);
                 }

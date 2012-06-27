@@ -43,7 +43,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string CheckFileExistence(String url = null)
+        public string CheckFileExist(String url = null, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -57,88 +57,99 @@ namespace UserClientMembers.Controllers
             {
                 return GetFailureMessage("about:blank is not a valid url to check");
             }
-            if (!url.StartsWith("http://") || !url.StartsWith("https://"))
-            {
-                url = "http://" + url;
-            }
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Timeout = 20000;
-            WebResponse response;
-            try
-            {
-                response = request.GetResponse();
-            }
-            catch (Exception ex)
-            {
-                return GetFailureMessage("This URL either timed out, or does not exist");
-            }
-            return (AddSuccessHeaders("File Exists", true));
-        }
-
-        [AcceptVerbs("POST", "OPTIONS")]
-        public string CheckFileExist(String url, string token)
-        {
-            Response.AddHeader("Access-Control-Allow-Origin", "*");
-            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
-            {
-                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
-                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
-                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
-                return null;
-            }
-            else
+            
+            int count = 0;
+            bool found = false;
+            while (!found && count < 40)
             {
                 try
                 {
-
-                    HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(url);
-                    bool found = false;
-                    int counter = 0;
-                    while (!found)
-                    {
-                        try
-                        {
-                            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                            if (response.StatusCode != HttpStatusCode.NotFound)
-                            {
-                                found = true;
-                                return AddSuccessHeaders("File Exists", true);
-                            }
-                            else
-                            {
-                                Thread.Sleep(500);
-                                counter++;
-                                if (counter > 40)
-                                {
-                                    return GetFailureMessage("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
-                                }
-                            }
-
-                        }
-                        catch (System.Net.WebException)
-                        {
-                            Thread.Sleep(500);
-                            counter++;
-                            if (counter > 40)
-                            {
-                                return GetFailureMessage("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
-                            }
-                            continue;
-                        }
-                    }
-                    return AddSuccessHeaders("File Exists", true);
-                    
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.Timeout = 5000;
+                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                    found = true;
                 }
-                catch (Exception ex)
+                catch (WebException ex)
                 {
-                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return GetFailureMessage("Unknown error - CheckFileExist");
+                    count++;
+                    Thread.Sleep(500);
+                    continue;
                 }
             }
+            if (count >= 40)
+            {
+                return GetFailureMessage("Timeout");
+            }
+            else
+            {
+                return (AddSuccessHeaders("File Exists", true));
+            }
         }
+
+        //[AcceptVerbs("POST", "OPTIONS")]
+        //public string CheckFileExist(String url, string token)
+        //{
+        //    Response.AddHeader("Access-Control-Allow-Origin", "*");
+        //    if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+        //    {
+        //        Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+        //        Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+        //        Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
+        //        Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
+        //        Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+        //        Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+        //        return null;
+        //    }
+        //    else
+        //    {
+        //        try
+        //        {
+
+        //            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(url);
+        //            bool found = false;
+        //            int counter = 0;
+        //            while (!found)
+        //            {
+        //                try
+        //                {
+        //                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+        //                    if (response.StatusCode != HttpStatusCode.NotFound)
+        //                    {
+        //                        found = true;
+        //                        return AddSuccessHeaders("File Exists", true);
+        //                    }
+        //                    else
+        //                    {
+        //                        Thread.Sleep(500);
+        //                        counter++;
+        //                        if (counter > 40)
+        //                        {
+        //                            return GetFailureMessage("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
+        //                        }
+        //                    }
+
+        //                }
+        //                catch (System.Net.WebException)
+        //                {
+        //                    Thread.Sleep(500);
+        //                    counter++;
+        //                    if (counter > 40)
+        //                    {
+        //                        return GetFailureMessage("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
+        //                    }
+        //                    continue;
+        //                }
+        //            }
+        //            return AddSuccessHeaders("File Exists", true);
+                    
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+        //            return GetFailureMessage("Unknown error - CheckFileExist");
+        //        }
+        //    }
+        //}
 
 
         public string TestMe()
@@ -2583,7 +2594,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string AddReference(string firstName = "first name", string lastName = "last name", string email="email", string company = "company", string title = "title", string message = "message", string videoLink = "videoLink" ,string token = null)
+        public string AddReference(string firstName = "first name", string lastName = "last name", string email="email", string company = "company", string title = "title", string message = "message", string videoLink = "videoLink" , string videoType = "videoType",string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -2605,7 +2616,7 @@ namespace UserClientMembers.Controllers
                     return GetFailureMessage("You are not authenticated, please log in!");
                 }
                 User user = userManager.GetUser(authUserId);
-                JsonModels.Reference exp = userManager.AddReference(user.id, firstName, lastName, company, email, title, message, videoLink);
+                JsonModels.Reference exp = userManager.AddReference(user.id, firstName, lastName, company, email, title, message, videoLink, videoType);
                 return Serialize(exp);
 
             }
