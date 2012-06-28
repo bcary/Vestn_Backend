@@ -1266,22 +1266,22 @@ namespace UserClientMembers.Controllers
                                     else if (String.Compare(fileType, "doc", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeDoc(user, fs);
-                                        return AddSuccessHeaders(resumeUri, true);
+                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "docx", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeDocx(user, fs);
-                                        return AddSuccessHeaders(resumeUri, true);
+                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "rtf", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeRTF(user, fs);
-                                        return AddSuccessHeaders(resumeUri, true);
+                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "txt", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeTXT(user, fs);
-                                        return AddSuccessHeaders(resumeUri, true);
+                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
                                     }
                                     else
                                     {
