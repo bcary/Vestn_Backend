@@ -340,7 +340,7 @@ namespace Manager
             }
             if (extention == "pdf")
             {
-                return new JsonModels.UploadReponse { id = projectElementId, fileURL = location, name = fileName };
+                return new JsonModels.UploadReponse { id = projectElementId, fileURL = location, name = fileName, artifactURL = location };
             }
             return new JsonModels.UploadReponse { id = projectElementId, fileURL = location, artifactURL = uniqueBlobName, name = fileName };
         }

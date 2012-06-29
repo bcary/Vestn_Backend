@@ -646,7 +646,7 @@ namespace UserClientMembers.Controllers
                     }
                     else if (artifactType == "document")
                     {
-                        artifactResponse.artifactLocation = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.artifactURL;
+                        artifactResponse.artifactLocation = response.artifactURL;
                         artifactResponse.fileLocation = response.fileURL;
                     }
 
