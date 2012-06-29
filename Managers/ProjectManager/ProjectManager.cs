@@ -342,7 +342,7 @@ namespace Manager
             {
                 return new JsonModels.UploadReponse { id = projectElementId, fileURL = location, name = fileName, artifactURL = location };
             }
-            return new JsonModels.UploadReponse { id = projectElementId, fileURL = location, artifactURL = uniqueBlobName, name = fileName };
+            return new JsonModels.UploadReponse { id = projectElementId, fileURL = location, artifactURL = docThumb, name = fileName };
         }
 
         public JsonModels.Artifact AddCodeElement(int projectId, string code, string type)
