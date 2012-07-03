@@ -50,8 +50,8 @@ namespace Manager
 
                 int idValue = entityId;
                 CloudBlob inputBlob = blobContainer.GetBlobReference(imageURI);
-                Stream input = inputBlob.OpenRead();
-                Bitmap image = TEngine.CreateThumbnail(input, displayWidth, displayHeight);
+                var ms = new MemoryStream(inputBlob.DownloadByteArray());
+                Bitmap image = TEngine.CreateThumbnail(ms, displayWidth, displayHeight);
                 Uri uri = null;
                 using (MemoryStream stream = new MemoryStream())
                 {

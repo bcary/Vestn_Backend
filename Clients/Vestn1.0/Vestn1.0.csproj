@@ -348,6 +348,10 @@
       <Project>{3C319628-861F-4FD1-B2EA-B67C3EF2AD91}</Project>
       <Name>AuthenticationEngine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Engines\ThumbnailEngine\ThumbnailEngine.csproj">
+      <Project>{75A7DE01-0AF0-42A4-AB70-9C8A2ECCBF1B}</Project>
+      <Name>ThumbnailEngine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Entities\Analytics\Analytics.csproj">
       <Project>{BC962547-338A-4A68-91C3-2C6F2D18F194}</Project>
       <Name>Analytics</Name>

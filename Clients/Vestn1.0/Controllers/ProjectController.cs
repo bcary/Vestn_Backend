@@ -5,6 +5,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Drawing;
+using System.Drawing.Imaging;
 using Manager;
 using Entity;
 using UserClientMembers.Models;
@@ -1682,5 +1684,36 @@ namespace UserClientMembers.Controllers
             }
             return AddSuccessHeaders(returnVal);
         }
+
+        //[AcceptVerbs("POST", "OPTIONS")]
+        //[AllowCrossSiteJson]
+        //public string testThumbnail(int width, int height, string qqfile = null)
+        //{
+        //    if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+        //    {
+        //        return null;
+        //    }
+        //    var length = Request.ContentLength;
+        //    var bytes = new byte[length];
+        //    Request.InputStream.Read(bytes, 0, length);
+        //    Stream s = new MemoryStream(bytes);
+
+        //    ThumbnailEngine te = new ThumbnailEngine();
+        //    BlobStorageAccessor BSAccessor = new BlobStorageAccessor();
+        //    string FileNameThumb = Guid.NewGuid().ToString();
+        //    string presetURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
+
+        //    Bitmap image = te.CreateThumbnail(s, width, height);
+        //    Uri uri = null;
+        //    using (MemoryStream stream = new MemoryStream())
+        //    {
+        //        // Save image to stream.
+        //        image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
+        //        uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
+        //    }
+        //    return uri.ToString();
+
+
+        //}
     }
 }
