@@ -18,6 +18,38 @@ namespace UserClientMembers
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
 
+    public class SubdomainRoute : RouteBase
+    {
+        public override RouteData GetRouteData(HttpContextBase httpContext)
+        {
+            var url = httpContext.Request.Headers["HOST"];
+            var index = url.IndexOf(".");
+
+            if (index < 0)
+                return null;
+
+            var subDomain = url.Substring(0, index);
+
+            if (subDomain != null || subDomain != "")
+            {
+                var routeData = new RouteData(this, new MvcRouteHandler());
+                routeData.Values.Add("controller", "Subdomain"); //Goes to the User1Controller class
+                routeData.Values.Add("action", "RedirectSubdomain"); //Goes to the Index action on the User1Controller
+                routeData.Values.Add("subdomain",subDomain);
+
+                return routeData;
+            }
+            return null;
+        }
+
+        public override VirtualPathData GetVirtualPath(RequestContext requestContext, RouteValueDictionary values)
+        {
+            //Implement your formating Url formating here
+            return null;
+        }
+    }
+
+
     public class MvcApplication : System.Web.HttpApplication
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
@@ -28,18 +60,18 @@ namespace UserClientMembers
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.Add(new SubdomainRoute());
+            //routes.MapRoute(
+            //    "Profile_Default", // Route name
+            //    "v", // URL with parameters
+            //    new { controller = "User", action = "Profile", profileURL = "" } // Parameter defaults
+            //);
 
-            routes.MapRoute(
-                "Profile_Default", // Route name
-                "v", // URL with parameters
-                new { controller = "User", action = "Profile", profileURL = "" } // Parameter defaults
-            );
-
-            routes.MapRoute(
-                "Profile", // Route name
-                "v/{profileURL}", // URL with parameters
-                new { controller = "User", action = "Profile" } // Parameter defaults
-            );
+            //routes.MapRoute(
+            //    "Profile", // Route name
+            //    "v/{profileURL}", // URL with parameters
+            //    new { controller = "User", action = "Profile" } // Parameter defaults
+            //);
             
             routes.MapRoute(
                 "Default", // Route name

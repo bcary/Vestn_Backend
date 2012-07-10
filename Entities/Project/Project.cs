@@ -5,6 +5,12 @@ using System.Text;
 
 namespace Entity
 {
+    public enum Privacy
+    {
+        Public,
+        Network,
+        Private
+    }
     public class Project
     {
         public int id {get; set;}
@@ -15,11 +21,7 @@ namespace Entity
         public string description { get; set; }
         public string tagIds { get; set; }
         public bool isActive { get; set; }
-        //public string projectElementOrderDocument { get; set; }
-        //public string projectElementOrderPicture { get; set; }
-        //public string projectElementOrderVideo { get; set; }
-        //public string projectElementOrderAudio { get; set; }
-        //public string projectElementOrderExperience { get; set; }
         public string projectElementOrder { get; set; }
+        //public Privacy privacy { get; set; }
     }
 }

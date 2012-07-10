@@ -733,7 +733,7 @@ namespace UserClientMembers.Controllers
         /// <returns></returns>
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
-        public string AddArtifact_Video(int projectId, string videoLink, string token)
+        public string AddArtifact_Video(int projectId = -1, string videoLink = null, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
@@ -743,43 +743,60 @@ namespace UserClientMembers.Controllers
             {
                 try
                 {
-                    int userId = authenticationEngine.authenticate(token);
+                    int userId = -1;
+                    if (token != null)
+                    {
+                        userId = authenticationEngine.authenticate(token);
+                    }
+                    else
+                    {
+                        return GetFailureMessage("User authentication token not recieved.");
+                    }
                     if (userId < 0)
                     {
                         return GetFailureMessage("User is not authenticated, please log in!");
                     }
                     User user = userManager.GetUser(userId);
-
+                    if (projectId < 0)
+                    {
+                        return GetFailureMessage("A projectId was not recieved");
+                    }
                     if (!projectManager.IsUserOwnerOfProject(projectId, user))
                     {
-                        //return Json(new { Error = "Can't add video at this time" });
                         return GetFailureMessage("User is not authorized to complete this action");
                     }
-                    string sVideoID = videoLink;
-                    string vType = "unknown";
-                    if (videoLink.Contains("youtube"))
+                    string vType;
+                    if (videoLink != null)
                     {
-                        if(videoLink.Contains("http://"))
+                        vType = "unknown";
+                        if (videoLink.Contains("youtube"))
                         {
-                            videoLink = videoLink.Substring(31, 11);
+                            if (videoLink.Contains("http://"))
+                            {
+                                videoLink = videoLink.Substring(31, 11);
+                                vType = "youtube";
+                            }
+                            else
+                            {
+                                videoLink = videoLink.Substring(24, 11);
+                                vType = "youtube";
+                            }
+                        }
+                        else if (videoLink.Contains("youtu."))
+                        {
+                            videoLink = videoLink.Substring(16);
                             vType = "youtube";
                         }
-                        else
+                        else if (videoLink.Contains("vimeo"))
                         {
-                            videoLink = videoLink.Substring(24, 11);
-                            vType = "youtube";
+                            string[] s = videoLink.Split('/');
+                            videoLink = s[s.Count() - 1];
+                            vType = "vimeo";
                         }
                     }
-                    else if (videoLink.Contains("youtu."))
+                    else
                     {
-                        videoLink = videoLink.Substring(16);
-                        vType = "youtube";
-                    }
-                    else if (videoLink.Contains("vimeo"))
-                    {
-                        string[] s = videoLink.Split('/');
-                        videoLink = s[s.Count() - 1];
-                        vType = "vimeo";
+                        return GetFailureMessage("A videoLink was not recieved");
                     }
                     
                     JsonModels.Artifact response = projectManager.AddVideoElement(projectId, "Video Description", videoLink, vType);
@@ -1215,6 +1232,10 @@ namespace UserClientMembers.Controllers
                             {
                                 return GetFailureMessage("Name exceeded 100 character limit, project not updated");
                             }
+                        }
+                        if (propertyId == "privacy")
+                        {
+                            //TODO - ensure what is added to the DB is of the Privacy enumeration
                         }
                         //TODO validate description
                         if (propertyId != "coverPicture")

@@ -140,8 +140,8 @@ namespace Manager
             User user = userAccessor.GetUserByProfileURL(profileURL);
 
             //Reorder project elements before sending back to user
-            ReorderEngine reorderEngine = new ReorderEngine();
-            user = reorderEngine.ReOrderProjects(user);
+            //ReorderEngine reorderEngine = new ReorderEngine();
+            //user = reorderEngine.ReOrderProjects(user);
 
             return user;
         }
