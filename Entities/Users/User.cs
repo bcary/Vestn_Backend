@@ -22,13 +22,13 @@ namespace Entity
         public string major { get; set; }
         [DataType(DataType.PhoneNumber)]
         public string phoneNumber { get; set; }
-        public WillingToRelocateType willingToRelocate { get; set; }
+        //public WillingToRelocateType willingToRelocate { get; set; }
         public List<Project> projects { get; set; }
         public string profilePicture { get; set; }
         public string profilePictureThumbnail { get; set; }
         public string resume { get; set; }
         public string description { get; set; }
-        public EmploymentStatus status { get; set; }
+        //public EmploymentStatus status { get; set; }
         public DateTime graduationDate { get; set; }
         public int emailVerified { get; set; }
         public int isPublic { get; set; }
@@ -38,7 +38,6 @@ namespace Entity
         public string aboutPictureThumbnail { get; set; }
         public string profileURL { get; set; }
         public string projectOrder { get; set; }
-        //
         public string tagLine { get; set; }
         public string facebookLink { get; set; }
         public string twitterLink { get; set; }

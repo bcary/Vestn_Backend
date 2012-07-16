@@ -38,14 +38,14 @@ namespace Accessor
                 {
                     user.tagIds = "";
                 }
-                if (user.status == null)
-                {
-                    user.status = EmploymentStatus.LookingForInternship;
-                }
-                if (user.willingToRelocate == null)
-                {
-                    user.willingToRelocate = WillingToRelocateType.undecided;
-                }
+                //if (user.status == null)
+                //{
+                //    user.status = EmploymentStatus.LookingForInternship;
+                //}
+                //if (user.willingToRelocate == null)
+                //{
+                //    user.willingToRelocate = WillingToRelocateType.undecided;
+                //}
                 if (user.projects == null)
                 {
                     user.projects = new List<Project>();
@@ -538,7 +538,7 @@ namespace Accessor
         {
             try
             {
-                if (experienceId != null)
+                if (experienceId > 0)
                 {
                     VestnDB db = new VestnDB();
                     Experience experience = (from c in db.experience where c.id == experienceId select c).FirstOrDefault();
@@ -644,7 +644,7 @@ namespace Accessor
         {
             try
             {
-                if (referenceId != null)
+                if (referenceId > 0)
                 {
                     VestnDB db = new VestnDB();
                     Reference reference = (from c in db.reference where c.id == referenceId select c).FirstOrDefault();

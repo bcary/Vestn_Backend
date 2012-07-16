@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using System.Data.Entity;
 using Entity;
-using Entity;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Microsoft.WindowsAzure.StorageClient;
@@ -53,7 +52,7 @@ namespace Models
             newUser.school = this.school;
             newUser.major = this.major;
             newUser.phoneNumber = this.phoneNumber;
-            newUser.willingToRelocate = this.willingToRelocate;
+            //newUser.willingToRelocate = this.willingToRelocate;
             newUser.emailVerified = this.emailVerified;
             newUser.isPublic = this.isPublic;
             newUser.isActive = this.isActive;
@@ -82,7 +81,7 @@ namespace Models
             this.school = user.school;
             this.major = user.major;
             this.phoneNumber = user.phoneNumber;
-            this.willingToRelocate = user.willingToRelocate;
+            //this.willingToRelocate = user.willingToRelocate;
             this.emailVerified = user.emailVerified;
             this.isPublic = user.isPublic;
             this.isActive = user.isActive;
@@ -136,7 +135,7 @@ namespace Models
             this.id = user.id;
             this.birthDate = user.birthDate;
             this.description = user.description;
-            this.status = user.status;
+            //this.status = user.status;
             this.graduationDate = user.graduationDate;
             this.email = user.email;
             this.firstName = user.firstName;
@@ -147,7 +146,7 @@ namespace Models
             this.phoneNumber = user.phoneNumber;
             this.school = user.school;
             this.userName = user.userName;
-            this.willingToRelocate = user.willingToRelocate;
+            //this.willingToRelocate = user.willingToRelocate;
             this.profilePicture = user.profilePicture;
             this.profilePictureThumbnail = user.profilePictureThumbnail;
             this.aboutPicture = user.aboutPicture;
@@ -191,7 +190,7 @@ namespace Models
             newUser.school = this.school;
             newUser.userName = this.userName;
             newUser.description = this.description;
-            newUser.status = this.status;
+            //newUser.status = this.status;
             newUser.graduationDate = this.graduationDate;
             newUser.emailVerified = this.emailVerified;
             newUser.isPublic = this.isPublic;

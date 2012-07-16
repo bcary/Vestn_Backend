@@ -73,6 +73,71 @@ namespace Entity
         }
 
         [DataContract]
+        public class ProfileInformation
+        {
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string firstName { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string lastName { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string title { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string school { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string connections { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string description { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string tagLine { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string resume { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string profilePicture { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string profilePictureThumbnail { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string aboutPicture { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public string aboutPictureThumbnail { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public UserStats stats { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public Links links { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public List<Experience> experiences { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public List<Reference> references { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public List<UserTag> tags { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public List<CompleteProject> projects { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public List<Todo> todo { get; set; }
+
+            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            public List<RecentActivity> recentActivity { get; set; }
+        }
+
+
+        [DataContract]
         public class UserStats
         {
             [DataMember(IsRequired = false, EmitDefaultValue = false)]

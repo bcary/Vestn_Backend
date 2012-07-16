@@ -94,10 +94,10 @@ namespace Manager
             {
                 return null;
             }
-            if (user.projects.Count() == 0)
-            {
-                projectAccessor.CreateProject(createdUser, new List<ProjectElement>());
-            }
+            //if (user.projects.Count() == 0)
+            //{
+            //    projectAccessor.CreateProject(createdUser, new List<ProjectElement>());
+            //}
             AnalyticsAccessor aa = new AnalyticsAccessor();
             aa.CreateAnalytic("User Register", DateTime.Now, createdUser.userName);
             //createdUser.projects.FirstOrDefault().name = "About";

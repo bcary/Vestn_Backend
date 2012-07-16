@@ -67,7 +67,7 @@ namespace Entity
                 school = "Univeristy of Nebraska-Lincoln",
                 major= "Testing",
                 phoneNumber = "555-555-5555",
-                willingToRelocate = WillingToRelocateType.no,
+                //willingToRelocate = WillingToRelocateType.no,
             };
 
             User user2 = new User
@@ -83,7 +83,7 @@ namespace Entity
                 school = "Univeristy of Nebraska-Omaha",
                 major = "Testing2",
                 phoneNumber = "222-222-2222",
-                willingToRelocate = WillingToRelocateType.yes,
+                //willingToRelocate = WillingToRelocateType.yes,
             };
             vestnDB.users.Add(user);
             vestnDB.users.Add(user2);
@@ -186,7 +186,7 @@ namespace Entity
                 school = "Univeristy of Nebraska-Lincoln",
                 major = "Testing",
                 phoneNumber = "555-555-5555",
-                willingToRelocate = WillingToRelocateType.no,
+                //willingToRelocate = WillingToRelocateType.no,
             };
 
             User user2 = new User
@@ -201,7 +201,7 @@ namespace Entity
                 school = "Univeristy of Nebraska-Omaha",
                 major = "Testing2",
                 phoneNumber = "222-222-2222",
-                willingToRelocate = WillingToRelocateType.yes,
+                //willingToRelocate = WillingToRelocateType.yes,
             };
 
             CreateMembershipUser(user1, "password!1");
@@ -222,10 +222,10 @@ namespace Entity
             try
             {
                 VestnDB db = new VestnDB();
-                if (user.willingToRelocate == null)
-                {
-                    user.willingToRelocate = WillingToRelocateType.undecided;
-                }
+                //if (user.willingToRelocate == null)
+                //{
+                //    user.willingToRelocate = WillingToRelocateType.undecided;
+                //}
                 if (user.projects == null)
                 {
                     user.projects = new List<Project>();

@@ -28,18 +28,18 @@ namespace UserClientMembers.Controllers
                 User user = userManager.GetUserByProfileURL(subdomain);
                 if (user == null)
                 {
-                    string redirectURL = "http://vestn.com";
+                    string redirectURL = "http://50.17.232.163";
                     return Redirect(redirectURL);
                 }
                 else
                 {
-                    string redirectURL = "http://vestn.com/#!/profile=" + subdomain;
+                    string redirectURL = "http://50.17.232.163/#profile=" + subdomain;
                     return Redirect(redirectURL);
                 }
             }
             catch (Exception ex)
             {
-                return Redirect("http://vestn.com");
+                return Redirect("http://50.17.232.163");
             }
         }
     }

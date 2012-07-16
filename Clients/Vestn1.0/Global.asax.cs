@@ -29,6 +29,10 @@ namespace UserClientMembers
                 return null;
 
             var subDomain = url.Substring(0, index);
+            if (subDomain.Contains("4705902cf6e546169b8f9608a8645941") || subDomain.Equals("vestndev", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
 
             if (subDomain != null || subDomain != "")
             {
@@ -97,14 +101,9 @@ namespace UserClientMembers
 
             //InitializeConnections();
             InitializeTags();
-            //UserManager um = new UserManager();
-            //User u = new Entity.User();
-            //u.firstName = "b";
-            //UserController uc = new UserController();
-            //uc.Register("b@b.com", "rrrrrr");
-
+            
+            UserController uc = new UserController();
         
-
             //OPTIONAL CALL TO CREATE SAMPLE USER (MOHAMMAD WONG) ON STARTUP
             //new UserController().CreateSampleUser();
 
