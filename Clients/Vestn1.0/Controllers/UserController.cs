@@ -2422,6 +2422,7 @@ namespace UserClientMembers.Controllers
             }
             else
             {
+                
                 //authenticate via token
                 string returnVal;
                 int authenticateId = -1;
@@ -2498,6 +2499,10 @@ namespace UserClientMembers.Controllers
                                 ui.firstName = u.firstName;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.firstName = null;
+                            }
                         }
                         if (requestAll || request.Contains("lastName"))
                         {
@@ -2506,21 +2511,29 @@ namespace UserClientMembers.Controllers
                                 ui.lastName = u.lastName;
                                 add = 1;
                             }
-                        }
-                        if (requestAll || request.Contains("connections"))
-                        {
-                            if (u.connections != null)
+                            else
                             {
-                                ui.connections = u.connections;
-                                add = 1;
+                                ui.lastName = null;
                             }
                         }
+                        //if (requestAll || request.Contains("connections"))
+                        //{
+                        //    if (u.connections != null)
+                        //    {
+                        //        ui.connections = u.connections;
+                        //        add = 1;
+                        //    }
+                        //}
                         if (requestAll || request.Contains("tagLine"))
                         {
                             if (u.tagLine != null)
                             {
                                 ui.tagLine = u.tagLine;
                                 add = 1;
+                            }
+                            else
+                            {
+                                ui.tagLine = null;
                             }
                         }
                         if (requestAll || request.Contains("title"))
@@ -2530,6 +2543,10 @@ namespace UserClientMembers.Controllers
                                 ui.title = u.title;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.title = null;
+                            }
                         }
                         if (requestAll || request.Contains("school"))
                         {
@@ -2537,6 +2554,10 @@ namespace UserClientMembers.Controllers
                             {
                                 ui.school = u.school;
                                 add = 1;
+                            }
+                            else
+                            {
+                                ui.school = null;
                             }
                         }
                         if (requestAll || request.Contains("description"))
@@ -2546,6 +2567,10 @@ namespace UserClientMembers.Controllers
                                 ui.description = u.description;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.description = null;
+                            }
                         }
                         if (requestAll || request.Contains("resume"))
                         {
@@ -2553,6 +2578,10 @@ namespace UserClientMembers.Controllers
                             {
                                 ui.resume = u.resume;
                                 add = 1;
+                            }
+                            else
+                            {
+                                ui.resume = null;
                             }
                         }
                         if (requestAll || request.Contains("profilePicture"))
@@ -2562,13 +2591,9 @@ namespace UserClientMembers.Controllers
                                 ui.profilePicture = u.profilePicture;
                                 add = 1;
                             }
-                        }
-                        if (requestAll || request.Contains("aboutPicture"))
-                        {
-                            if (u.aboutPicture != null)
+                            else
                             {
-                                ui.aboutPicture = u.aboutPicture;
-                                add = 1;
+                                ui.profilePicture = null;
                             }
                         }
                         if (requestAll || request.Contains("profilePictureThumbnail"))
@@ -2578,15 +2603,12 @@ namespace UserClientMembers.Controllers
                                 ui.profilePictureThumbnail = u.profilePictureThumbnail;
                                 add = 1;
                             }
-                        }
-                        if (requestAll || request.Contains("aboutPictureThumbnail"))
-                        {
-                            if (u.aboutPictureThumbnail != null)
+                            else
                             {
-                                ui.aboutPictureThumbnail = u.aboutPictureThumbnail;
-                                add = 1;
+                                ui.profilePictureThumbnail = null;
                             }
                         }
+                        //TODO actually calculate the stats
                         if (requestAll || request.Contains("stats"))
                         {
                             JsonModels.UserStats stats = userManager.getUserStats(id);
@@ -2594,6 +2616,10 @@ namespace UserClientMembers.Controllers
                             {
                                 ui.stats = stats;
                                 add = 1;
+                            }
+                            else
+                            {
+                                ui.stats = null;
                             }
                         }
                         if (requestAll || request.Contains("links"))
@@ -2604,6 +2630,10 @@ namespace UserClientMembers.Controllers
                                 ui.links = links;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.links = null;
+                            }
                         }
                         if (requestAll || request.Contains("experiences"))
                         {
@@ -2612,6 +2642,10 @@ namespace UserClientMembers.Controllers
                             {
                                 ui.experiences = experiences;
                                 add = 1;
+                            }
+                            else
+                            {
+                                ui.experiences = null;
                             }
                         }
                         if (requestAll || request.Contains("references"))
@@ -2622,6 +2656,10 @@ namespace UserClientMembers.Controllers
                                 ui.references = references;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.references = null;
+                            }
                         }
                         if (requestAll || request.Contains("tags"))
                         {
@@ -2630,6 +2668,10 @@ namespace UserClientMembers.Controllers
                             {
                                 ui.tags = tags;
                                 add = 1;
+                            }
+                            else
+                            {
+                                ui.tags = null;
                             }
                         }
                         if (requestAll || request.Contains("projects"))
@@ -2647,16 +2689,20 @@ namespace UserClientMembers.Controllers
                                 ui.projects = projects;
                                 add = 1;
                             }
-                        }
-                        if (requestAll || request.Contains("todo"))
-                        {
-                            List<JsonModels.Todo> todoList = userManager.GetTodo(id);
-                            if (todoList != null && todoList.Count != 0)
+                            else
                             {
-                                ui.todo = todoList;
-                                add = 1;
+                                ui.projects = null;
                             }
                         }
+                        //if (requestAll || request.Contains("todo"))
+                        //{
+                        //    List<JsonModels.Todo> todoList = userManager.GetTodo(id);
+                        //    if (todoList != null && todoList.Count != 0)
+                        //    {
+                        //        ui.todo = todoList;
+                        //        add = 1;
+                        //    }
+                        //}
                         if (requestAll || request.Contains("recentActivity"))
                         {
                             List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(id);
@@ -2664,6 +2710,10 @@ namespace UserClientMembers.Controllers
                             {
                                 ui.recentActivity = recentActivity;
                                 add = 1;
+                            }
+                            else
+                            {
+                                ui.recentActivity = null;
                             }
                         }
                     }

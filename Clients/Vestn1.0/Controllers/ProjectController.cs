@@ -88,7 +88,7 @@ namespace UserClientMembers.Controllers
                         response.id = project.id;
                         response.artifacts = null;
                         response.projectTags = null;
-                        response.elementOrder = "";
+                        response.projectElementOrder = "";
                         string returnVal;
                         try
                         {
@@ -1119,6 +1119,115 @@ namespace UserClientMembers.Controllers
                 return GetFailureMessage("Something went wrong while updating this artifact.");
             }
 
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateArtifactModel(IEnumerable<JsonModels.Artifact> artifact, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int userId = -1;
+                if (token != null)
+                {
+                    userId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (userId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                User authUser = userManager.GetUser(userId);
+                JsonModels.Artifact artifactFromJson = artifact.FirstOrDefault();
+                ProjectElement originalElement = projectManager.GetProjectElement(artifactFromJson.id);
+                if (originalElement == null)
+                {
+                    return GetFailureMessage("The artifact model does not exist in the database");
+                }
+                else
+                {
+                    if (projectManager.IsUserOwnerOfProjectElement(artifactFromJson.id, authUser))
+                    {
+                        originalElement.description = artifactFromJson.description;
+                        originalElement.title = artifactFromJson.title;
+                        projectManager.UpdateProjectElement(originalElement);
+                        return Serialize(projectManager.GetArtifactJson(originalElement));
+                    }
+                    else
+                    {
+                        return GetFailureMessage("User is not authorized to edit this Artifact");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return GetFailureMessage("Something went wrong while updating this artifact");
+            }
+        }
+
+
+
+        [AcceptVerbs("POST","OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateProjectModel(IEnumerable<Project> project, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int userId = -1;
+                if (token != null)
+                {
+                    userId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (userId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                User authUser = userManager.GetUser(userId);
+                Project projectFromJson = project.FirstOrDefault();
+                Project originalProject = projectManager.GetProject(projectFromJson.id);
+                if (projectFromJson == null)
+                {
+                    return GetFailureMessage("The project JSON model did not bind correctly");
+                }
+                else
+                {
+                    if (originalProject == null)
+                    {
+                        return GetFailureMessage("The project model does not exist in the database");
+                    }
+                    if (projectManager.IsUserOwnerOfProject(projectFromJson.id, authUser))
+                    {
+                        originalProject.description = projectFromJson.description;
+                        originalProject.name = projectFromJson.name;
+                        originalProject.projectElementOrder = projectFromJson.projectElementOrder;
+                        projectManager.UpdateProject(originalProject);
+                        return Serialize(projectManager.GetProjectJson(originalProject));
+                    }
+                    else
+                    {
+                        return GetFailureMessage("User is not authorized to edit this project");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return GetFailureMessage("Something went wrong while updating this Project.");
+            }
         }
 
         //edit entire project, not just an element

@@ -870,9 +870,17 @@ namespace Manager
                         {
                             a.description = ped.description;
                         }
+                        else
+                        {
+                            a.description = null;
+                        }
                         if (ped.title != null)
                         {
                             a.title = ped.title;
+                        }
+                        else
+                        {
+                            a.title = null;
                         }
                         add = 1;
                     }
@@ -893,9 +901,17 @@ namespace Manager
                         {
                             a.description = pep.description;
                         }
+                        else
+                        {
+                            a.description = "";
+                        }
                         if (pep.title != null)
                         {
                             a.title = pep.title;
+                        }
+                        else
+                        {
+                            a.title = null;
                         }
                         add = 1;
                     }
@@ -911,14 +927,26 @@ namespace Manager
                         {
                             a.description = pev.description;
                         }
+                        else
+                        {
+                            a.description = null;
+                        }
                         a.creationDate = "?/?/????";
                         if (pev.title != null)
                         {
                             a.title = pev.title;
                         }
+                        else
+                        {
+                            a.title = null;
+                        }
                         if (pev.videoType != null)
                         {
                             a.fileLocation = pev.videoType;
+                        }
+                        else
+                        {
+                            a.fileLocation = null;
                         }
                         add = 1;
                     }
@@ -934,10 +962,18 @@ namespace Manager
                         {
                             a.description = pea.description;
                         }
+                        else
+                        {
+                            a.description = null;
+                        }
                         a.creationDate = "?/?/????";
                         if (pea.title != null)
                         {
                             a.title = pea.title;
+                        }
+                        else
+                        {
+                            a.title = null;
                         }
                         add = 1;
                     }
@@ -953,14 +989,26 @@ namespace Manager
                         {
                             a.description = pec.description;
                         }
+                        else
+                        {
+                            a.description = null;
+                        }
                         a.creationDate = "?/?/????";
                         if (pec.title != null)
                         {
                             a.title = pec.title;
                         }
+                        else
+                        {
+                            a.title = null;
+                        }
                         if (pec.fileLocation != null)
                         {
                             a.fileLocation = pec.fileLocation;
+                        }
+                        else
+                        {
+                            a.fileLocation = null;
                         }
                         add = 1;
                     }
@@ -1019,10 +1067,10 @@ namespace Manager
                         {
                             a.artifactLocation = pep.pictureLocation;
                         }
-                        if (pep.pictureGalleriaThumbnailLocation != null)
-                        {
-                            a.thumbnailLocation = pep.pictureGalleriaThumbnailLocation;
-                        }
+                        //if (pep.pictureGalleriaThumbnailLocation != null)
+                        //{
+                        //    a.thumbnailLocation = pep.pictureGalleriaThumbnailLocation;
+                        //}
                         a.creationDate = "?/?/????";
                         if (pep.description != null)
                         {
@@ -1072,40 +1120,6 @@ namespace Manager
                         }
                         add = 1;
                     }
-                    else if (pe.GetType() == typeof(ProjectElement_Experience))
-                    {
-                        a.type = "experience";
-                        ProjectElement_Experience pee = (ProjectElement_Experience)pe;
-                        if (pee.city != null)
-                        {
-                            a.city = pee.city;
-                        }
-                        if (pee.description != null)
-                        {
-                            a.description = pee.description;
-                        }
-                        if (pee.jobTitle != null)
-                        {
-                            a.title = pee.jobTitle;
-                        }
-                        if (pee.company != null)
-                        {
-                            a.company = pee.company;
-                        }
-                        if (pee.endDate != null)
-                        {
-                            a.endDate = pee.endDate.ToShortDateString();
-                        }
-                        if (pee.startDate != null)
-                        {
-                            a.startDate = pee.startDate.ToShortDateString();
-                        }
-                        if (pee.state != null)
-                        {
-                            a.state = pee.state;
-                        }
-                        add = 1;
-                    }
                 }
                 if (add == 1)
                 {
@@ -1115,6 +1129,90 @@ namespace Manager
             if (artifacts.Count != 0)
             {
                 return artifacts;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+        public JsonModels.Artifact GetArtifactJson(ProjectElement element)
+        {
+            JsonModels.Artifact artifactJson = new JsonModels.Artifact();
+            if (element != null)
+            {
+                artifactJson.description = element.description;
+                artifactJson.title = element.title;
+                artifactJson.id = element.id;
+                if (element.GetType() == typeof(ProjectElement_Document))
+                {
+                    ProjectElement_Document ped = (ProjectElement_Document)element;
+                    artifactJson.artifactLocation = ped.documentThumbnailLocation;
+                    artifactJson.fileLocation = ped.documentLocation;
+                    artifactJson.type = "document";
+                    return artifactJson;
+                }
+                else if (element.GetType() == typeof(ProjectElement_Picture))
+                {
+                    ProjectElement_Picture pep = (ProjectElement_Picture)element;
+                    artifactJson.artifactLocation = pep.pictureThumbnailLocation;
+                    artifactJson.fileLocation = pep.pictureLocation;
+                    artifactJson.type = "picture";
+                    return artifactJson;
+                }
+                else if (element.GetType() == typeof(ProjectElement_Audio))
+                {
+                    ProjectElement_Audio pea = (ProjectElement_Audio)element;
+                    artifactJson.artifactLocation = pea.audioLocation;
+                    artifactJson.fileLocation = pea.audioLocation;
+                    artifactJson.type = "audio";
+                    return artifactJson;
+                }
+                else if (element.GetType() == typeof(ProjectElement_Code))
+                {
+                    ProjectElement_Code pec = (ProjectElement_Code)element;
+                    artifactJson.artifactLocation = pec.code;
+                    artifactJson.fileLocation = pec.type;
+                    artifactJson.type = "code";
+                    return artifactJson;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public JsonModels.CompleteProject GetProjectJson(Project project)
+        {
+            JsonModels.CompleteProject cp = new JsonModels.CompleteProject();
+            if (project != null)
+            {
+                cp.coverPicture = project.coverPicture;
+                cp.coverPictureThumbnail = project.coverPictureThumbnail;
+                cp.description = project.description;
+                cp.projectElementOrder = project.projectElementOrder;
+                cp.id = project.id;
+                cp.name = project.name;
+                if (project.projectElements == null)
+                {
+                    cp.artifacts = null;
+                }
+                else if (project.projectElementOrder != null)
+                {
+                    ReorderEngine re = new ReorderEngine();
+                    List<int> IDS = re.stringOrderToList(project.projectElementOrder);
+                    int[] ids = IDS.ToArray();
+
+                    cp.artifacts = GetArtifacts(ids);
+                    cp.projectElementOrder = project.projectElementOrder;
+                }
+                return cp;
             }
             else
             {
@@ -1141,13 +1239,25 @@ namespace Manager
                         {
                             cp.name = p.name;
                         }
+                        else
+                        {
+                            cp.name = null;
+                        }
                         if (p.description != null)
                         {
                             cp.description = p.description;
                         }
+                        else
+                        {
+                            cp.description = null;
+                        }
                         if (p.tagIds != "" && p.tagIds != null)
                         {
                             cp.projectTags = GetProjectTags(p.id);
+                        }
+                        else
+                        {
+                            cp.projectTags = null;
                         }
 
                         //we have to reset everyone's project order or when you add a new element this breaks - removes all old elements
@@ -1163,7 +1273,7 @@ namespace Manager
                             int[] ids = IDS.ToArray();
 
                             cp.artifacts = GetArtifacts(ids);
-                            cp.elementOrder = p.projectElementOrder;
+                            cp.projectElementOrder = p.projectElementOrder;
                         }
                         else
                         {

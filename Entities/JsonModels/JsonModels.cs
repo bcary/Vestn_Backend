@@ -75,64 +75,58 @@ namespace Entity
         [DataContract]
         public class ProfileInformation
         {
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string firstName { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string lastName { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string title { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string school { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string connections { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string description { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string tagLine { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string resume { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string profilePicture { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string profilePictureThumbnail { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string aboutPicture { get; set; }
-
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string aboutPictureThumbnail { get; set; }
-
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public UserStats stats { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public Links links { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public List<Experience> experiences { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public List<Reference> references { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public List<UserTag> tags { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public List<CompleteProject> projects { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public List<Todo> todo { get; set; }
 
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+           [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public List<RecentActivity> recentActivity { get; set; }
         }
 
@@ -173,11 +167,11 @@ namespace Entity
         [DataContract]
         public class Links
         {
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string facebookLink { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string twitterLink { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+           [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string linkedinLink { get; set; }
         }
 
@@ -273,55 +267,43 @@ namespace Entity
         [DataContract]
         public class Artifact
         {
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string type { get; set; }//document, picture, video
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string description { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string creationDate { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string fileLocation { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string thumbnailLocation { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            //[DataMember(IsRequired = true, EmitDefaultValue = true)]
+            //public string thumbnailLocation { get; set; }
+           [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string artifactLocation { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string title { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public int id { get; set; }
-            //for experiences
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string company { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string startDate { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string endDate { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string city { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string state { get; set; }
-            //for references?
 
         }
 
         [DataContract]
         public class CompleteProject
         {
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string name { get; set; }//document, picture, video
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string description { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public int id { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public List<ProjectTag> projectTags { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public List<Artifact> artifacts { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string elementOrder { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string projectElementOrder { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string coverPicture { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+           [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string coverPictureThumbnail { get; set; }
         }
 
