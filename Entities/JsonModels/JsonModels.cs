@@ -76,10 +76,19 @@ namespace Entity
         public class ProfileInformation
         {
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string id { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string firstName { get; set; }
 
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string lastName { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string email { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string phoneNumber { get; set; }
 
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string title { get; set; }
@@ -91,6 +100,12 @@ namespace Entity
             public string connections { get; set; }
 
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string location { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string major { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string description { get; set; }
 
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
@@ -98,6 +113,9 @@ namespace Entity
 
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string resume { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string projectOrder { get; set; }
 
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string profilePicture { get; set; }

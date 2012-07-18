@@ -1155,10 +1155,10 @@ namespace UserClientMembers.Controllers
                 {
                     if (projectManager.IsUserOwnerOfProjectElement(artifactFromJson.id, authUser))
                     {
-                        originalElement.description = artifactFromJson.description;
-                        originalElement.title = artifactFromJson.title;
+                        originalElement.description = (artifactFromJson.description != null) ? artifactFromJson.description : null;
+                        originalElement.title = (artifactFromJson.title != null) ? artifactFromJson.title : null;
                         projectManager.UpdateProjectElement(originalElement);
-                        return Serialize(projectManager.GetArtifactJson(originalElement));
+                        return AddSuccessHeaders(Serialize(projectManager.GetArtifactJson(originalElement)));
                     }
                     else
                     {
@@ -1212,11 +1212,11 @@ namespace UserClientMembers.Controllers
                     }
                     if (projectManager.IsUserOwnerOfProject(projectFromJson.id, authUser))
                     {
-                        originalProject.description = projectFromJson.description;
-                        originalProject.name = projectFromJson.name;
-                        originalProject.projectElementOrder = projectFromJson.projectElementOrder;
+                        originalProject.description = (projectFromJson.description != null) ? projectFromJson.description : null;
+                        originalProject.name = (projectFromJson.name != null) ? projectFromJson.name : null;
+                        originalProject.projectElementOrder = (projectFromJson.projectElementOrder != null) ? projectFromJson.projectElementOrder : null;
                         projectManager.UpdateProject(originalProject);
-                        return Serialize(projectManager.GetProjectJson(originalProject));
+                        return AddSuccessHeaders(Serialize(projectManager.GetProjectJson(originalProject)));
                     }
                     else
                     {

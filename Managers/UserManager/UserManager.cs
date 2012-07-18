@@ -573,6 +573,85 @@ namespace Manager
             }
         }
 
+        public JsonModels.ProfileInformation GetProfileJson(User u)
+        {
+            JsonModels.ProfileInformation ui = new JsonModels.ProfileInformation();
+
+            ui.firstName = u.firstName;
+            ui.description = u.description;
+            ui.email = u.email;
+
+            List<JsonModels.Experience> experiences = GetUserExperiences(u.id);
+            if (experiences != null && experiences.Count != 0)
+            {
+                ui.experiences = experiences;
+            }
+            else
+            {
+                ui.experiences = null;
+            }
+
+            ui.firstName = u.firstName;
+            ui.id = u.id.ToString();
+            ui.lastName = u.lastName;
+
+            JsonModels.Links links = getUserLinks(u.id);
+            if (links != null)
+            {
+                ui.links = links;
+            }
+            else
+            {
+                ui.links = null;
+            }
+
+            ui.location = u.location;
+            ui.major = u.major;
+            ui.phoneNumber = u.phoneNumber;
+            ui.profilePicture = u.profilePicture;
+            ui.profilePictureThumbnail = u.profilePictureThumbnail;
+            ui.projectOrder = u.projectOrder;
+
+            //projects
+            int[] projectIds = new int[u.projects.Count];
+            int count = 0;
+            foreach (Project p in u.projects)
+            {
+                projectIds[count] = p.id;
+                count++;
+            }
+            ProjectManager pm = new ProjectManager();
+            List<JsonModels.CompleteProject> projects =  pm.GetCompleteProjects(projectIds);
+            if (projects != null && projects.Count != 0)
+            {
+                ui.projects = projects;
+            }
+            else
+            {
+                ui.projects = null;
+            }
+
+            ui.recentActivity = GetRecentActivity(u.id);
+
+            List<JsonModels.Reference> references = GetUserReferences(u.id);
+            if (references != null && references.Count != 0)
+            {
+                ui.references = references;
+            }
+            else
+            {
+                ui.references = null;
+            }
+
+            ui.resume = u.resume;
+            ui.school = u.school;
+            ui.stats = getUserStats(u.id);
+            ui.tagLine = u.tagLine;
+            ui.title = u.title;
+
+            return ui;
+        }
+
         //public List<JsonModels.Reference> GetUserReferences(int ID)
         //{
         //    return new List<JsonModels.Reference> { new JsonModels.Reference { name = "me" } };

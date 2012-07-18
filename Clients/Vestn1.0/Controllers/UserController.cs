@@ -1157,6 +1157,78 @@ namespace UserClientMembers.Controllers
 
         }
 
+        [AcceptVerbs("POST","OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateProfileModel(IEnumerable<JsonModels.ProfileInformation> profile, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                JsonModels.ProfileInformation profileFromJson = profile.FirstOrDefault();
+               
+                if (profileFromJson.id == authUserId.ToString())
+                {
+                    User originalProfile = userManager.GetUser(authUserId);
+                    if (originalProfile != null)
+                    {
+                        //model sync
+                        originalProfile.description = (profileFromJson.description != null) ? profileFromJson.description : null;
+                        originalProfile.email = (profileFromJson.email != null) ? profileFromJson.email : null;
+                        if (profileFromJson.links != null)
+                        {
+                            originalProfile.facebookLink = (profileFromJson.links.facebookLink != null) ? profileFromJson.links.facebookLink : null;
+                            originalProfile.twitterLink = (profileFromJson.links.twitterLink != null) ? profileFromJson.links.twitterLink : null;
+                            originalProfile.linkedinLink = (profileFromJson.links.linkedinLink != null) ? profileFromJson.links.linkedinLink : null;
+                        }
+
+                        originalProfile.firstName = (profileFromJson.firstName != null) ? profileFromJson.firstName : null;
+                        originalProfile.lastName = (profileFromJson.lastName != null) ? profileFromJson.lastName : null;
+                        originalProfile.location = (profileFromJson.location != null) ? profileFromJson.location : null;
+                        originalProfile.major = (profileFromJson.major != null) ? profileFromJson.major : null;
+                        originalProfile.phoneNumber = (profileFromJson.phoneNumber != null) ? profileFromJson.phoneNumber : null;
+                        originalProfile.projectOrder = (profileFromJson.projectOrder != null) ? profileFromJson.projectOrder : null;
+                        originalProfile.resume = (profileFromJson.resume != null) ? profileFromJson.resume : null;
+                        originalProfile.school = (profileFromJson.school != null) ? profileFromJson.school : null;
+                        originalProfile.tagLine = (profileFromJson.tagLine != null) ? profileFromJson.tagLine : null;
+                        originalProfile.title = (profileFromJson.title != null) ? profileFromJson.title : null;
+                        
+                        userManager.UpdateUser(originalProfile);
+                        JsonModels.ProfileInformation returnProfile = userManager.GetProfileJson(originalProfile);
+                        return AddSuccessHeaders (Serialize(returnProfile));
+                    }
+                    else
+                    {
+                        return GetFailureMessage("The user does not exist in the database");
+                    }
+                }
+                else
+                {
+                    return GetFailureMessage("User is not the profile owner, and thus is not authorized to edit this profile!");
+                }
+            }
+            catch(Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - UpdateProfile", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while updating this Profile.");
+            }
+        }
+
         //[Authorize]
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
@@ -2516,14 +2588,14 @@ namespace UserClientMembers.Controllers
                                 ui.lastName = null;
                             }
                         }
-                        //if (requestAll || request.Contains("connections"))
-                        //{
-                        //    if (u.connections != null)
-                        //    {
-                        //        ui.connections = u.connections;
-                        //        add = 1;
-                        //    }
-                        //}
+                        if (requestAll || request.Contains("phoneNumber"))
+                        {
+                            if (u.phoneNumber != null)
+                            {
+                                ui.phoneNumber = u.phoneNumber;
+                                add = 1;
+                            }
+                        }
                         if (requestAll || request.Contains("tagLine"))
                         {
                             if (u.tagLine != null)
@@ -2534,6 +2606,30 @@ namespace UserClientMembers.Controllers
                             else
                             {
                                 ui.tagLine = null;
+                            }
+                        }
+                        if (requestAll || request.Contains("email"))
+                        {
+                            if (u.email != null)
+                            {
+                                ui.email = u.email;
+                                add = 1;
+                            }
+                            else
+                            {
+                                ui.email = null;
+                            }
+                        }
+                        if (requestAll || request.Contains("location"))
+                        {
+                            if (u.location != null)
+                            {
+                                ui.location = u.location;
+                                add = 1;
+                            }
+                            else
+                            {
+                                ui.location = null;
                             }
                         }
                         if (requestAll || request.Contains("title"))
@@ -2560,6 +2656,18 @@ namespace UserClientMembers.Controllers
                                 ui.school = null;
                             }
                         }
+                        if (requestAll || request.Contains("major"))
+                        {
+                            if (u.major != null)
+                            {
+                                ui.major = u.major;
+                                add = 1;
+                            }
+                            else
+                            {
+                                ui.major = null;
+                            }
+                        }
                         if (requestAll || request.Contains("description"))
                         {
                             if (u.description != null)
@@ -2582,6 +2690,18 @@ namespace UserClientMembers.Controllers
                             else
                             {
                                 ui.resume = null;
+                            }
+                        }
+                        if (requestAll || request.Contains("projectOrder"))
+                        {
+                            if (u.projectOrder != null)
+                            {
+                                ui.projectOrder = u.projectOrder;
+                                add = 1;
+                            }
+                            else
+                            {
+                                ui.projectOrder = null;
                             }
                         }
                         if (requestAll || request.Contains("profilePicture"))
@@ -2716,6 +2836,7 @@ namespace UserClientMembers.Controllers
                                 ui.recentActivity = null;
                             }
                         }
+                        ui.id = u.id.ToString();
                     }
                     try
                     {
