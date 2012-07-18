@@ -1230,6 +1230,79 @@ namespace UserClientMembers.Controllers
             }
         }
 
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateCoverPicture(int projectId, string token = null, string qqfile = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int userId = -1;
+                if (token != null)
+                {
+                    userId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (userId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                User user = userManager.GetUser(userId);
+                Project project;
+                if (projectId > 0)
+                {
+                    project = projectManager.GetProject(projectId);
+                }
+                else
+                {
+                    return GetFailureMessage("Invalid projectId");
+                }
+                if (project == null)
+                {
+                    return GetFailureMessage("Project not found");
+                }
+                if (!projectManager.IsUserOwnerOfProject(projectId, user))
+                {
+                    return GetFailureMessage("User not authorized to update this project!");
+                }
+                else
+                {
+                    if (qqfile != null || Request.Files.Count == 1)
+                    {
+                        var length = Request.ContentLength;
+                        var bytes = new byte[length];
+                        Request.InputStream.Read(bytes, 0, length);
+                        Stream s = new MemoryStream(bytes);
+                        JsonModels.UploadReponse response = new JsonModels.UploadReponse();
+                        response = projectManager.UploadPictureElement(projectId, s, "coverPicture", true);
+                        if (response == null)
+                        {
+                            return GetFailureMessage("An error occured saving the docuement.");
+                        }
+                        else
+                        {
+                            return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
+                        }
+                    }
+                    else
+                    {
+                        return GetFailureMessage("No files were posted to the server");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "ProjectController - UpdateCoverPicture", ex.StackTrace);
+                return GetFailureMessage("Something went wrond while updating this project's cover picture");
+            }
+        }
+
         //edit entire project, not just an element
         /// <summary>
         /// Edit an entire project, not just an element

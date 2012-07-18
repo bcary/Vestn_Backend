@@ -676,7 +676,6 @@ namespace UserClientMembers.Controllers
                             username = user.userName;
                         }
                     }
-
                     if (userManager.ValidateUser(user, password))
                     {
 
@@ -1226,6 +1225,67 @@ namespace UserClientMembers.Controllers
             {
                 logAccessor.CreateLog(DateTime.Now, "UserController - UpdateProfile", ex.StackTrace);
                 return GetFailureMessage("Something went wrong while updating this Profile.");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateProfilePicture(int userId, string token = null, string qqfile = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                User user = userManager.GetUser(userId);
+                if (user == null)
+                {
+                    return GetFailureMessage("User not found");
+                }
+                if (userId == authUserId)
+                {
+                    if (qqfile != null || Request.Files.Count == 1)
+                    {
+                        var length = Request.ContentLength;
+                        var bytes = new byte[length];
+                        Request.InputStream.Read(bytes, 0, length);
+                        Stream s = new MemoryStream(bytes);
+                        if (user.profilePicture != null && user.profilePictureThumbnail != null)
+                        {
+                            userManager.DeleteProfilePicture(user);
+                        }
+                        string returnPic = userManager.UploadUserPicture(user, s, "Profile");
+                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                    }
+                    else
+                    {
+                        return GetFailureMessage("No files posted to server");
+                    }
+                }
+                else
+                {
+                    return GetFailureMessage("The user is not authorized to edit this profile picture");
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - UpdateProfilePicture",ex.StackTrace);
+                return GetFailureMessage("Something went wrong while updating this profile picture");
             }
         }
 
