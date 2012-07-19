@@ -149,6 +149,9 @@ namespace Manager
                     queue.AddMessage(message3);
                     p.coverPictureThumbnail = "https://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL1;
                     p.coverPicture = imageURI;
+
+                    p.dateModified = DateTime.Now;
+
                     Project newP = projectAccessor.UpdateProject(p);
                     return new JsonModels.UploadReponse { id = p.id, fileURL = imageURI, name = fileName, galeriaURL = "noGalleryURL", artifactURL = artifactURL1, description = "default description" };
                 }
@@ -438,7 +441,7 @@ namespace Manager
             }
         }
 
-        public bool IsUserOwnerOfProjectElement(int projectElementId, User user)
+        public Project IsUserOwnerOfProjectElement(int projectElementId, User user)
         {
             List<int> projectElementIds = new List<int>();
             foreach (Project p in user.projects)
@@ -447,18 +450,14 @@ namespace Manager
                 {
                     if (pe != null)
                     {
-                        projectElementIds.Add(pe.id);
+                        if (pe.id == projectElementId)
+                        {
+                            return p;
+                        }
                     }
                 }
             }
-            if (projectElementIds.Contains(projectElementId))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return null;
         }
 
         public int moveProjectPrevious(User u, int id)
@@ -1199,6 +1198,7 @@ namespace Manager
                 cp.projectElementOrder = project.projectElementOrder;
                 cp.id = project.id;
                 cp.name = project.name;
+                cp.dateModified = project.dateModified.ToString();
                 if (project.projectElements == null)
                 {
                     cp.artifacts = null;
@@ -1286,6 +1286,10 @@ namespace Manager
                         if (p.coverPictureThumbnail != null)
                         {
                             cp.coverPictureThumbnail = p.coverPictureThumbnail;
+                        }
+                        if (p.dateModified != null)
+                        {
+                            cp.dateModified = p.dateModified.ToString();
                         }
                         projects.Add(cp);
                     }

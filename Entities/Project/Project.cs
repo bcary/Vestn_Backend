@@ -22,6 +22,7 @@ namespace Entity
         public string tagIds { get; set; }
         public bool isActive { get; set; }
         public string projectElementOrder { get; set; }
+        public DateTime dateModified { get; set; }
         //public Privacy privacy { get; set; }
     }
 }

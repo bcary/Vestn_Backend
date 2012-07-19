@@ -86,6 +86,7 @@ namespace Accessor
             try
             {
                 project.projectElements.Add(pe);
+                project.dateModified = DateTime.Now;
 
                 VestnDB db = new VestnDB();
                 db.projectElements.Add(pe);

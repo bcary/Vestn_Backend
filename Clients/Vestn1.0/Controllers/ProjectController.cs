@@ -1037,7 +1037,8 @@ namespace UserClientMembers.Controllers
                     return GetFailureMessage("You are not authenticated, please log in!");
                 }
                 User user = userManager.GetUser(userId);
-                if (!projectManager.IsUserOwnerOfProjectElement(artifactId, user))
+                Project p = projectManager.IsUserOwnerOfProjectElement(artifactId, user);
+                if (p == null)
                 {
                     return GetFailureMessage("User not authorized to edit this artifact");
                 }
@@ -1153,11 +1154,16 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    if (projectManager.IsUserOwnerOfProjectElement(artifactFromJson.id, authUser))
+                    Project p = projectManager.IsUserOwnerOfProjectElement(artifactFromJson.id, authUser);
+                    if (p != null)
                     {
                         originalElement.description = (artifactFromJson.description != null) ? artifactFromJson.description : null;
                         originalElement.title = (artifactFromJson.title != null) ? artifactFromJson.title : null;
                         projectManager.UpdateProjectElement(originalElement);
+
+                        p.dateModified = DateTime.Now;
+                        projectManager.UpdateProject(p);
+
                         return AddSuccessHeaders(Serialize(projectManager.GetArtifactJson(originalElement)));
                     }
                     else
@@ -1215,6 +1221,9 @@ namespace UserClientMembers.Controllers
                         originalProject.description = (projectFromJson.description != null) ? projectFromJson.description : null;
                         originalProject.name = (projectFromJson.name != null) ? projectFromJson.name : null;
                         originalProject.projectElementOrder = (projectFromJson.projectElementOrder != null) ? projectFromJson.projectElementOrder : null;
+
+                        originalProject.dateModified = DateTime.Now;
+
                         projectManager.UpdateProject(originalProject);
                         return AddSuccessHeaders(Serialize(projectManager.GetProjectJson(originalProject)));
                     }
@@ -1489,7 +1498,7 @@ namespace UserClientMembers.Controllers
         }
 
         [AcceptVerbs("POST", "OPTIONS")]
-        public string DeleteArtifact(int projectId, int projectElementId, string token)
+        public string DeleteArtifact(int projectId, int artifactId, string token)
         {
             Response.AddHeader("Access-Control-Allow-Origin", "*");
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
@@ -1518,7 +1527,8 @@ namespace UserClientMembers.Controllers
                     }
 
                     Project p = projectManager.GetProject(projectId);
-                    ProjectElement e = projectManager.GetProjectElement(projectElementId);
+                    p.dateModified = DateTime.Now;
+                    ProjectElement e = projectManager.GetProjectElement(artifactId);
                     p.projectElements.RemoveAll(pr => pr.id == e.id);
                     DeleteElementOrder(p, e);
                     p = projectManager.UpdateProject(p);
