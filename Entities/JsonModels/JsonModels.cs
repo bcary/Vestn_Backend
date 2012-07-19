@@ -242,8 +242,20 @@ namespace Entity
         [DataContract]
         public class LogOnModel
         {
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public int id { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int userId { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string token { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string firstName { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string lastName { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string profileURL { get; set; }
         }
 
         [DataContract]

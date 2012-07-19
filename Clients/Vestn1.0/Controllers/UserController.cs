@@ -651,22 +651,17 @@ namespace UserClientMembers.Controllers
         /// <returns>Authenticaiton token</returns>
         ///
         [AcceptVerbs("POST", "OPTIONS")]
-        public JsonResult LogOn(string username, string password)
+        [AllowCrossSiteJson]
+        public string LogOn(string username, string password)
         {
-            Response.AddHeader("Access-Control-Allow-Origin", "*");
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
-                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
                 return null;
             }
             else
             {
                 try
                 {
-                    Boolean rememberme = false;
                     User user = userManager.GetUser(username);
                     if (user == null)
                     {
@@ -675,31 +670,37 @@ namespace UserClientMembers.Controllers
                         {
                             username = user.userName;
                         }
+                        else
+                        {
+                            return GetFailureMessage("The username/email does not exist in the database");
+                        }
                     }
                     if (userManager.ValidateUser(user, password))
                     {
-
                         AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
                         string token = authEngine.logIn(user.id, user.userName);
 
                         AnalyticsAccessor aa = new AnalyticsAccessor();
                         aa.CreateAnalytic("User Login", DateTime.Now, user.userName);
 
-                        return Json(new { id = user.id, Success = true, key = token });
+                        JsonModels.LogOnModel logOnReturnObject = new JsonModels.LogOnModel();
+                        logOnReturnObject.userId = user.id;
+                        logOnReturnObject.firstName = (user.firstName != null) ? user.firstName : null;
+                        logOnReturnObject.lastName = (user.lastName != null) ? user.lastName : null;
+                        logOnReturnObject.profileURL = (user.profileURL != null) ? user.profileURL : null;
+                        logOnReturnObject.token = token;
+
+                        return AddSuccessHeaders(Serialize(logOnReturnObject));
                     }
                     else
                     {
-                        //return GetFailureMessage("User Information Not Valid");
-                        return Json(new { Error = "User Information Not Valid" });
+                        return GetFailureMessage("User Information Not Valid");
                     }
-
-
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return Json(new { Error = "An unknown error occured" });
-                    //return GetFailureMessage("Error");
+                    return GetFailureMessage("Something went wrong while trying to log this user in");
                 }
             }
         }
