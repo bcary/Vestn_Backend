@@ -337,6 +337,8 @@ namespace Entity
             public string coverPictureThumbnail { get; set; }
            [DataMember(IsRequired = true, EmitDefaultValue = true)]
            public string dateModified { get; set; }
+           [DataMember(IsRequired = true, EmitDefaultValue = true)]
+           public string privacy { get; set; }
         }
 
         [DataContract]

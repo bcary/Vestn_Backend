@@ -110,8 +110,6 @@ namespace UserClientMembers
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
             ControllerBuilder.Current.DefaultNamespaces.Add("UserClientMembers.Controllers");
-            LogAccessor la = new LogAccessor();
-            DateTime dt = DateTime.Now;
             //UserController uc = new UserController();
             //uc.Register("test@vestn.com", "test");
         }

@@ -66,6 +66,7 @@ namespace Manager
             }
             else
             {
+                p.privacy = "deleted";
                 return null;
             }
         }
@@ -85,6 +86,7 @@ namespace Manager
             //delete all user media?
 
             p.isActive = false;
+            p.privacy = "deleted";
             return pa.UpdateProject(p);
         }
 

@@ -40,17 +40,11 @@ namespace UserClientMembers.Controllers
         /// </summary>
         /// <returns>JsonResult</returns>
         [AcceptVerbs("POST", "OPTIONS")]
-        public string AddProject(string token, string name=null, string description=null )
+        [AllowCrossSiteJson]
+        public string AddProject(string token, string name = null, string description = null)
         {
-            Response.AddHeader("Access-Control-Allow-Origin", "*");
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
-                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
-                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
                 return null;
             }
             else
@@ -63,49 +57,55 @@ namespace UserClientMembers.Controllers
                         return GetFailureMessage("You are not authenticated, please log in!");
                     }
 
-                        User user = userManager.GetUser(userId);
-                        Project project = projectManager.CreateProject(user, new List<ProjectElement>());
+                    User user = userManager.GetUser(userId);
 
-                        //refresh the user object with the changes
-                        user = userManager.GetUser(userId);
-                        JsonModels.CompleteProject response = new JsonModels.CompleteProject();
-                        if (name == null)
-                        {
-                            response.name = "New Project";
-                        }
-                        else
-                        {
-                            response.name = name;
-                        }
-                        if (description == null)
-                        {
-                            response.description = "New Project";
-                        }
-                        else
-                        {
-                            response.description = description;
-                        }
-                        response.id = project.id;
-                        response.artifacts = null;
-                        response.projectTags = null;
-                        response.projectElementOrder = "";
-                        string returnVal;
-                        try
-                        {
-                            returnVal = Serialize(response);
-                        }
-                        catch (Exception exception)
-                        {
-                            return GetFailureMessage(exception.Message);
-                        }
-                        return AddSuccessHeaders(returnVal);
-                    }
-                    catch (Exception ex)
+                    Project project = projectManager.CreateProject(user, new List<ProjectElement>());
+
+                    project.name = name;
+                    project.description = description;
+                    project.privacy = "private";
+                    projectManager.UpdateProject(project);
+
+                    //refresh the user object with the changes
+                    user = userManager.GetUser(userId);
+                    JsonModels.CompleteProject response = new JsonModels.CompleteProject();
+                    if (name == null)
                     {
-                        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                        return GetFailureMessage("Something went wrong while creating this project");
+                        response.name = "New Project";
                     }
+                    else
+                    {
+                        response.name = name;
+                    }
+                    if (description == null)
+                    {
+                        response.description = "New Project";
+                    }
+                    else
+                    {
+                        response.description = description;
+                    }
+                    response.id = project.id;
+                    response.artifacts = null;
+                    response.projectTags = null;
+                    response.projectElementOrder = "";
+                    string returnVal;
+                    try
+                    {
+                        returnVal = Serialize(response);
+                    }
+                    catch (Exception exception)
+                    {
+                        return GetFailureMessage(exception.Message);
+                    }
+                    return AddSuccessHeaders(returnVal);
                 }
+                catch (Exception ex)
+                {
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    return GetFailureMessage("Something went wrong while creating this project");
+                }
+            }
         }
 
         /// <summary>
@@ -1221,6 +1221,20 @@ namespace UserClientMembers.Controllers
                         originalProject.description = (projectFromJson.description != null) ? projectFromJson.description : null;
                         originalProject.name = (projectFromJson.name != null) ? projectFromJson.name : null;
                         originalProject.projectElementOrder = (projectFromJson.projectElementOrder != null) ? projectFromJson.projectElementOrder : null;
+
+                        if (projectFromJson.privacy != null)
+                        {
+                            if (projectFromJson.privacy.ToLower() == "deleted")
+                            {
+                                originalProject.privacy = "deleted";
+                                originalProject.isActive = false;
+                                projectManager.deleteProjectFromOrder(authUser, originalProject.id);
+                            }
+                            else
+                            {
+                                originalProject.privacy = projectFromJson.privacy;
+                            }
+                        }
 
                         originalProject.dateModified = DateTime.Now;
 

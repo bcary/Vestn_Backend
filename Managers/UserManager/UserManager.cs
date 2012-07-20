@@ -827,35 +827,39 @@ namespace Manager
                 foreach (Experience e in experiences)
                 {
                     JsonModels.Experience eJson = new JsonModels.Experience();
-                    if (e.company != null)
+                    if (e != null)
                     {
-                        eJson.company = e.company;
+                        eJson.id = e.id;
+                        if (e.company != null)
+                        {
+                            eJson.company = e.company;
+                        }
+                        if (e.description != null)
+                        {
+                            eJson.description = e.description;
+                        }
+                        if (e.startDate != null)
+                        {
+                            eJson.startDate = e.startDate.ToShortDateString();
+                        }
+                        if (e.endDate != null)
+                        {
+                            eJson.endDate = e.endDate.ToShortDateString();
+                        }
+                        if (e.title != null)
+                        {
+                            eJson.title = e.title;
+                        }
+                        if (e.city != null)
+                        {
+                            eJson.city = e.city;
+                        }
+                        if (e.state != null)
+                        {
+                            eJson.state = e.state;
+                        }
+                        experiencesJson.Add(eJson);
                     }
-                    if (e.description != null)
-                    {
-                        eJson.description = e.description;
-                    }
-                    if (e.startDate != null)
-                    {
-                        eJson.startDate = e.startDate.ToShortDateString();
-                    }
-                    if (e.endDate != null)
-                    {
-                        eJson.endDate = e.endDate.ToShortDateString();
-                    }
-                    if (e.title != null)
-                    {
-                        eJson.title = e.title;
-                    }
-                    if (e.city != null)
-                    {
-                        eJson.city = e.city;
-                    }
-                    if (e.state != null)
-                    {
-                        eJson.state = e.state;
-                    }
-                    experiencesJson.Add(eJson);
                 }
                 return experiencesJson;
             }
@@ -981,39 +985,43 @@ namespace Manager
                 foreach (Reference r in references)
                 {
                     JsonModels.Reference rJson = new JsonModels.Reference();
-                    if (r.company != null)
+                    if (r != null)
                     {
-                        rJson.company = r.company;
+                        rJson.id = r.id;
+                        if (r.company != null)
+                        {
+                            rJson.company = r.company;
+                        }
+                        if (r.firstName != null)
+                        {
+                            rJson.firstName = r.firstName;
+                        }
+                        if (r.lastName != null)
+                        {
+                            rJson.lastName = r.lastName;
+                        }
+                        if (r.message != null)
+                        {
+                            rJson.message = r.message;
+                        }
+                        if (r.title != null)
+                        {
+                            rJson.title = r.title;
+                        }
+                        if (r.videoLink != null)
+                        {
+                            rJson.videoLink = r.videoLink;
+                        }
+                        if (r.email != null)
+                        {
+                            rJson.email = r.email;
+                        }
+                        if (r.videoType != null)
+                        {
+                            rJson.videoType = r.videoType;
+                        }
+                        referencesJson.Add(rJson);
                     }
-                    if (r.firstName != null)
-                    {
-                        rJson.firstName = r.firstName;
-                    }
-                    if (r.lastName != null)
-                    {
-                        rJson.lastName = r.lastName;
-                    }
-                    if (r.message != null)
-                    {
-                        rJson.message = r.message;
-                    }
-                    if (r.title != null)
-                    {
-                        rJson.title = r.title;
-                    }
-                    if (r.videoLink != null)
-                    {
-                        rJson.videoLink = r.videoLink;
-                    }
-                    if (r.email != null)
-                    {
-                        rJson.email = r.email;
-                    }
-                    if (r.videoType != null)
-                    {
-                        rJson.videoType = r.videoType;
-                    }
-                    referencesJson.Add(rJson);
                 }
                 return referencesJson;
             }

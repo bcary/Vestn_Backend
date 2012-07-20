@@ -663,6 +663,8 @@ namespace UserClientMembers.Controllers
                 try
                 {
                     User user = userManager.GetUser(username);
+                    //MembershipUser mu = Membership.GetUser(username);
+                    //mu.ChangePassword(mu.ResetPassword(), "vestn2227");
                     if (user == null)
                     {
                         user = userManager.GetUserByEmail(username);
@@ -2972,6 +2974,69 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
+        public string UpdateExperienceModel(IEnumerable<JsonModels.Experience> experience, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                if (experience != null)
+                {
+                    JsonModels.Experience experienceFromJson = experience.FirstOrDefault();
+                    if (experienceFromJson != null)
+                    {
+                        Experience originalExperience = userManager.GetExperience(experienceFromJson.id);
+                        if (originalExperience != null)
+                        {
+                            originalExperience.city = experienceFromJson.city;
+                            originalExperience.company = experienceFromJson.company;
+                            originalExperience.description = experienceFromJson.description;
+                            originalExperience.endDate = DateTime.Parse(experienceFromJson.endDate);
+                            originalExperience.startDate = DateTime.Parse(experienceFromJson.startDate);
+                            originalExperience.state = experienceFromJson.state;
+                            originalExperience.title = experienceFromJson.title;
+                            userManager.UpdateExperience(originalExperience);
+                            return AddSuccessHeaders(Serialize(experienceFromJson));
+                        }
+                        else
+                        {
+                            return GetFailureMessage("The experience model was not found in the database");
+                        }
+                    }
+                    else
+                    {
+                        return GetFailureMessage("The experience model was not valid");
+                    }
+                }
+                else
+                {
+                    return GetFailureMessage("An experience model was not received");
+                }
+            }
+            catch(Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userController - updateExperience", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while updating this experience element");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
         public string UpdateExperience(int experienceId = -1, string propertyId = null, string propertyValue = null , string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
@@ -3233,6 +3298,74 @@ namespace UserClientMembers.Controllers
             {
                 logAccessor.CreateLog(DateTime.Now, "userController - updateReference", ex.StackTrace);
                 return GetFailureMessage("Something went wrong while updating this reference element");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateReferenceModel(IEnumerable<JsonModels.Reference> reference, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                if (reference != null)
+                {
+                    JsonModels.Reference referenceFromJson = reference.FirstOrDefault();
+                    if (referenceFromJson != null)
+                    {
+                        Reference originalReference = userManager.GetReference(referenceFromJson.id);
+                        if (originalReference != null)
+                        {
+                            originalReference.company = referenceFromJson.company;
+                            originalReference.email = referenceFromJson.email;
+                            originalReference.firstName = referenceFromJson.firstName;
+                            originalReference.id = referenceFromJson.id;
+                            originalReference.lastName = referenceFromJson.lastName;
+                            originalReference.message = referenceFromJson.message;
+                            originalReference.title = referenceFromJson.title;
+                            originalReference.userId = referenceFromJson.userId;
+                            originalReference.videoLink = referenceFromJson.videoLink;
+                            originalReference.videoType = referenceFromJson.videoType;
+
+                            userManager.UpdateReference(originalReference);
+
+                            return AddSuccessHeaders(Serialize(referenceFromJson));
+                        }
+                        else
+                        {
+                            return GetFailureMessage("The reference model was not found in the database");
+                        }
+                    }
+                    else
+                    {
+                        return GetFailureMessage("The reference model was not valid");
+                    }
+                }
+                else
+                {
+                    return GetFailureMessage("An reference model was not received");
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userController - updatereference", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while updating this reference model");
             }
         }
 
