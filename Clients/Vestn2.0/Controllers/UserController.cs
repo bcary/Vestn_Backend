@@ -35,45 +35,135 @@ namespace Controllers
         LogAccessor logAccessor = new LogAccessor();
         AuthenticaitonEngine authenticationEngine = new AuthenticaitonEngine();
 
-        //User Account Creation
-
-        public ActionResult fileexist()
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string CheckFileExist(String url = null, string token = null)
         {
-            return View();
-        }
-
-        public JsonResult CheckFileExist(String url)
-        {
-            try
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
-                HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(url);
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                return null;
+            }
+            if (String.IsNullOrEmpty(url))
+            {
+                return GetFailureMessage("No URL specified");
+            }
+            if (url == "about:blank")
+            {
+                return GetFailureMessage("about:blank is not a valid url to check");
+            }
+
+            int count = 0;
+            bool found = false;
+            while (!found && count < 40)
+            {
+                try
                 {
-                    return Json(new { status = response.StatusCode });
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.Timeout = 5000;
+                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                    found = true;
+                }
+                catch (WebException ex)
+                {
+                    count++;
+                    Thread.Sleep(500);
+                    continue;
                 }
             }
-            catch (System.Net.WebException)
+            if (count >= 40)
             {
-                return Json(new { status = "File not exist" });
+                return GetFailureMessage("Timeout");
+            }
+            else
+            {
+                return (AddSuccessHeaders("File Exists", true));
             }
         }
 
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string Register(string email, string password)
+        {
+            if (Request != null)
+            {
+                if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return null;
+                }
+            }
+            try
+            {
+                CommunicationManager communicationManager = new CommunicationManager();
+                string userName = email.Substring(0, email.IndexOf('@'));
+                userName = userName.Replace("+", "");
+                RegisterModel model = new RegisterModel { Email = email, UserName = userName, Password = password, ConfirmPassword = password };
+                if (ValidationEngine.ValidateEmail(model.Email) != ValidationEngine.Success)
+                {
+                    return GetFailureMessage("Invalid Email");
+                }
+                if (!userManager.CheckDuplicateEmail(model.Email))
+                {
+                    return GetFailureMessage("A user with that email already exists in our database");
+                }
+                if (ValidationEngine.ValidateUsername(model.UserName) != ValidationEngine.Success)
+                {
+                    return GetFailureMessage(ValidationEngine.ValidateUsername(model.UserName));
+                }
+                if (!userManager.CheckDuplicateUsername(model.UserName))
+                {
+                    return GetFailureMessage("A user with that username already exists in our database");
+                }
+                if (ValidationEngine.ValidatePassword(model.Password) != ValidationEngine.Success)
+                {
+                    return GetFailureMessage(ValidationEngine.ValidateUsername(model.Password));
+                }
+                if (model.Password != model.ConfirmPassword)
+                {
+                    return GetFailureMessage("Password fields do not match");
+                }
+                if (ModelState.IsValid)
+                {
+                    User newUser = model.toUser();
+                    newUser.profileURL = newUser.userName;
+
+                    newUser = userManager.CreateUser(newUser, model.Password);
+
+                    userManager.ActivateUser(newUser, true);
+                    //communicationManager.SendVerificationMail(userManager.GetProviderUserKey(newUser), newUser.userName, newUser.email);
+
+                    AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
+                    string token = authEngine.logIn(newUser.id, newUser.userName);
+                    JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
+                    rr.id = newUser.id;
+                    rr.token = token;
+                    return AddSuccessHeaders(Serialize(rr));
+                }
+                else
+                {
+                    return GetFailureMessage("User Model Not Valid");
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                return GetFailureMessage("Something went wrong while creating this user");
+            }
+        }
+
+        //The log on function used by the new Front End.
         /// <summary>
         /// LogOn POST function. Authenticates the user, and returns a token value that must be stored by the client application and used on every subsequesnt authorized request
         /// </summary>
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns>Authenticaiton token</returns>
+        ///
         [AcceptVerbs("POST", "OPTIONS")]
-        public JsonResult LogOn(string username, string password)
+        [AllowCrossSiteJson]
+        public string LogOn(string username, string password)
         {
-            Response.AddHeader("Access-Control-Allow-Origin", "*");
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
-                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
                 return null;
             }
             else
@@ -81,6 +171,8 @@ namespace Controllers
                 try
                 {
                     User user = userManager.GetUser(username);
+                    //MembershipUser mu = Membership.GetUser(username);
+                    //mu.ChangePassword(mu.ResetPassword(), "vestn2227");
                     if (user == null)
                     {
                         user = userManager.GetUserByEmail(username);
@@ -88,81 +180,264 @@ namespace Controllers
                         {
                             username = user.userName;
                         }
+                        else
+                        {
+                            return GetFailureMessage("The username/email does not exist in the database");
+                        }
                     }
                     if (userManager.ValidateUser(user, password))
                     {
-
                         AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
                         string token = authEngine.logIn(user.id, user.userName);
 
                         AnalyticsAccessor aa = new AnalyticsAccessor();
                         aa.CreateAnalytic("User Login", DateTime.Now, user.userName);
 
-                        return Json(new { id = user.id, Success = true, key = token });
+                        JsonModels.LogOnModel logOnReturnObject = new JsonModels.LogOnModel();
+                        logOnReturnObject.userId = user.id;
+                        logOnReturnObject.firstName = (user.firstName != null) ? user.firstName : null;
+                        logOnReturnObject.lastName = (user.lastName != null) ? user.lastName : null;
+                        logOnReturnObject.profileURL = (user.profileURL != null) ? user.profileURL : null;
+                        logOnReturnObject.token = token;
+
+                        return AddSuccessHeaders(Serialize(logOnReturnObject));
                     }
                     else
                     {
-                        //return GetFailureMessage("User Information Not Valid");
-                        return Json(new { Error = "User Information Not Valid" });
+                        return GetFailureMessage("User Information Not Valid");
                     }
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return Json(new { Error = "An unknown error occured" });
-                    //return GetFailureMessage("Error");
+                    return GetFailureMessage("Something went wrong while trying to log this user in");
                 }
             }
         }
 
-        /// <summary>
-        /// This is the main end point for getting basic user information. 
-        /// It takes in a int[] of userIds and a string[] request objects
-        /// Here is an example request:
-        /// /User/GetUserInformation?id=1&id=2&request=firstName&request=lastName&request=tagLine
-        /// requestObjects can contain any of the following strinsg:
-        ///     firstName, lastName, title, school, description, tagLine, resume, profilePicture, profilePictureThumbnail, stats, links, experiences, references, tags, projects, todo, recentActivity, connections
-        /// </summary>
-        /// <param name="List<int> userIds"></param>
-        /// <param name="List<string> requestObjects"></param>
-        /// <returns>Json Object of UserInformation class</returns>
-        /// 
+        [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        [HttpGet]
-        public string GetUserInformation(int[] id, string[] request, string token)
+        public string UpdateProfileModel(IEnumerable<JsonModels.ProfileInformation> profile, string token = null)
         {
-            //authenticate via token
-            int authenticate = authenticationEngine.authenticate(token);
-            if (authenticate < 0)
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
-                Response.StatusCode = 500;
-                return "Not Authenticated";
+                return null;
             }
-            string returnVal;
             try
             {
-                bool requestAll = false;
-                if (request == null || request.Contains("all"))
+                int authUserId = -1;
+                if (token != null)
                 {
-                    requestAll = true;
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                JsonModels.ProfileInformation profileFromJson = profile.FirstOrDefault();
+
+                if (profileFromJson.id == authUserId.ToString())
+                {
+                    User originalProfile = userManager.GetUser(authUserId);
+                    if (originalProfile != null)
+                    {
+                        //model sync
+                        originalProfile.description = (profileFromJson.description != null) ? profileFromJson.description : null;
+                        originalProfile.email = (profileFromJson.email != null) ? profileFromJson.email : null;
+                        if (profileFromJson.links != null)
+                        {
+                            originalProfile.facebookLink = (profileFromJson.links.facebookLink != null) ? profileFromJson.links.facebookLink : null;
+                            originalProfile.twitterLink = (profileFromJson.links.twitterLink != null) ? profileFromJson.links.twitterLink : null;
+                            originalProfile.linkedinLink = (profileFromJson.links.linkedinLink != null) ? profileFromJson.links.linkedinLink : null;
+                        }
+
+                        originalProfile.firstName = (profileFromJson.firstName != null) ? profileFromJson.firstName : null;
+                        originalProfile.lastName = (profileFromJson.lastName != null) ? profileFromJson.lastName : null;
+                        originalProfile.location = (profileFromJson.location != null) ? profileFromJson.location : null;
+                        originalProfile.major = (profileFromJson.major != null) ? profileFromJson.major : null;
+                        originalProfile.phoneNumber = (profileFromJson.phoneNumber != null) ? profileFromJson.phoneNumber : null;
+                        originalProfile.projectOrder = (profileFromJson.projectOrder != null) ? profileFromJson.projectOrder : null;
+                        originalProfile.resume = (profileFromJson.resume != null) ? profileFromJson.resume : null;
+                        originalProfile.school = (profileFromJson.school != null) ? profileFromJson.school : null;
+                        originalProfile.tagLine = (profileFromJson.tagLine != null) ? profileFromJson.tagLine : null;
+                        originalProfile.title = (profileFromJson.title != null) ? profileFromJson.title : null;
+
+                        userManager.UpdateUser(originalProfile);
+                        JsonModels.ProfileInformation returnProfile = userManager.GetProfileJson(originalProfile);
+                        return AddSuccessHeaders(Serialize(returnProfile));
+                    }
+                    else
+                    {
+                        return GetFailureMessage("The user does not exist in the database");
+                    }
+                }
+                else
+                {
+                    return GetFailureMessage("User is not the profile owner, and thus is not authorized to edit this profile!");
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - UpdateProfile", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while updating this Profile.");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateProfilePicture(int userId, string token = null, string qqfile = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                User user = userManager.GetUser(userId);
+                if (user == null)
+                {
+                    return GetFailureMessage("User not found");
+                }
+                if (userId == authUserId)
+                {
+                    if (qqfile != null || Request.Files.Count == 1)
+                    {
+                        var length = Request.ContentLength;
+                        var bytes = new byte[length];
+                        Request.InputStream.Read(bytes, 0, length);
+                        Stream s = new MemoryStream(bytes);
+                        if (user.profilePicture != null && user.profilePictureThumbnail != null)
+                        {
+                            userManager.DeleteProfilePicture(user);
+                        }
+                        string returnPic = userManager.UploadUserPicture(user, s, "Profile");
+                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                    }
+                    else
+                    {
+                        return GetFailureMessage("No files posted to server");
+                    }
+                }
+                else
+                {
+                    return GetFailureMessage("The user is not authorized to edit this profile picture");
                 }
 
-                List<JsonModels.UserInformation> userInformationList = new List<JsonModels.UserInformation>();
-                int add = 0;
-                foreach (int ID in id)
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - UpdateProfilePicture", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while updating this profile picture");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string GetProfile(int id = -1, string profileURL = null, string[] request = null, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            else
+            {
+
+                //authenticate via token
+                string returnVal;
+                int authenticateId = -1;
+                try
                 {
-                    User u = userManager.GetUser(ID);
+                    if (token != null)
+                    {
+                        int authenticate = authenticationEngine.authenticate(token);
+                        if (authenticate < 0)
+                        {
+                            //Only return PUBLIC projects
+                        }
+                    }
+                    bool requestAll = false;
+                    if (request == null)
+                    {
+                        requestAll = true;
+                    }
+                    //List<JsonModels.ProfileInformation> userInformationList = new List<JsonModels.ProfileInformation>();
+                    JsonModels.ProfileInformation ui = new JsonModels.ProfileInformation();
+                    int add = 0;
+                    User u;
+                    if (id < 0)
+                    {
+                        if (profileURL != null)
+                        {
+                            u = userManager.GetUserByProfileURL(profileURL);
+                            if (u == null)
+                            {
+                                return GetFailureMessage("A user with the specified profileURL was not found");
+                            }
+                            else
+                            {
+                                id = u.id;
+                                if (id == authenticateId)
+                                {
+                                    //TODO request is coming from owner, return EVERYTHING
+                                }
+                                else
+                                {
+                                    //TODO need to check if request came from another in the same network or not
+                                }
+                            }
+                        }
+                        else
+                        {
+                            return GetFailureMessage("An id or profileURL must be specified");
+                        }
+                    }
+                    else
+                    {
+                        u = userManager.GetUser(id);
+                        if (u == null)
+                        {
+                            return GetFailureMessage("A user with the specified id was not found");
+                        }
+                        if (id == authenticateId)
+                        {
+                            //TODO request is coming from owner, return EVERYTHING
+                        }
+                        else
+                        {
+                            //TODO need to check if request came from another in the same network or not
+                        }
+                    }
                     if (u != null)
                     {
                         add = 0;
                         //TODO add company
-                        JsonModels.UserInformation ui = new JsonModels.UserInformation();
                         if (requestAll || request.Contains("firstName"))
                         {
                             if (u.firstName != null)
                             {
                                 ui.firstName = u.firstName;
                                 add = 1;
+                            }
+                            else
+                            {
+                                ui.firstName = null;
                             }
                         }
                         if (requestAll || request.Contains("lastName"))
@@ -172,12 +447,16 @@ namespace Controllers
                                 ui.lastName = u.lastName;
                                 add = 1;
                             }
-                        }
-                        if (requestAll || request.Contains("connections"))
-                        {
-                            if (u.connections != null)
+                            else
                             {
-                                ui.connections = u.connections;
+                                ui.lastName = null;
+                            }
+                        }
+                        if (requestAll || request.Contains("phoneNumber"))
+                        {
+                            if (u.phoneNumber != null)
+                            {
+                                ui.phoneNumber = u.phoneNumber;
                                 add = 1;
                             }
                         }
@@ -188,6 +467,34 @@ namespace Controllers
                                 ui.tagLine = u.tagLine;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.tagLine = null;
+                            }
+                        }
+                        if (requestAll || request.Contains("email"))
+                        {
+                            if (u.email != null)
+                            {
+                                ui.email = u.email;
+                                add = 1;
+                            }
+                            else
+                            {
+                                ui.email = null;
+                            }
+                        }
+                        if (requestAll || request.Contains("location"))
+                        {
+                            if (u.location != null)
+                            {
+                                ui.location = u.location;
+                                add = 1;
+                            }
+                            else
+                            {
+                                ui.location = null;
+                            }
                         }
                         if (requestAll || request.Contains("title"))
                         {
@@ -195,6 +502,10 @@ namespace Controllers
                             {
                                 ui.title = u.title;
                                 add = 1;
+                            }
+                            else
+                            {
+                                ui.title = null;
                             }
                         }
                         if (requestAll || request.Contains("school"))
@@ -204,6 +515,22 @@ namespace Controllers
                                 ui.school = u.school;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.school = null;
+                            }
+                        }
+                        if (requestAll || request.Contains("major"))
+                        {
+                            if (u.major != null)
+                            {
+                                ui.major = u.major;
+                                add = 1;
+                            }
+                            else
+                            {
+                                ui.major = null;
+                            }
                         }
                         if (requestAll || request.Contains("description"))
                         {
@@ -211,6 +538,10 @@ namespace Controllers
                             {
                                 ui.description = u.description;
                                 add = 1;
+                            }
+                            else
+                            {
+                                ui.description = null;
                             }
                         }
                         if (requestAll || request.Contains("resume"))
@@ -220,6 +551,22 @@ namespace Controllers
                                 ui.resume = u.resume;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.resume = null;
+                            }
+                        }
+                        if (requestAll || request.Contains("projectOrder"))
+                        {
+                            if (u.projectOrder != null)
+                            {
+                                ui.projectOrder = u.projectOrder;
+                                add = 1;
+                            }
+                            else
+                            {
+                                ui.projectOrder = null;
+                            }
                         }
                         if (requestAll || request.Contains("profilePicture"))
                         {
@@ -227,6 +574,10 @@ namespace Controllers
                             {
                                 ui.profilePicture = u.profilePicture;
                                 add = 1;
+                            }
+                            else
+                            {
+                                ui.profilePicture = null;
                             }
                         }
                         if (requestAll || request.Contains("profilePictureThumbnail"))
@@ -236,102 +587,535 @@ namespace Controllers
                                 ui.profilePictureThumbnail = u.profilePictureThumbnail;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.profilePictureThumbnail = null;
+                            }
                         }
+                        //TODO actually calculate the stats
                         if (requestAll || request.Contains("stats"))
                         {
-                            JsonModels.UserStats stats = userManager.getUserStats(ID);
+                            JsonModels.UserStats stats = userManager.getUserStats(id);
                             if (stats != null)
                             {
                                 ui.stats = stats;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.stats = null;
+                            }
                         }
                         if (requestAll || request.Contains("links"))
                         {
-                            JsonModels.Links links = userManager.getUserLinks(ID);
+                            JsonModels.Links links = userManager.getUserLinks(id);
                             if (links != null)
                             {
                                 ui.links = links;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.links = null;
+                            }
                         }
-                        //if (requestAll || request.Contains("experiences"))
-                        //{
-                        //    List<JsonModels.Experience> experiences = userManager.GetUserExperiences(ID);
-                        //    if (experiences != null && experiences.Count != 0)
-                        //    {
-                        //        ui.experiences = experiences;
-                        //        add = 1;
-                        //    }
-                        //}
-                        //if (requestAll || request.Contains("references"))
-                        //{
-                        //    List<JsonModels.Reference> references = userManager.GetUserReferences(ID);
-                        //    if (references != null && references.Count != 0)
-                        //    {
-                        //        ui.references = references;
-                        //        add = 1;
-                        //    }
-                        //}
+                        if (requestAll || request.Contains("experiences"))
+                        {
+                            List<JsonModels.Experience> experiences = userManager.GetUserExperiences(id);
+                            if (experiences != null && experiences.Count != 0)
+                            {
+                                ui.experiences = experiences;
+                                add = 1;
+                            }
+                            else
+                            {
+                                ui.experiences = null;
+                            }
+                        }
+                        if (requestAll || request.Contains("references"))
+                        {
+                            List<JsonModels.Reference> references = userManager.GetUserReferences(id);
+                            if (references != null && references.Count != 0)
+                            {
+                                ui.references = references;
+                                add = 1;
+                            }
+                            else
+                            {
+                                ui.references = null;
+                            }
+                        }
                         if (requestAll || request.Contains("tags"))
                         {
-                            List<JsonModels.UserTag> tags = userManager.GetUserTags(ID);
+                            List<JsonModels.UserTag> tags = userManager.GetUserTags(id);
                             if (tags != null && tags.Count != 0)
                             {
                                 ui.tags = tags;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.tags = null;
+                            }
                         }
                         if (requestAll || request.Contains("projects"))
                         {
-                            List<JsonModels.ProjectShell> projects = projectManager.GetProjectShells(ID);
+                            int[] projectIds = new int[u.projects.Count];
+                            int count = 0;
+                            foreach (Project p in u.projects)
+                            {
+                                projectIds[count] = p.id;
+                                count++;
+                            }
+                            List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(projectIds);
                             if (projects != null && projects.Count != 0)
                             {
                                 ui.projects = projects;
                                 add = 1;
                             }
-                        }
-                        if (requestAll || request.Contains("todo"))
-                        {
-                            List<JsonModels.Todo> todoList = userManager.GetTodo(ID);
-                            if (todoList != null && todoList.Count != 0)
+                            else
                             {
-                                ui.todo = todoList;
-                                add = 1;
+                                ui.projects = null;
                             }
                         }
+                        //if (requestAll || request.Contains("todo"))
+                        //{
+                        //    List<JsonModels.Todo> todoList = userManager.GetTodo(id);
+                        //    if (todoList != null && todoList.Count != 0)
+                        //    {
+                        //        ui.todo = todoList;
+                        //        add = 1;
+                        //    }
+                        //}
                         if (requestAll || request.Contains("recentActivity"))
                         {
-                            List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(ID);
+                            List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(id);
                             if (recentActivity != null && recentActivity.Count != 0)
                             {
                                 ui.recentActivity = recentActivity;
                                 add = 1;
                             }
+                            else
+                            {
+                                ui.recentActivity = null;
+                            }
                         }
-                        if (add == 1)
-                        {
-                            userInformationList.Add(ui);
-                        }
+                        ui.id = u.id.ToString();
+                    }
+                    try
+                    {
+                        returnVal = Serialize(ui);
+                    }
+                    catch (Exception ex)
+                    {
+                        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                        return GetFailureMessage(ex.Message);
                     }
                 }
+                catch (Exception ex)
+                {
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    return GetFailureMessage("Bad Request");
+                }
+                return AddSuccessHeaders(returnVal);
+            }
+        }
 
-                try
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string AddExperience(string title = "Job Title", string description = "Job Description", string startDate = null, string endDate = null, string city = "City", string state = "State", string company = "Company Name", string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
                 {
-                    returnVal = Serialize(userInformationList);
+                    authUserId = authenticationEngine.authenticate(token);
                 }
-                catch (Exception exception)
+                else
                 {
-                    return GetFailureMessage(exception.Message);
+                    return GetFailureMessage("An authentication token must be passed in");
                 }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                User user = userManager.GetUser(authUserId);
+                DateTime startDateTime = DateTime.Now;
+                if (startDate != null)
+                {
+                    startDateTime = DateTime.Parse(startDate);
+                }
+                DateTime endDateTime = DateTime.Now;
+                if (endDate != null)
+                {
+                    endDateTime = DateTime.Parse(endDate);
+                }
+                JsonModels.Experience exp = userManager.AddExperience(user.id, startDateTime, endDateTime, title, description, city, state, company);
+                if (exp != null)
+                {
+                    return Serialize(exp);
+                }
+                else
+                {
+                    return GetFailureMessage("Something went wrong while attempting to save this experience");
+                }
+
             }
             catch (Exception e)
             {
-                return GetFailureMessage("Bad Request");
+                logAccessor.CreateLog(DateTime.Now, "userController - AddExperience", e.StackTrace);
+                return GetFailureMessage("Something went wrong while adding the experience");
             }
-            return AddSuccessHeaders(returnVal);
         }
 
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateExperienceModel(IEnumerable<JsonModels.Experience> experience, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                if (experience != null)
+                {
+                    JsonModels.Experience experienceFromJson = experience.FirstOrDefault();
+                    if (experienceFromJson != null)
+                    {
+                        Experience originalExperience = userManager.GetExperience(experienceFromJson.id);
+                        if (originalExperience != null)
+                        {
+                            originalExperience.city = experienceFromJson.city;
+                            originalExperience.company = experienceFromJson.company;
+                            originalExperience.description = experienceFromJson.description;
+                            originalExperience.endDate = DateTime.Parse(experienceFromJson.endDate);
+                            originalExperience.startDate = DateTime.Parse(experienceFromJson.startDate);
+                            originalExperience.state = experienceFromJson.state;
+                            originalExperience.title = experienceFromJson.title;
+                            userManager.UpdateExperience(originalExperience);
+                            return AddSuccessHeaders(Serialize(experienceFromJson));
+                        }
+                        else
+                        {
+                            return GetFailureMessage("The experience model was not found in the database");
+                        }
+                    }
+                    else
+                    {
+                        return GetFailureMessage("The experience model was not valid");
+                    }
+                }
+                else
+                {
+                    return GetFailureMessage("An experience model was not received");
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userController - updateExperience", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while updating this experience element");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string GetExperience(int experienceId = -1, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                if (experienceId < 0)
+                {
+                    return GetFailureMessage("An experienceId must be passed in");
+                }
+                else
+                {
+                    return Serialize(userManager.GetExperienceJson(experienceId));
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - GetExperience", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while getting this experience");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string DeleteExperience(int experienceId = -1, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                if (experienceId < 0)
+                {
+                    return GetFailureMessage("An experienceId must be passed in");
+                }
+                else
+                {
+                    Experience experience = userManager.GetExperience(experienceId);
+                    if (experience == null)
+                    {
+                        return GetFailureMessage("An experience with the provided experienceId does not exist");
+                    }
+                    string response = userManager.DeleteExperience(experience);
+                    if (response == null)
+                    {
+                        return GetFailureMessage("Something went wrong while deleting this experience");
+                    }
+                    else
+                    {
+                        return AddSuccessHeaders(response, true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - DeleteExperience", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while deleting this experience");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string AddReference(string firstName = "first name", string lastName = "last name", string email = "email", string company = "company", string title = "title", string message = "message", string videoLink = "videoLink", string videoType = "videoType", string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                User user = userManager.GetUser(authUserId);
+                JsonModels.Reference exp = userManager.AddReference(user.id, firstName, lastName, company, email, title, message, videoLink, videoType);
+                return Serialize(exp);
+
+            }
+            catch (Exception e)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userController - AddReference", e.StackTrace);
+                return GetFailureMessage("Something went wrong while adding the experience");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateReferenceModel(IEnumerable<JsonModels.Reference> reference, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                if (reference != null)
+                {
+                    JsonModels.Reference referenceFromJson = reference.FirstOrDefault();
+                    if (referenceFromJson != null)
+                    {
+                        Reference originalReference = userManager.GetReference(referenceFromJson.id);
+                        if (originalReference != null)
+                        {
+                            originalReference.company = referenceFromJson.company;
+                            originalReference.email = referenceFromJson.email;
+                            originalReference.firstName = referenceFromJson.firstName;
+                            originalReference.id = referenceFromJson.id;
+                            originalReference.lastName = referenceFromJson.lastName;
+                            originalReference.message = referenceFromJson.message;
+                            originalReference.title = referenceFromJson.title;
+                            originalReference.userId = referenceFromJson.userId;
+                            originalReference.videoLink = referenceFromJson.videoLink;
+                            originalReference.videoType = referenceFromJson.videoType;
+
+                            userManager.UpdateReference(originalReference);
+
+                            return AddSuccessHeaders(Serialize(referenceFromJson));
+                        }
+                        else
+                        {
+                            return GetFailureMessage("The reference model was not found in the database");
+                        }
+                    }
+                    else
+                    {
+                        return GetFailureMessage("The reference model was not valid");
+                    }
+                }
+                else
+                {
+                    return GetFailureMessage("An reference model was not received");
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "userController - updatereference", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while updating this reference model");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string GetReference(int referenceId = -1, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                if (referenceId < 0)
+                {
+                    return GetFailureMessage("An experienceId must be passed in");
+                }
+                else
+                {
+                    return Serialize(userManager.GetReferenceJson(referenceId));
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - GetReference", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while getting this reference");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string DeleteReference(int referenceId = -1, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return GetFailureMessage("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return GetFailureMessage("You are not authenticated, please log in!");
+                }
+                if (referenceId < 0)
+                {
+                    return GetFailureMessage("An experienceId must be passed in");
+                }
+                else
+                {
+                    Reference reference = userManager.GetReference(referenceId);
+                    string response = userManager.DeleteReference(reference);
+                    if (response == null)
+                    {
+                        return GetFailureMessage("Something went wrong while deleting this reference");
+                    }
+                    else
+                    {
+                        return AddSuccessHeaders(response, true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - DeleteReference", ex.StackTrace);
+                return GetFailureMessage("Something went wrong while deleting this reference");
+            }
+        }
 
     }
 }

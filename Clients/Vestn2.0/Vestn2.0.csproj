@@ -98,6 +98,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ResourcesController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
+    <Compile Include="Controllers\SubdomainController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -266,6 +267,10 @@
       <Project>{5E71E86E-850C-4160-8475-D2801F3D4614}</Project>
       <Name>Users</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Experience\Experience.csproj">
+      <Project>{521D93DE-630B-4883-BCED-B58DE8F4A138}</Project>
+      <Name>Experience</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Managers\CommunicationManager\CommunicationManager.csproj">
       <Project>{1EE4B5CB-CC17-448C-8992-FCB4E2058656}</Project>
       <Name>CommunicationManager</Name>
@@ -289,6 +294,10 @@
     <ProjectReference Include="..\..\Managers\UserManager\UserManager.csproj">
       <Project>{6F593A74-2D84-4D50-AAC7-34A1AD871CB1}</Project>
       <Name>UserManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Reference\Reference.csproj">
+      <Project>{3F32D179-8AE5-4B56-97A2-2718ED0D0522}</Project>
+      <Name>Reference</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\WorkerRole\BackgroundProcesses\BackgroundProcesses.csproj">
       <Project>{48A23552-058D-4252-BD90-F393B36CB91F}</Project>

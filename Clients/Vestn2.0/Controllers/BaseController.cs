@@ -18,9 +18,16 @@ namespace Controllers
             return value.Replace("\n", "<br />");
         }
 
-        protected string AddSuccessHeaders(string preResponse)
+        protected string AddSuccessHeaders(string preResponse, bool addResponseMessageQuotes = false)
         {
-            preResponse = "{\"Response\":" + preResponse;
+            if (addResponseMessageQuotes)
+            {
+                preResponse = "{\"Response\":" + "\"" + preResponse + "\"";
+            }
+            else
+            {
+                preResponse = "{\"Response\":" + preResponse;
+            }
             preResponse = preResponse + ",\"Success\": \"true\",\"Message\": \"Success\"}";
             return preResponse;
         }
@@ -85,8 +92,19 @@ namespace Controllers
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            filterContext.RequestContext.HttpContext.Response.AddHeader("Access-Control-Allow-Origin", "*");
+            HttpResponseBase res = filterContext.RequestContext.HttpContext.Response;
+            res.AddHeader("Access-Control-Allow-Origin", "*");
+            if (filterContext.RequestContext.HttpContext.Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                res.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+                res.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+                res.AddHeader("Access-Control-Allow-Headers", "X-Request");
+                res.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
+                res.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+                res.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+            }
             base.OnActionExecuting(filterContext);
+
         }
     }
 }

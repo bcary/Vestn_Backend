@@ -152,17 +152,11 @@ namespace UserClientMembers.Controllers
         /// <param name="int projectId"></param>
         /// <returns>JsonResult</returns>
         [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
         public string DeleteProject(int projectId, string token)
         {
-            Response.AddHeader("Access-Control-Allow-Origin", "*");
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
-                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
-                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
                 return null;
             }
             else
@@ -551,17 +545,11 @@ namespace UserClientMembers.Controllers
         /// <param name="int projectId"></param>
         /// <returns>JsonResult</returns>
         [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
         public string AddArtifact_Media(int projectId, string token, string qqfile=null)
         {
-            Response.AddHeader("Access-Control-Allow-Origin", "*");
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
-                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
-                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
                 return null;
             }
             else
@@ -1512,17 +1500,11 @@ namespace UserClientMembers.Controllers
         }
 
         [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
         public string DeleteArtifact(int projectId, int artifactId, string token)
         {
-            Response.AddHeader("Access-Control-Allow-Origin", "*");
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
-                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
-                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
-                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
                 return null;
             }
             else
