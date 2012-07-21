@@ -41,6 +41,11 @@ namespace Manager
             return tagAccessor.GetFTag(id);
         }
 
+        public fTag GetFTag(string value)
+        {
+            return tagAccessor.GetFTag(value);
+        }
+
         public sTag UpdateSTag(sTag tag)
         {
             return tagAccessor.UpdateSTag(tag);
@@ -61,7 +66,12 @@ namespace Manager
             return tagAccessor.DeleteFTag(tag);
         }
 
-        public string AddTag(string UserOrProject, string value, string tagType, int ownerId)//tagType is s of f
+        public bool RemoveProjectLink(int tagId, int projectId, string type)
+        {
+            return tagAccessor.removeProjectLink(tagId, projectId, type);
+        }
+
+        public string AddTag(string value, string tagType, int ownerId)//tagType is s of f
         {
             int x = -99;
             try
@@ -82,14 +92,7 @@ namespace Manager
                     //fTag doesn't already exist, so let's add it to the fTag table
                     tag = CreateFTag(0, value);
                 }
-                if (UserOrProject.ToLower() == "user")
-                {
-                    x = tagAccessor.AddUserLink(tag.id, ownerId, tagType);
-                }
-                else if (UserOrProject.ToLower() == "project")
-                {
-                    x = tagAccessor.AddProjectLink(tag.id, ownerId, tagType);
-                }
+                x = tagAccessor.AddProjectLink(tag.id, ownerId, tagType);
             }
             catch (Exception)
             {
@@ -129,6 +132,11 @@ namespace Manager
                 projectTagStrings.Add(t.value);
             }
             return projectTagStrings;
+        }
+
+        public List<Tag> GetProjectTags(int projectId)
+        {
+            return tagAccessor.GetProjectTags(projectId);
         }
 
         public List<sTag> GetAllSTags()

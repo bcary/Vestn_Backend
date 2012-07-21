@@ -217,7 +217,7 @@ namespace Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string UpdateProfileModel(IEnumerable<JsonModels.ProfileInformation> profile, string token = null)
+        public string UpdateProfileModel(JsonModels.ProfileInformation profile, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -238,7 +238,7 @@ namespace Controllers
                 {
                     return AddErrorHeader("You are not authenticated, please log in!");
                 }
-                JsonModels.ProfileInformation profileFromJson = profile.FirstOrDefault();
+                JsonModels.ProfileInformation profileFromJson = profile;
 
                 if (profileFromJson.id == authUserId.ToString())
                 {

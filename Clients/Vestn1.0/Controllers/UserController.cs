@@ -51,11 +51,11 @@ namespace UserClientMembers.Controllers
             }
             if(String.IsNullOrEmpty(url))
             {
-                return GetFailureMessage("No URL specified");
+                return AddErrorHeader("No URL specified");
             }
             if (url == "about:blank")
             {
-                return GetFailureMessage("about:blank is not a valid url to check");
+                return AddErrorHeader("about:blank is not a valid url to check");
             }
             
             int count = 0;
@@ -78,11 +78,11 @@ namespace UserClientMembers.Controllers
             }
             if (count >= 40)
             {
-                return GetFailureMessage("Timeout");
+                return AddErrorHeader("Timeout");
             }
             else
             {
-                return (AddSuccessHeaders("File Exists", true));
+                return (AddSuccessHeader("File Exists", true));
             }
         }
 
@@ -116,7 +116,7 @@ namespace UserClientMembers.Controllers
         //                    if (response.StatusCode != HttpStatusCode.NotFound)
         //                    {
         //                        found = true;
-        //                        return AddSuccessHeaders("File Exists", true);
+        //                        return AddSuccessHeader("File Exists", true);
         //                    }
         //                    else
         //                    {
@@ -124,7 +124,7 @@ namespace UserClientMembers.Controllers
         //                        counter++;
         //                        if (counter > 40)
         //                        {
-        //                            return GetFailureMessage("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
+        //                            return AddErrorHeader("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
         //                        }
         //                    }
 
@@ -135,18 +135,18 @@ namespace UserClientMembers.Controllers
         //                    counter++;
         //                    if (counter > 40)
         //                    {
-        //                        return GetFailureMessage("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
+        //                        return AddErrorHeader("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
         //                    }
         //                    continue;
         //                }
         //            }
-        //            return AddSuccessHeaders("File Exists", true);
+        //            return AddSuccessHeader("File Exists", true);
                     
         //        }
         //        catch (Exception ex)
         //        {
         //            logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-        //            return GetFailureMessage("Unknown error - CheckFileExist");
+        //            return AddErrorHeader("Unknown error - CheckFileExist");
         //        }
         //    }
         //}
@@ -243,38 +243,38 @@ namespace UserClientMembers.Controllers
         //        if (ValidationEngine.ValidateEmail(model.Email) != ValidationEngine.Success || ValidationEngine.IsDuplicateEmail(model.Email) == true)
         //        {
         //            TempData["MessageBar"] = "Invalid Email";
-        //            return GetFailureMessage("Invalid Email");
+        //            return AddErrorHeader("Invalid Email");
         //            //return View(model);
         //        }
         //        if (!userManager.CheckDuplicateEmail(model.Email))
         //        {
         //            TempData["MessageBar"] = "A user with that email already exists in our database";
-        //            return GetFailureMessage("A user with that email already exists in our database");
+        //            return AddErrorHeader("A user with that email already exists in our database");
         //            //return View(model);
         //        }
         //        if (ValidationEngine.ValidateUsername(model.UserName) != ValidationEngine.Success)
         //        {
         //            TempData["MessageBar"] = ValidationEngine.ValidateUsername(model.UserName);
-        //            return GetFailureMessage(ValidationEngine.ValidateUsername(model.UserName));
+        //            return AddErrorHeader(ValidationEngine.ValidateUsername(model.UserName));
         //            //return View(model);
         //        }
         //        if (!userManager.CheckDuplicateUsername(model.UserName))
         //        {
         //            TempData["MessageBar"] = "A user with that username already exists in our database";
-        //            return GetFailureMessage("A user with that username already exists in our database");
+        //            return AddErrorHeader("A user with that username already exists in our database");
 
         //            //return View(model);
         //        }
         //        if (ValidationEngine.ValidatePassword(model.Password) != ValidationEngine.Success)
         //        {
         //            TempData["MessageBar"] = ValidationEngine.ValidatePassword(model.Password);
-        //            return GetFailureMessage(ValidationEngine.ValidateUsername(model.Password));
+        //            return AddErrorHeader(ValidationEngine.ValidateUsername(model.Password));
         //            //return View(model);
         //        }
         //        if (model.Password != model.ConfirmPassword)
         //        {
         //            TempData["MessageBar"] = "Password fields do not match";
-        //            return GetFailureMessage("Password fields do not match");
+        //            return AddErrorHeader("Password fields do not match");
 
         //            //return View(model);
         //        }
@@ -290,13 +290,13 @@ namespace UserClientMembers.Controllers
 
         //            FormsAuthentication.SetAuthCookie(newUser.userName, false /* createPersistentCookie */);
         //        }
-        //        return AddSuccessHeaders("\"Register Successful\"");
+        //        return AddSuccessHeader("\"Register Successful\"");
         //        //return RedirectToAction("Profile", "User");
         //    }
         //    catch (Exception ex)
         //    {
         //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-        //        return GetFailureMessage("Error");
+        //        return AddErrorHeader("Error");
         //    }
         //}
 
@@ -319,27 +319,27 @@ namespace UserClientMembers.Controllers
                 RegisterModel model = new RegisterModel { Email = email, UserName = userName, Password = password, ConfirmPassword = password };
                 if (ValidationEngine.ValidateEmail(model.Email) != ValidationEngine.Success)
                 {
-                    return GetFailureMessage("Invalid Email");
+                    return AddErrorHeader("Invalid Email");
                 }
                 if (!userManager.CheckDuplicateEmail(model.Email))
                 {
-                    return GetFailureMessage("A user with that email already exists in our database");
+                    return AddErrorHeader("A user with that email already exists in our database");
                 }
                 if (ValidationEngine.ValidateUsername(model.UserName) != ValidationEngine.Success)
                 {
-                    return GetFailureMessage(ValidationEngine.ValidateUsername(model.UserName));
+                    return AddErrorHeader(ValidationEngine.ValidateUsername(model.UserName));
                 }
                 if (!userManager.CheckDuplicateUsername(model.UserName))
                 {
-                    return GetFailureMessage("A user with that username already exists in our database");
+                    return AddErrorHeader("A user with that username already exists in our database");
                 }
                 if (ValidationEngine.ValidatePassword(model.Password) != ValidationEngine.Success)
                 {
-                    return GetFailureMessage(ValidationEngine.ValidateUsername(model.Password));
+                    return AddErrorHeader(ValidationEngine.ValidateUsername(model.Password));
                 }
                 if (model.Password != model.ConfirmPassword)
                 {
-                    return GetFailureMessage("Password fields do not match");
+                    return AddErrorHeader("Password fields do not match");
                 }
                 if (ModelState.IsValid)
                 {
@@ -356,17 +356,17 @@ namespace UserClientMembers.Controllers
                     JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
                     rr.id = newUser.id;
                     rr.token = token;
-                    return AddSuccessHeaders(Serialize(rr));
+                    return AddSuccessHeader(Serialize(rr));
                 }
                 else
                 {
-                    return GetFailureMessage("User Model Not Valid");
+                    return AddErrorHeader("User Model Not Valid");
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return GetFailureMessage("Something went wrong while creating this user");
+                return AddErrorHeader("Something went wrong while creating this user");
             }
         }
 
@@ -408,7 +408,7 @@ namespace UserClientMembers.Controllers
             {
                 type = "f";
             }
-            string result = tm.AddTag("User", value, type, userManager.GetUser(User.Identity.Name).id);
+            string result = tm.AddTag(value, type, userManager.GetUser(User.Identity.Name).id);
             if (result != null)
             {
                 if (result == "Tag already added.")
@@ -674,7 +674,7 @@ namespace UserClientMembers.Controllers
                         }
                         else
                         {
-                            return GetFailureMessage("The username/email does not exist in the database");
+                            return AddErrorHeader("The username/email does not exist in the database");
                         }
                     }
                     if (userManager.ValidateUser(user, password))
@@ -692,17 +692,17 @@ namespace UserClientMembers.Controllers
                         logOnReturnObject.profileURL = (user.profileURL != null) ? user.profileURL : null;
                         logOnReturnObject.token = token;
 
-                        return AddSuccessHeaders(Serialize(logOnReturnObject));
+                        return AddSuccessHeader(Serialize(logOnReturnObject));
                     }
                     else
                     {
-                        return GetFailureMessage("User Information Not Valid");
+                        return AddErrorHeader("User Information Not Valid");
                     }
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return GetFailureMessage("Something went wrong while trying to log this user in");
+                    return AddErrorHeader("Something went wrong while trying to log this user in");
                 }
             }
         }
@@ -1176,11 +1176,11 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 JsonModels.ProfileInformation profileFromJson = profile.FirstOrDefault();
                
@@ -1212,22 +1212,22 @@ namespace UserClientMembers.Controllers
                         
                         userManager.UpdateUser(originalProfile);
                         JsonModels.ProfileInformation returnProfile = userManager.GetProfileJson(originalProfile);
-                        return AddSuccessHeaders (Serialize(returnProfile));
+                        return AddSuccessHeader (Serialize(returnProfile));
                     }
                     else
                     {
-                        return GetFailureMessage("The user does not exist in the database");
+                        return AddErrorHeader("The user does not exist in the database");
                     }
                 }
                 else
                 {
-                    return GetFailureMessage("User is not the profile owner, and thus is not authorized to edit this profile!");
+                    return AddErrorHeader("User is not the profile owner, and thus is not authorized to edit this profile!");
                 }
             }
             catch(Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "UserController - UpdateProfile", ex.StackTrace);
-                return GetFailureMessage("Something went wrong while updating this Profile.");
+                return AddErrorHeader("Something went wrong while updating this Profile.");
             }
         }
 
@@ -1248,16 +1248,16 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 User user = userManager.GetUser(userId);
                 if (user == null)
                 {
-                    return GetFailureMessage("User not found");
+                    return AddErrorHeader("User not found");
                 }
                 if (userId == authUserId)
                 {
@@ -1272,23 +1272,23 @@ namespace UserClientMembers.Controllers
                             userManager.DeleteProfilePicture(user);
                         }
                         string returnPic = userManager.UploadUserPicture(user, s, "Profile");
-                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
                     }
                     else
                     {
-                        return GetFailureMessage("No files posted to server");
+                        return AddErrorHeader("No files posted to server");
                     }
                 }
                 else
                 {
-                    return GetFailureMessage("The user is not authorized to edit this profile picture");
+                    return AddErrorHeader("The user is not authorized to edit this profile picture");
                 }
                 
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "UserController - UpdateProfilePicture",ex.StackTrace);
-                return GetFailureMessage("Something went wrong while updating this profile picture");
+                return AddErrorHeader("Something went wrong while updating this profile picture");
             }
         }
 
@@ -1310,16 +1310,16 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 User user = userManager.GetUser(userId);
                 if (user == null)
                 {
-                    return GetFailureMessage("User not found");
+                    return AddErrorHeader("User not found");
                 }
                 if (userId == authUserId)
                 {
@@ -1334,12 +1334,12 @@ namespace UserClientMembers.Controllers
                     }
                     else
                     {
-                        GetFailureMessage("You must pass in a propertyId to set");
+                        AddErrorHeader("You must pass in a propertyId to set");
                     }
 
                     if (pi == null)
                     {
-                        return GetFailureMessage("Invalid propertyId");
+                        return AddErrorHeader("Invalid propertyId");
                     }
                     else
                     {
@@ -1355,7 +1355,7 @@ namespace UserClientMembers.Controllers
                             }
                             else
                             {
-                                return GetFailureMessage("You must pass in a propertyValue to set");
+                                return AddErrorHeader("You must pass in a propertyValue to set");
                             }
                             bool postedFile = false;
                             if (qqfile != null || Request.Files.Count == 1)
@@ -1371,7 +1371,7 @@ namespace UserClientMembers.Controllers
                                     Request.InputStream.Read(bytes, 0, length);
                                     Stream s = new MemoryStream(bytes);
                                     string returnPic = userManager.UploadUserPicture(user, s, "About");
-                                    return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                                    return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
                                 }
                                 else if (propertyId == "profilePicture")
                                 {
@@ -1384,7 +1384,7 @@ namespace UserClientMembers.Controllers
                                         userManager.DeleteProfilePicture(user);
                                     }
                                     string returnPic = userManager.UploadUserPicture(user, s, "Profile");
-                                    return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                                    return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
                                 }
                                 else if (propertyId == "resume")
                                 {
@@ -1408,31 +1408,31 @@ namespace UserClientMembers.Controllers
                                     if (String.Compare(fileType, "pdf", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumePDF(user, fs);
-                                        return AddSuccessHeaders(resumeUri, true);
+                                        return AddSuccessHeader(resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "doc", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeDoc(user, fs);
-                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "docx", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeDocx(user, fs);
-                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "rtf", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeRTF(user, fs);
-                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "txt", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeTXT(user, fs);
-                                        return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
                                     }
                                     else
                                     {
-                                        return GetFailureMessage("Document Type not supported");
+                                        return AddErrorHeader("Document Type not supported");
                                     }
                                 }
                             }
@@ -1447,12 +1447,12 @@ namespace UserClientMembers.Controllers
                                         }
                                         else
                                         {
-                                            return GetFailureMessage("profileURL not valid, user not updated");
+                                            return AddErrorHeader("profileURL not valid, user not updated");
                                         }
                                     }
                                     else
                                     {
-                                        return GetFailureMessage("profileURL already in use, user not updated");
+                                        return AddErrorHeader("profileURL already in use, user not updated");
                                     }
                                     break;
                                 case "school":
@@ -1462,7 +1462,7 @@ namespace UserClientMembers.Controllers
                                     }
                                     else
                                     {
-                                        return GetFailureMessage("school not valid, user not updated");
+                                        return AddErrorHeader("school not valid, user not updated");
                                     }
                                     break;
                                 case "email":
@@ -1474,12 +1474,12 @@ namespace UserClientMembers.Controllers
                                         }
                                         else
                                         {
-                                            return GetFailureMessage("email not valid, user not updated");
+                                            return AddErrorHeader("email not valid, user not updated");
                                         }
                                     }
                                     else
                                     {
-                                        return GetFailureMessage("email match, user not updated");
+                                        return AddErrorHeader("email match, user not updated");
                                     }
                                     break;
                                 case "location":
@@ -1489,7 +1489,7 @@ namespace UserClientMembers.Controllers
                                     }
                                     else
                                     {
-                                        return GetFailureMessage("location not valid, user not updated");
+                                        return AddErrorHeader("location not valid, user not updated");
                                     }
                                     break;
                                 case "firstName":
@@ -1499,7 +1499,7 @@ namespace UserClientMembers.Controllers
                                     }
                                     else
                                     {
-                                        return GetFailureMessage("firstName not valid, user not updated");
+                                        return AddErrorHeader("firstName not valid, user not updated");
                                     }
                                     break;
                                 case "lastName":
@@ -1509,7 +1509,7 @@ namespace UserClientMembers.Controllers
                                     }
                                     else
                                     {
-                                        return GetFailureMessage("lastName not valid, user not updated");
+                                        return AddErrorHeader("lastName not valid, user not updated");
                                     }
                                     break;
                                 case "title":
@@ -1519,7 +1519,7 @@ namespace UserClientMembers.Controllers
                                     }
                                     else
                                     {
-                                        return GetFailureMessage("title not valid, user not updated");
+                                        return AddErrorHeader("title not valid, user not updated");
                                     }
                                     break;
                                 case "major":
@@ -1529,7 +1529,7 @@ namespace UserClientMembers.Controllers
                                     }
                                     else
                                     {
-                                        return GetFailureMessage("major not valid, user not updated");
+                                        return AddErrorHeader("major not valid, user not updated");
                                     }
                                     break;
                                 case "connections":
@@ -1539,7 +1539,7 @@ namespace UserClientMembers.Controllers
                                     }
                                     else
                                     {
-                                        return GetFailureMessage("connections not valid, user not updated");
+                                        return AddErrorHeader("connections not valid, user not updated");
                                     }
                                     break;
                                 case "description":
@@ -1549,7 +1549,7 @@ namespace UserClientMembers.Controllers
                                     }
                                     else
                                     {
-                                        return GetFailureMessage("description not valid, user not updated");
+                                        return AddErrorHeader("description not valid, user not updated");
                                     }
                                     break;
                                 case "tagLine":
@@ -1559,7 +1559,7 @@ namespace UserClientMembers.Controllers
                                     }
                                     else
                                     {
-                                        return GetFailureMessage("tagLine not valid, user not updated");
+                                        return AddErrorHeader("tagLine not valid, user not updated");
                                     }
                                     break;
 
@@ -1569,24 +1569,24 @@ namespace UserClientMembers.Controllers
                             AnalyticsAccessor aa = new AnalyticsAccessor();
                             aa.CreateAnalytic("User Update", DateTime.Now, user.userName, "Information updated: " + pi.PropertyType.ToString());
 
-                            return AddSuccessHeaders("UserId:"+userId+" successfully updated", true);
+                            return AddSuccessHeader("UserId:"+userId+" successfully updated", true);
                         }
                         catch (Exception exc)
                         {
                             logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), exc.ToString());
-                            return GetFailureMessage("Something went wrong while updating this user");
+                            return AddErrorHeader("Something went wrong while updating this user");
                         }
                     }
                 }
                 else
                 {
-                    return GetFailureMessage("User not authorized to edit this user");
+                    return AddErrorHeader("User not authorized to edit this user");
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return GetFailureMessage("Something went wrong while updating this user");
+                return AddErrorHeader("Something went wrong while updating this user");
             }
         }
 
@@ -2253,7 +2253,7 @@ namespace UserClientMembers.Controllers
                         if (authenticate < 0)
                         {
                             //Response.StatusCode = 500;
-                            //return GetFailureMessage("Not Authenticated");
+                            //return AddErrorHeader("Not Authenticated");
                         }
                     }
                     bool requestAll = false;
@@ -2271,7 +2271,7 @@ namespace UserClientMembers.Controllers
                             u = userManager.GetUserByProfileURL(profileURL);
                             if (u == null)
                             {
-                                return GetFailureMessage("A user with the specified profileURL was not found");
+                                return AddErrorHeader("A user with the specified profileURL was not found");
                             }
                             else
                             {
@@ -2280,7 +2280,7 @@ namespace UserClientMembers.Controllers
                         }
                         else
                         {
-                            return GetFailureMessage("An id or profileURL must be specified");
+                            return AddErrorHeader("An id or profileURL must be specified");
                         }
                     }
                     else
@@ -2288,7 +2288,7 @@ namespace UserClientMembers.Controllers
                         u = userManager.GetUser(id);
                         if (u == null)
                         {
-                            return GetFailureMessage("A user with the specified id was not found");
+                            return AddErrorHeader("A user with the specified id was not found");
                         }
                     }
                     if (u != null)
@@ -2476,15 +2476,15 @@ namespace UserClientMembers.Controllers
                     catch (Exception ex)
                     {
                         logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                        return GetFailureMessage(ex.Message);
+                        return AddErrorHeader(ex.Message);
                     }
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return GetFailureMessage("Bad Request");
+                    return AddErrorHeader("Bad Request");
                 }
-                return AddSuccessHeaders(returnVal);
+                return AddSuccessHeader(returnVal);
             }
         }
 
@@ -2509,7 +2509,7 @@ namespace UserClientMembers.Controllers
                     int userId = authenticationEngine.authenticate(token);
                     if (userId < 0)
                     {
-                        return GetFailureMessage("You are not authenticated, please log in!");
+                        return AddErrorHeader("You are not authenticated, please log in!");
                     }
                     User u = userManager.GetUser(userId);
                     ReorderEngine re = new ReorderEngine();
@@ -2530,19 +2530,19 @@ namespace UserClientMembers.Controllers
                     if (add == false)
                     {
                         //????????you cant do that
-                        return GetFailureMessage("Update Failed.");
+                        return AddErrorHeader("Update Failed.");
                     }
                     else
                     {
                         u.projectOrder = order;
                         u = userManager.UpdateUser(u);
                     }
-                    return AddSuccessHeaders("Order updated", true);
+                    return AddSuccessHeader("Order updated", true);
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return GetFailureMessage("Something went wrong while updating the Project Order");
+                    return AddErrorHeader("Something went wrong while updating the Project Order");
                 }
             }
         }
@@ -2587,7 +2587,7 @@ namespace UserClientMembers.Controllers
                             u = userManager.GetUserByProfileURL(profileURL);
                             if (u == null)
                             {
-                                return GetFailureMessage("A user with the specified profileURL was not found");
+                                return AddErrorHeader("A user with the specified profileURL was not found");
                             }
                             else
                             {
@@ -2604,7 +2604,7 @@ namespace UserClientMembers.Controllers
                         }
                         else
                         {
-                            return GetFailureMessage("An id or profileURL must be specified");
+                            return AddErrorHeader("An id or profileURL must be specified");
                         }
                     }
                     else
@@ -2612,7 +2612,7 @@ namespace UserClientMembers.Controllers
                         u = userManager.GetUser(id);
                         if (u == null)
                         {
-                            return GetFailureMessage("A user with the specified id was not found");
+                            return AddErrorHeader("A user with the specified id was not found");
                         }
                         if (id == authenticateId)
                         {
@@ -2908,15 +2908,15 @@ namespace UserClientMembers.Controllers
                     catch (Exception ex)
                     {
                         logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                        return GetFailureMessage(ex.Message);
+                        return AddErrorHeader(ex.Message);
                     }
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return GetFailureMessage("Bad Request");
+                    return AddErrorHeader("Bad Request");
                 }
-                return AddSuccessHeaders(returnVal);
+                return AddSuccessHeader(returnVal);
             }
         }
 
@@ -2937,11 +2937,11 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 User user = userManager.GetUser(authUserId);
                 DateTime startDateTime = DateTime.Now;
@@ -2961,14 +2961,14 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("Something went wrong while attempting to save this experience");
+                    return AddErrorHeader("Something went wrong while attempting to save this experience");
                 }
 
             }
             catch (Exception e)
             {
                 logAccessor.CreateLog(DateTime.Now, "userController - AddExperience", e.StackTrace);
-                return GetFailureMessage("Something went wrong while adding the experience");
+                return AddErrorHeader("Something went wrong while adding the experience");
             }
         }
 
@@ -2989,11 +2989,11 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 if (experience != null)
                 {
@@ -3011,27 +3011,27 @@ namespace UserClientMembers.Controllers
                             originalExperience.state = experienceFromJson.state;
                             originalExperience.title = experienceFromJson.title;
                             userManager.UpdateExperience(originalExperience);
-                            return AddSuccessHeaders(Serialize(experienceFromJson));
+                            return AddSuccessHeader(Serialize(experienceFromJson));
                         }
                         else
                         {
-                            return GetFailureMessage("The experience model was not found in the database");
+                            return AddErrorHeader("The experience model was not found in the database");
                         }
                     }
                     else
                     {
-                        return GetFailureMessage("The experience model was not valid");
+                        return AddErrorHeader("The experience model was not valid");
                     }
                 }
                 else
                 {
-                    return GetFailureMessage("An experience model was not received");
+                    return AddErrorHeader("An experience model was not received");
                 }
             }
             catch(Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "userController - updateExperience", ex.StackTrace);
-                return GetFailureMessage("Something went wrong while updating this experience element");
+                return AddErrorHeader("Something went wrong while updating this experience element");
             }
         }
 
@@ -3052,11 +3052,11 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 Experience exp = new Experience();
                 if (experienceId > 0)
@@ -3065,16 +3065,16 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An experienceId must be passed in");
+                    return AddErrorHeader("An experienceId must be passed in");
                 }
                 if (exp.userId != authUserId)
                 {
-                    return GetFailureMessage("User is not authorized to exit this experience");
+                    return AddErrorHeader("User is not authorized to exit this experience");
                 }
                 System.Reflection.PropertyInfo pi;
                 if(propertyId == null)
                 {
-                    return GetFailureMessage("A propertyId must be passed in");
+                    return AddErrorHeader("A propertyId must be passed in");
                 }
                 else
                 {
@@ -3082,7 +3082,7 @@ namespace UserClientMembers.Controllers
                 }
                 if(propertyValue == null)
                 {
-                    return GetFailureMessage("A propertyValue must be passed in");
+                    return AddErrorHeader("A propertyValue must be passed in");
                 }
                 else
                 {
@@ -3095,14 +3095,14 @@ namespace UserClientMembers.Controllers
                         pi.SetValue(exp, Convert.ChangeType(propertyValue, pi.PropertyType), null);
                     }
                     userManager.UpdateExperience(exp);
-                    return AddSuccessHeaders("Experience with id: " + exp.id + " has been successfully updated", true);
+                    return AddSuccessHeader("Experience with id: " + exp.id + " has been successfully updated", true);
                 }
 
             }
             catch(Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "userController - updateExperience", ex.StackTrace);
-                return GetFailureMessage("Something went wrong while updating this experience element");
+                return AddErrorHeader("Something went wrong while updating this experience element");
             }
         }
 
@@ -3123,15 +3123,15 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 if (experienceId < 0)
                 {
-                    return GetFailureMessage("An experienceId must be passed in");
+                    return AddErrorHeader("An experienceId must be passed in");
                 }
                 else
                 {
@@ -3141,7 +3141,7 @@ namespace UserClientMembers.Controllers
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "UserController - GetExperience", ex.StackTrace);
-                return GetFailureMessage("Something went wrong while getting this experience");
+                return AddErrorHeader("Something went wrong while getting this experience");
             }
         }
 
@@ -3162,38 +3162,38 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 if (experienceId < 0)
                 {
-                    return GetFailureMessage("An experienceId must be passed in");
+                    return AddErrorHeader("An experienceId must be passed in");
                 }
                 else
                 {
                     Experience experience = userManager.GetExperience(experienceId);
                     if (experience == null)
                     {
-                        return GetFailureMessage("An experience with the provided experienceId does not exist");
+                        return AddErrorHeader("An experience with the provided experienceId does not exist");
                     }
                     string response = userManager.DeleteExperience(experience);
                     if (response == null)
                     {
-                        return GetFailureMessage("Something went wrong while deleting this experience");
+                        return AddErrorHeader("Something went wrong while deleting this experience");
                     }
                     else
                     {
-                        return AddSuccessHeaders(response, true);
+                        return AddSuccessHeader(response, true);
                     }
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "UserController - DeleteExperience", ex.StackTrace);
-                return GetFailureMessage("Something went wrong while deleting this experience");
+                return AddErrorHeader("Something went wrong while deleting this experience");
             }
         }
 
@@ -3214,11 +3214,11 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 User user = userManager.GetUser(authUserId);
                 JsonModels.Reference exp = userManager.AddReference(user.id, firstName, lastName, company, email, title, message, videoLink, videoType);
@@ -3228,7 +3228,7 @@ namespace UserClientMembers.Controllers
             catch (Exception e)
             {
                 logAccessor.CreateLog(DateTime.Now, "userController - AddReference", e.StackTrace);
-                return GetFailureMessage("Something went wrong while adding the experience");
+                return AddErrorHeader("Something went wrong while adding the experience");
             }
         }
 
@@ -3249,11 +3249,11 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 Reference reference = new Reference();
                 if (referenceId > 0)
@@ -3261,22 +3261,22 @@ namespace UserClientMembers.Controllers
                     reference = userManager.GetReference(referenceId);
                     if (reference == null)
                     {
-                        return GetFailureMessage("The reference with the given referenceId does not exist");
+                        return AddErrorHeader("The reference with the given referenceId does not exist");
                     }
                       
                 }
                 else
                 {
-                    return GetFailureMessage("A referenceId must be passed in");
+                    return AddErrorHeader("A referenceId must be passed in");
                 }
                 if (reference.userId != authUserId)
                 {
-                    return GetFailureMessage("User is not authorized to exit this reference");
+                    return AddErrorHeader("User is not authorized to exit this reference");
                 }
                 System.Reflection.PropertyInfo pi;
                 if(propertyId == null)
                 {
-                    return GetFailureMessage("A propertyId must be passed in");
+                    return AddErrorHeader("A propertyId must be passed in");
                 }
                 else
                 {
@@ -3284,20 +3284,20 @@ namespace UserClientMembers.Controllers
                 }
                 if(propertyValue == null)
                 {
-                    return GetFailureMessage("A propertyValue must be passed in");
+                    return AddErrorHeader("A propertyValue must be passed in");
                 }
                 else
                 {
                     pi.SetValue(reference, Convert.ChangeType(propertyValue, pi.PropertyType), null);
                     userManager.UpdateReference(reference);
-                    return AddSuccessHeaders("Experience with id: " + reference.id + " has been successfully updated", true);
+                    return AddSuccessHeader("Experience with id: " + reference.id + " has been successfully updated", true);
                 }
 
             }
             catch(Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "userController - updateReference", ex.StackTrace);
-                return GetFailureMessage("Something went wrong while updating this reference element");
+                return AddErrorHeader("Something went wrong while updating this reference element");
             }
         }
 
@@ -3318,11 +3318,11 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 if (reference != null)
                 {
@@ -3345,27 +3345,27 @@ namespace UserClientMembers.Controllers
 
                             userManager.UpdateReference(originalReference);
 
-                            return AddSuccessHeaders(Serialize(referenceFromJson));
+                            return AddSuccessHeader(Serialize(referenceFromJson));
                         }
                         else
                         {
-                            return GetFailureMessage("The reference model was not found in the database");
+                            return AddErrorHeader("The reference model was not found in the database");
                         }
                     }
                     else
                     {
-                        return GetFailureMessage("The reference model was not valid");
+                        return AddErrorHeader("The reference model was not valid");
                     }
                 }
                 else
                 {
-                    return GetFailureMessage("An reference model was not received");
+                    return AddErrorHeader("An reference model was not received");
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "userController - updatereference", ex.StackTrace);
-                return GetFailureMessage("Something went wrong while updating this reference model");
+                return AddErrorHeader("Something went wrong while updating this reference model");
             }
         }
 
@@ -3386,15 +3386,15 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 if (referenceId < 0)
                 {
-                    return GetFailureMessage("An experienceId must be passed in");
+                    return AddErrorHeader("An experienceId must be passed in");
                 }
                 else
                 {
@@ -3404,7 +3404,7 @@ namespace UserClientMembers.Controllers
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "UserController - GetReference", ex.StackTrace);
-                return GetFailureMessage("Something went wrong while getting this reference");
+                return AddErrorHeader("Something went wrong while getting this reference");
             }
         }
 
@@ -3425,15 +3425,15 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (authUserId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 if (referenceId < 0)
                 {
-                    return GetFailureMessage("An experienceId must be passed in");
+                    return AddErrorHeader("An experienceId must be passed in");
                 }
                 else
                 {
@@ -3441,18 +3441,18 @@ namespace UserClientMembers.Controllers
                     string response = userManager.DeleteReference(reference);
                     if (response == null)
                     {
-                        return GetFailureMessage("Something went wrong while deleting this reference");
+                        return AddErrorHeader("Something went wrong while deleting this reference");
                     }
                     else
                     {
-                        return AddSuccessHeaders(response, true);
+                        return AddSuccessHeader(response, true);
                     }
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "UserController - DeleteReference", ex.StackTrace);
-                return GetFailureMessage("Something went wrong while deleting this reference");
+                return AddErrorHeader("Something went wrong while deleting this reference");
             }
         }
 

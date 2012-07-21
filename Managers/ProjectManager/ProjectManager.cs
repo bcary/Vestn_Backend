@@ -1253,14 +1253,7 @@ namespace Manager
                         {
                             cp.description = null;
                         }
-                        if (p.tagIds != "" && p.tagIds != null)
-                        {
-                            cp.projectTags = GetProjectTags(p.id);
-                        }
-                        else
-                        {
-                            cp.projectTags = null;
-                        }
+                        cp.projectTags = GetProjectTags(p.id);
 
                         //we have to reset everyone's project order or when you add a new element this breaks - removes all old elements
                         List<int> peIds = new List<int>();

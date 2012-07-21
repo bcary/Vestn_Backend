@@ -8,7 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace UserClientMembers {
+namespace Vestn2._0
+{
     using System;
     
     

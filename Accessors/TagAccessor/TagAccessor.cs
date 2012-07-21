@@ -275,10 +275,10 @@ namespace Accessor
             
         }
 
-        public bool removeProjectLink(int tagId, int projectId)
+        public bool removeProjectLink(int tagId, int projectId, string type)
         {
             VestnDB db = new VestnDB();
-            ProjectTags pt = db.projectTags.Where(p => p.projectId == projectId).Where(t => t.tagId == tagId).FirstOrDefault();
+            ProjectTags pt = db.projectTags.Where(p => p.projectId == projectId).Where(t => t.tagId == tagId).Where(q => q.tagType == type).FirstOrDefault();
             try
             {
 

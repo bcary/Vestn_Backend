@@ -333,12 +333,12 @@ namespace Entity
             public string projectElementOrder { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string coverPicture { get; set; }
-           [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string coverPictureThumbnail { get; set; }
-           [DataMember(IsRequired = true, EmitDefaultValue = true)]
-           public string dateModified { get; set; }
-           [DataMember(IsRequired = true, EmitDefaultValue = true)]
-           public string privacy { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string dateModified { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string privacy { get; set; }
         }
 
         [DataContract]
