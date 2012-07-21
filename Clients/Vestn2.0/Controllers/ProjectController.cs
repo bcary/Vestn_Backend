@@ -44,7 +44,7 @@ namespace Controllers
                     int userId = authenticationEngine.authenticate(token);
                     if (userId < 0)
                     {
-                        return GetFailureMessage("You are not authenticated, please log in!");
+                        return AddErrorHeader("You are not authenticated, please log in!");
                     }
 
                     User user = userManager.GetUser(userId);
@@ -86,14 +86,14 @@ namespace Controllers
                     }
                     catch (Exception exception)
                     {
-                        return GetFailureMessage(exception.Message);
+                        return AddErrorHeader(exception.Message);
                     }
-                    return AddSuccessHeaders(returnVal);
+                    return AddSuccessHeader(returnVal);
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return GetFailureMessage("Something went wrong while creating this project");
+                    return AddErrorHeader("Something went wrong while creating this project");
                 }
             }
         }
@@ -113,19 +113,19 @@ namespace Controllers
                     int userId = authenticationEngine.authenticate(token);
                     if (userId < 0)
                     {
-                        return GetFailureMessage("User not authenticated, please log in!");
+                        return AddErrorHeader("User not authenticated, please log in!");
                     }
                     User user = userManager.GetUser(userId);
 
                     Project project = projectManager.GetProject(projectId);
                     if (!projectManager.IsUserOwnerOfProject(projectId, user))
                     {
-                        return GetFailureMessage("User not authorized to delete this project");
+                        return AddErrorHeader("User not authorized to delete this project");
                     }
 
                     if (project.name == "About")
                     {
-                        return GetFailureMessage("Cannot Delete About Project");
+                        return AddErrorHeader("Cannot Delete About Project");
                     }
 
                     projectManager.DeleteProject(project);
@@ -137,12 +137,12 @@ namespace Controllers
 
                     aa.CreateAnalytic("Delete Project", DateTime.Now, user.userName, "Number of elements: " + project.projectElements.Count());
 
-                    return AddSuccessHeaders("Successfully deleted project", true);
+                    return AddSuccessHeader("Successfully deleted project", true);
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return GetFailureMessage("Something went wrong while deleting this project.");
+                    return AddErrorHeader("Something went wrong while deleting this project.");
                 }
             }
         }
@@ -162,7 +162,7 @@ namespace Controllers
                     int userId = authenticationEngine.authenticate(token);
                     if (userId < 0)
                     {
-                        return GetFailureMessage("You are not authenticated, please log in!");
+                        return AddErrorHeader("You are not authenticated, please log in!");
                     }
                     //int newProjectElementId = -1;
                     JsonModels.UploadReponse response = new JsonModels.UploadReponse();
@@ -171,13 +171,13 @@ namespace Controllers
                     if (!projectManager.IsUserOwnerOfProject(projectId, user))
                     {
                         //return Json(new { Error = "Can't add picture at this time" });
-                        return GetFailureMessage("You are not authorized to add this picture");
+                        return AddErrorHeader("You are not authorized to add this picture");
                     }
                     if (Request != null)
                     {
                         if (qqfile == null && Request.Files.Count == 0)
                         {
-                            return GetFailureMessage("No files submitted to server");
+                            return AddErrorHeader("No files submitted to server");
                         }
 
                         var length = Request.ContentLength;
@@ -190,7 +190,7 @@ namespace Controllers
                             response = projectManager.UploadPictureElement(projectId, s, qqfile);
                             if (response == null)
                             {
-                                return GetFailureMessage("An error occured saving the docuement.");
+                                return AddErrorHeader("An error occured saving the docuement.");
                             }
                             aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, qqfile);
                             artifactType = "picture";
@@ -212,19 +212,19 @@ namespace Controllers
                             //--------------------------
                             if (response == null)
                             {
-                                return GetFailureMessage("File type not accepted");
+                                return AddErrorHeader("File type not accepted");
                             }
                             aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, qqfile);
                             artifactType = "document";
                         }
                         else
                         {
-                            return GetFailureMessage("You did not upload an accepted picture or document type: (jpeg, jpg, png, bmp, doc, docx, ppt, pptx, xls, xlsx, txt, rtf");
+                            return AddErrorHeader("You did not upload an accepted picture or document type: (jpeg, jpg, png, bmp, doc, docx, ppt, pptx, xls, xlsx, txt, rtf");
                         }
                     }
                     else
                     {
-                        return GetFailureMessage("Server did not receive file post");
+                        return AddErrorHeader("Server did not receive file post");
                     }
                     //refresh the user object with the changes
                     user = userManager.GetUser(userId);
@@ -255,14 +255,14 @@ namespace Controllers
                     }
                     catch (Exception exception)
                     {
-                        return GetFailureMessage(exception.Message);
+                        return AddErrorHeader(exception.Message);
                     }
-                    return AddSuccessHeaders(realReturnVal);
+                    return AddSuccessHeader(realReturnVal);
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return GetFailureMessage("Problem saving media to cloud storage");
+                    return AddErrorHeader("Problem saving media to cloud storage");
                 }
             }
         }
@@ -286,20 +286,20 @@ namespace Controllers
                     }
                     else
                     {
-                        return GetFailureMessage("User authentication token not recieved.");
+                        return AddErrorHeader("User authentication token not recieved.");
                     }
                     if (userId < 0)
                     {
-                        return GetFailureMessage("User is not authenticated, please log in!");
+                        return AddErrorHeader("User is not authenticated, please log in!");
                     }
                     User user = userManager.GetUser(userId);
                     if (projectId < 0)
                     {
-                        return GetFailureMessage("A projectId was not recieved");
+                        return AddErrorHeader("A projectId was not recieved");
                     }
                     if (!projectManager.IsUserOwnerOfProject(projectId, user))
                     {
-                        return GetFailureMessage("User is not authorized to complete this action");
+                        return AddErrorHeader("User is not authorized to complete this action");
                     }
                     string vType;
                     if (videoLink != null)
@@ -332,7 +332,7 @@ namespace Controllers
                     }
                     else
                     {
-                        return GetFailureMessage("A videoLink was not recieved");
+                        return AddErrorHeader("A videoLink was not recieved");
                     }
 
                     JsonModels.Artifact response = projectManager.AddVideoElement(projectId, "Video Description", videoLink, vType);
@@ -345,14 +345,14 @@ namespace Controllers
                     }
                     catch (Exception exception)
                     {
-                        return GetFailureMessage(exception.Message);
+                        return AddErrorHeader(exception.Message);
                     }
-                    return AddSuccessHeaders(returnVal);
+                    return AddSuccessHeader(returnVal);
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return GetFailureMessage("Error occured uploading your video");
+                    return AddErrorHeader("Error occured uploading your video");
                 }
             }
         }
@@ -376,11 +376,11 @@ namespace Controllers
                     }
                     else
                     {
-                        return GetFailureMessage("A token must be passed in");
+                        return AddErrorHeader("A token must be passed in");
                     }
                     if (userId < 0)
                     {
-                        return GetFailureMessage("User is not authenticated, please log in!");
+                        return AddErrorHeader("User is not authenticated, please log in!");
                     }
                     User user = userManager.GetUser(userId);
                     if (projectId != null)
@@ -388,12 +388,12 @@ namespace Controllers
                         if (!projectManager.IsUserOwnerOfProject(projectId, user))
                         {
                             //return Json(new { Error = "Can't add video at this time" });
-                            return GetFailureMessage("User is not authorized to complete this action");
+                            return AddErrorHeader("User is not authorized to complete this action");
                         }
                     }
                     else
                     {
-                        return GetFailureMessage("A projectId must be passed in");
+                        return AddErrorHeader("A projectId must be passed in");
                     }
                     JsonModels.Artifact response = new JsonModels.Artifact();
                     if (code != null && type != null)
@@ -403,7 +403,7 @@ namespace Controllers
                     }
                     else
                     {
-                        return GetFailureMessage("code and type must be passed in");
+                        return AddErrorHeader("code and type must be passed in");
                     }
                     string returnVal;
                     try
@@ -412,14 +412,14 @@ namespace Controllers
                     }
                     catch (Exception exception)
                     {
-                        return GetFailureMessage(exception.Message);
+                        return AddErrorHeader(exception.Message);
                     }
-                    return AddSuccessHeaders(returnVal);
+                    return AddSuccessHeader(returnVal);
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return GetFailureMessage("Error occured uploading your video");
+                    return AddErrorHeader("Error occured uploading your video");
                 }
             }
         }
@@ -441,24 +441,24 @@ namespace Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (userId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 User authUser = userManager.GetUser(userId);
                 Project projectFromJson = project.FirstOrDefault();
                 Project originalProject = projectManager.GetProject(projectFromJson.id);
                 if (projectFromJson == null)
                 {
-                    return GetFailureMessage("The project JSON model did not bind correctly");
+                    return AddErrorHeader("The project JSON model did not bind correctly");
                 }
                 else
                 {
                     if (originalProject == null)
                     {
-                        return GetFailureMessage("The project model does not exist in the database");
+                        return AddErrorHeader("The project model does not exist in the database");
                     }
                     if (projectManager.IsUserOwnerOfProject(projectFromJson.id, authUser))
                     {
@@ -483,17 +483,17 @@ namespace Controllers
                         originalProject.dateModified = DateTime.Now;
 
                         projectManager.UpdateProject(originalProject);
-                        return AddSuccessHeaders(Serialize(projectManager.GetProjectJson(originalProject)));
+                        return AddSuccessHeader(Serialize(projectManager.GetProjectJson(originalProject)));
                     }
                     else
                     {
-                        return GetFailureMessage("User is not authorized to edit this project");
+                        return AddErrorHeader("User is not authorized to edit this project");
                     }
                 }
             }
             catch (Exception ex)
             {
-                return GetFailureMessage("Something went wrong while updating this Project.");
+                return AddErrorHeader("Something went wrong while updating this Project.");
             }
         }
 
@@ -514,18 +514,18 @@ namespace Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (userId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 User authUser = userManager.GetUser(userId);
                 JsonModels.Artifact artifactFromJson = artifact.FirstOrDefault();
                 ProjectElement originalElement = projectManager.GetProjectElement(artifactFromJson.id);
                 if (originalElement == null)
                 {
-                    return GetFailureMessage("The artifact model does not exist in the database");
+                    return AddErrorHeader("The artifact model does not exist in the database");
                 }
                 else
                 {
@@ -539,17 +539,17 @@ namespace Controllers
                         p.dateModified = DateTime.Now;
                         projectManager.UpdateProject(p);
 
-                        return AddSuccessHeaders(Serialize(projectManager.GetArtifactJson(originalElement)));
+                        return AddSuccessHeader(Serialize(projectManager.GetArtifactJson(originalElement)));
                     }
                     else
                     {
-                        return GetFailureMessage("User is not authorized to edit this Artifact");
+                        return AddErrorHeader("User is not authorized to edit this Artifact");
                     }
                 }
             }
             catch (Exception ex)
             {
-                return GetFailureMessage("Something went wrong while updating this artifact");
+                return AddErrorHeader("Something went wrong while updating this artifact");
             }
         }
 
@@ -570,11 +570,11 @@ namespace Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("An authentication token must be passed in");
+                    return AddErrorHeader("An authentication token must be passed in");
                 }
                 if (userId < 0)
                 {
-                    return GetFailureMessage("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 User user = userManager.GetUser(userId);
                 Project project;
@@ -584,15 +584,15 @@ namespace Controllers
                 }
                 else
                 {
-                    return GetFailureMessage("Invalid projectId");
+                    return AddErrorHeader("Invalid projectId");
                 }
                 if (project == null)
                 {
-                    return GetFailureMessage("Project not found");
+                    return AddErrorHeader("Project not found");
                 }
                 if (!projectManager.IsUserOwnerOfProject(projectId, user))
                 {
-                    return GetFailureMessage("User not authorized to update this project!");
+                    return AddErrorHeader("User not authorized to update this project!");
                 }
                 else
                 {
@@ -606,23 +606,23 @@ namespace Controllers
                         response = projectManager.UploadPictureElement(projectId, s, "coverPicture", true);
                         if (response == null)
                         {
-                            return GetFailureMessage("An error occured saving the docuement.");
+                            return AddErrorHeader("An error occured saving the docuement.");
                         }
                         else
                         {
-                            return AddSuccessHeaders("http://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
+                            return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
                         }
                     }
                     else
                     {
-                        return GetFailureMessage("No files were posted to the server");
+                        return AddErrorHeader("No files were posted to the server");
                     }
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "ProjectController - UpdateCoverPicture", ex.StackTrace);
-                return GetFailureMessage("Something went wrond while updating this project's cover picture");
+                return AddErrorHeader("Something went wrond while updating this project's cover picture");
             }
         }
 
@@ -646,12 +646,12 @@ namespace Controllers
                     int userId = authenticationEngine.authenticate(token);
                     if (userId < 0)
                     {
-                        return GetFailureMessage("You are not authenticated, please log in!");
+                        return AddErrorHeader("You are not authenticated, please log in!");
                     }
                     User user = userManager.GetUser(userId);
                     if (!projectManager.IsUserOwnerOfProject(projectId, user))
                     {
-                        return GetFailureMessage("You are not authorized to delete this artifact, :(");
+                        return AddErrorHeader("You are not authorized to delete this artifact, :(");
                     }
 
                     Project p = projectManager.GetProject(projectId);
@@ -663,12 +663,12 @@ namespace Controllers
                     projectManager.DeleteProjectElement(e);
                     //refresh the user object with the changes
                     user = userManager.GetUser(userId);
-                    return AddSuccessHeaders("This artifact was successfully removed from the specified project", true);
+                    return AddSuccessHeader("This artifact was successfully removed from the specified project", true);
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return GetFailureMessage("Something went wrong while deleting this artifact, whoops!");
+                    return AddErrorHeader("Something went wrong while deleting this artifact, whoops!");
                 }
             }
         }
@@ -689,7 +689,7 @@ namespace Controllers
                     if (userId < 0)
                     {
                         // ALLOW NON AUTHENTICATED REQUESTS
-                        //return GetFailureMessage("You are not authenticated, please log in!");
+                        //return AddErrorHeader("You are not authenticated, please log in!");
                     }
                 }
                 string returnVal;
@@ -704,19 +704,19 @@ namespace Controllers
                         }
                         catch (Exception exception)
                         {
-                            return GetFailureMessage(exception.Message);
+                            return AddErrorHeader(exception.Message);
                         }
                     }
                     else
                     {
-                        return GetFailureMessage("No Information Found");
+                        return AddErrorHeader("No Information Found");
                     }
                 }
                 catch (Exception e)
                 {
-                    return GetFailureMessage("Bad Request");
+                    return AddErrorHeader("Bad Request");
                 }
-                return AddSuccessHeaders(returnVal);
+                return AddSuccessHeader(returnVal);
             }
         }
     }

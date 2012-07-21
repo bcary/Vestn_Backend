@@ -18,7 +18,7 @@ namespace Controllers
             return value.Replace("\n", "<br />");
         }
 
-        protected string AddSuccessHeaders(string preResponse, bool addResponseMessageQuotes = false)
+        protected string AddSuccessHeader(string preResponse, bool addResponseMessageQuotes = false)
         {
             if (addResponseMessageQuotes)
             {
@@ -49,7 +49,7 @@ namespace Controllers
             return returnVal;
         }
 
-        protected string GetFailureMessage(string message)
+        protected string AddErrorHeader(string message)
         {
             return "{\"Success\": false,\"Message\": \"" + @message + "\",\"Reponse\":null}";
         }
