@@ -28,5 +28,7 @@ namespace Entity
         public DbSet<Authentication> authentication { get; set; }
         public DbSet<Experience> experience{ get; set; }
         public DbSet<Reference> reference { get; set; }
+        public DbSet<Prop> prop { get; set; }
+        //public DbSet<Network> networks { get; set; }
     }
 }

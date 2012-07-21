@@ -93,6 +93,10 @@
       <Project>{BC962547-338A-4A68-91C3-2C6F2D18F194}</Project>
       <Name>Analytics</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Prop\Prop.csproj">
+      <Project>{99C78FF1-341F-4CCC-98DF-9D29CD7CCBA7}</Project>
+      <Name>Prop</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Users\Users.csproj">
       <Project>{5E71E86E-850C-4160-8475-D2801F3D4614}</Project>
       <Name>Users</Name>
