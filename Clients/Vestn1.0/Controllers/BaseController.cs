@@ -28,7 +28,7 @@ namespace UserClientMembers.Controllers
             {
                 preResponse = "{\"Response\":" + preResponse;
             }
-            preResponse = preResponse + ",\"Success\": \"true\",\"Message\": \"Success\"}";
+            preResponse = preResponse + ",\"Success\": true,\"Message\": \"Success\"}";
             return preResponse;
         }
 

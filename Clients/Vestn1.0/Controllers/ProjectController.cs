@@ -64,6 +64,7 @@ namespace UserClientMembers.Controllers
                     project.name = name;
                     project.description = description;
                     project.privacy = "private";
+                    project.dateModified = DateTime.Now;
                     projectManager.UpdateProject(project);
 
                     //refresh the user object with the changes

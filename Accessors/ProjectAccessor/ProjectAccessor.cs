@@ -20,7 +20,7 @@ namespace Accessor
         public Project CreateProject(User u, List<ProjectElement> projectElements)
         {
 
-            Project project = new Project(){ isActive = true };
+            Project project = new Project(){ isActive = true, dateModified = DateTime.Now };
             project.projectElements = projectElements;
 
             try
@@ -28,15 +28,6 @@ namespace Accessor
                 if (u.projects == null)
                 {
                     u.projects = new List<Project>();
-                }
-
-                if (u.projects.Count() == 0)
-                {
-                    project.name = "About";
-                }
-                else
-                {
-                    project.name = "New Project";
                 }
 
                 u.projects.Add(project);
