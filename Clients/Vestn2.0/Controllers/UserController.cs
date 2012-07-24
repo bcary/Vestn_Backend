@@ -262,7 +262,7 @@ namespace Controllers
                         originalProfile.phoneNumber = (profileFromJson.phoneNumber != null) ? profileFromJson.phoneNumber : null;
                         originalProfile.projectOrder = (profileFromJson.projectOrder != null) ? profileFromJson.projectOrder : null;
                         originalProfile.resume = (profileFromJson.resume != null) ? profileFromJson.resume : null;
-                        originalProfile.school = (profileFromJson.school != null) ? profileFromJson.school : null;
+                        originalProfile.organization = (profileFromJson.organization != null) ? profileFromJson.organization : null;
                         originalProfile.tagLine = (profileFromJson.tagLine != null) ? profileFromJson.tagLine : null;
                         originalProfile.title = (profileFromJson.title != null) ? profileFromJson.title : null;
 
@@ -510,14 +510,14 @@ namespace Controllers
                         }
                         if (requestAll || request.Contains("school"))
                         {
-                            if (u.school != null)
+                            if (u.organization != null)
                             {
-                                ui.school = u.school;
+                                ui.organization = u.organization;
                                 add = 1;
                             }
                             else
                             {
-                                ui.school = null;
+                                ui.organization = null;
                             }
                         }
                         if (requestAll || request.Contains("major"))

@@ -644,7 +644,7 @@ namespace Manager
             }
 
             ui.resume = u.resume;
-            ui.school = u.school;
+            ui.organization = u.organization;
             ui.stats = getUserStats(u.id);
             ui.tagLine = u.tagLine;
             ui.title = u.title;

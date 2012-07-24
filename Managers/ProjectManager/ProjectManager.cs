@@ -1197,9 +1197,9 @@ namespace Manager
                 cp.coverPicture = project.coverPicture;
                 cp.coverPictureThumbnail = project.coverPictureThumbnail;
                 cp.description = project.description;
-                cp.projectElementOrder = project.projectElementOrder;
+                cp.artifactOrder = project.projectElementOrder;
                 cp.id = project.id;
-                cp.name = project.name;
+                cp.title = project.name;
                 cp.dateModified = project.dateModified.ToString();
                 if (project.projectElements == null)
                 {
@@ -1212,7 +1212,7 @@ namespace Manager
                     int[] ids = IDS.ToArray();
 
                     cp.artifacts = GetArtifacts(ids);
-                    cp.projectElementOrder = project.projectElementOrder;
+                    cp.artifactOrder = project.projectElementOrder;
                 }
                 return cp;
             }
@@ -1239,11 +1239,11 @@ namespace Manager
                         cp.id = p.id;
                         if (p.name != null)
                         {
-                            cp.name = p.name;
+                            cp.title = p.name;
                         }
                         else
                         {
-                            cp.name = null;
+                            cp.title = null;
                         }
                         if (p.description != null)
                         {
@@ -1261,18 +1261,25 @@ namespace Manager
                         if (p.projectElementOrder == null | p.projectElementOrder == "")
                         {
                             p = resetProjectElementOrder(p);
+                            if (p.projectElementOrder != null)
+                            {
+                                List<int> IDS = re.stringOrderToList(p.projectElementOrder);
+                                int[] ids = IDS.ToArray();
+                                cp.artifactOrder = p.projectElementOrder;
+                                cp.artifacts = GetArtifacts(ids);
+                            }
+                            else
+                            {
+                                cp.artifactOrder = null;
+                                cp.artifacts = null;
+                            }
                         }
-                        if (p.projectElementOrder != null)
+                        else //projectElementOrder isn't null
                         {
                             List<int> IDS = re.stringOrderToList(p.projectElementOrder);
                             int[] ids = IDS.ToArray();
-
                             cp.artifacts = GetArtifacts(ids);
-                            cp.projectElementOrder = p.projectElementOrder;
-                        }
-                        else
-                        {
-                            //get in order
+                            cp.artifactOrder = p.projectElementOrder;
                         }
                         if (p.coverPicture != null)
                         {
@@ -1285,6 +1292,10 @@ namespace Manager
                         if (p.dateModified != null)
                         {
                             cp.dateModified = p.dateModified.ToString();
+                        }
+                        if (p.privacy != null)
+                        {
+                            cp.privacy = p.privacy;
                         }
                         projects.Add(cp);
                     }

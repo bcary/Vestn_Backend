@@ -72,11 +72,11 @@ namespace UserClientMembers.Controllers
                     JsonModels.CompleteProject response = new JsonModels.CompleteProject();
                     if (name == null)
                     {
-                        response.name = "New Project";
+                        response.title = "New Project";
                     }
                     else
                     {
-                        response.name = name;
+                        response.title = name;
                     }
                     if (description == null)
                     {
@@ -86,10 +86,11 @@ namespace UserClientMembers.Controllers
                     {
                         response.description = description;
                     }
+                    response.privacy = project.privacy;
                     response.id = project.id;
                     response.artifacts = null;
                     response.projectTags = null;
-                    response.projectElementOrder = "";
+                    response.artifactOrder = "";
                     string returnVal;
                     try
                     {
@@ -1282,7 +1283,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
-        public string UpdateProjectModel(IEnumerable<Project> project, string token = null)
+        public string UpdateProjectModel(IEnumerable<JsonModels.CompleteProject> project, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -1304,7 +1305,7 @@ namespace UserClientMembers.Controllers
                     return AddErrorHeader("You are not authenticated, please log in!");
                 }
                 User authUser = userManager.GetUser(userId);
-                Project projectFromJson = project.FirstOrDefault();
+                JsonModels.CompleteProject projectFromJson = project.FirstOrDefault();
                 Project originalProject = projectManager.GetProject(projectFromJson.id);
                 if (projectFromJson == null)
                 {
@@ -1319,8 +1320,8 @@ namespace UserClientMembers.Controllers
                     if (projectManager.IsUserOwnerOfProject(projectFromJson.id, authUser))
                     {
                         originalProject.description = (projectFromJson.description != null) ? projectFromJson.description : null;
-                        originalProject.name = (projectFromJson.name != null) ? projectFromJson.name : null;
-                        originalProject.projectElementOrder = (projectFromJson.projectElementOrder != null) ? projectFromJson.projectElementOrder : null;
+                        originalProject.name = (projectFromJson.title != null) ? projectFromJson.title : null;
+                        originalProject.projectElementOrder = (projectFromJson.artifactOrder != null) ? projectFromJson.artifactOrder : null;
 
                         if (projectFromJson.privacy != null)
                         {
@@ -1332,6 +1333,7 @@ namespace UserClientMembers.Controllers
                             }
                             else
                             {
+                                originalProject.isActive = true;
                                 originalProject.privacy = projectFromJson.privacy;
                             }
                         }

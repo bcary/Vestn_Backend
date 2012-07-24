@@ -61,11 +61,11 @@ namespace Controllers
                     JsonModels.CompleteProject response = new JsonModels.CompleteProject();
                     if (name == null)
                     {
-                        response.name = "New Project";
+                        response.title = "New Project";
                     }
                     else
                     {
-                        response.name = name;
+                        response.title = name;
                     }
                     if (description == null)
                     {
@@ -78,7 +78,7 @@ namespace Controllers
                     response.id = project.id;
                     response.artifacts = null;
                     response.projectTags = null;
-                    response.projectElementOrder = "";
+                    response.artifactOrder = "";
                     string returnVal;
                     try
                     {

@@ -49,7 +49,7 @@ namespace Models
             newUser.id = this.id;
             newUser.birthDate = this.birthDate;
             newUser.location = this.location;
-            newUser.school = this.school;
+            newUser.organization = this.school;
             newUser.major = this.major;
             newUser.phoneNumber = this.phoneNumber;
             //newUser.willingToRelocate = this.willingToRelocate;
@@ -78,7 +78,7 @@ namespace Models
             this.id = user.id;
             this.birthDate = user.birthDate;
             this.location = user.location;
-            this.school = user.school;
+            this.school = user.organization;
             this.major = user.major;
             this.phoneNumber = user.phoneNumber;
             //this.willingToRelocate = user.willingToRelocate;
@@ -144,7 +144,7 @@ namespace Models
             this.location = user.location;
             this.major = user.major;
             this.phoneNumber = user.phoneNumber;
-            this.school = user.school;
+            this.school = user.organization;
             this.userName = user.userName;
             //this.willingToRelocate = user.willingToRelocate;
             this.profilePicture = user.profilePicture;
@@ -187,7 +187,7 @@ namespace Models
             newUser.location = this.location;
             newUser.major = this.major;
             newUser.phoneNumber = this.phoneNumber;
-            newUser.school = this.school;
+            newUser.organization = this.school;
             newUser.userName = this.userName;
             newUser.description = this.description;
             //newUser.status = this.status;

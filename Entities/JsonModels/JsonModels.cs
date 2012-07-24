@@ -94,7 +94,7 @@ namespace Entity
             public string title { get; set; }
 
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public string school { get; set; }
+            public string organization { get; set; }
 
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string connections { get; set; }
@@ -320,7 +320,7 @@ namespace Entity
         public class CompleteProject
         {
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public string name { get; set; }//document, picture, video
+            public string title { get; set; }//document, picture, video
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string description { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
@@ -330,7 +330,7 @@ namespace Entity
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public List<Artifact> artifacts { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public string projectElementOrder { get; set; }
+            public string artifactOrder { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string coverPicture { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
