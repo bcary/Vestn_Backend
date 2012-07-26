@@ -361,6 +361,10 @@
       <Project>{F52C4CC1-F773-4912-8D96-56286C81BB35}</Project>
       <Name>JsonModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Entities\Prop\Prop.csproj">
+      <Project>{99C78FF1-341F-4CCC-98DF-9D29CD7CCBA7}</Project>
+      <Name>Prop</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Entities\Users\Users.csproj">
       <Project>{5E71E86E-850C-4160-8475-D2801F3D4614}</Project>
       <Name>Users</Name>
@@ -440,6 +444,10 @@
     <ProjectReference Include="..\..\Engines\ValidationEngine\ValidationEngine.csproj">
       <Project>{E4F892EF-FB39-4408-928A-05AC3DEFDB87}</Project>
       <Name>ValidationEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PropAccessor\PropAccessor.csproj">
+      <Project>{EFC2299A-E38D-43D8-8537-A0379F07F922}</Project>
+      <Name>PropAccessor</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Reference\Reference.csproj">
       <Project>{3F32D179-8AE5-4B56-97A2-2718ED0D0522}</Project>

@@ -1962,6 +1962,95 @@ namespace UserClientMembers.Controllers
                 return AddSuccessHeader(returnVal);
             }
         }
+
+        [AcceptVerbs("OPTIONS", "POST")]
+        [AllowCrossSiteJson]
+        public string AddProp(int projectId, string message = null, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                int userId = -1;
+                if (token != null)
+                {
+                    userId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return AddErrorHeader("An authentication token must be passed in");
+                }
+                if (userId < 0)
+                {
+                    return AddErrorHeader("You are not authenticated, please log in!");
+                }
+                User authUser = userManager.GetUser(userId);
+                if(projectManager.IsUserOwnerOfProject(projectId, authUser))
+                {
+                    return AddErrorHeader("Users cannot give props on their own projects");
+                }
+                JsonModels.Prop propJson = projectManager.AddProp(projectId, authUser.id, message);
+                return AddSuccessHeader(Serialize(propJson));
+
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "ProjectController - AddProp", ex.ToString());
+                return AddErrorHeader("Something went wrong while updating the Artifact Order");
+            }
+        }
+
+        [AcceptVerbs("OPTIONS", "POST")]
+        [AllowCrossSiteJson]
+        public string DeleteProp(int propId, string token)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                int userId = -1;
+                if (token != null)
+                {
+                    userId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return AddErrorHeader("An authentication token must be passed in");
+                }
+                if (userId < 0)
+                {
+                    return AddErrorHeader("You are not authenticated, please log in!");
+                }
+                User authUser = userManager.GetUser(userId);
+                Prop prop = projectManager.GetProp(propId);
+                if (authUser.id == prop.userId || projectManager.IsUserOwnerOfProject(prop.projectId, authUser))
+                {
+                    bool success = projectManager.DeleteProp(propId);
+                    if (success)
+                    {
+                        return AddSuccessHeader("Prop successfully deleted");
+                    }
+                    else
+                    {
+                        return AddErrorHeader("The prop could not be deleted");
+                    }
+                }
+                else
+                {
+                    return AddErrorHeader("Your are not able to delete a prop unless you are the prop giver or receiver");
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "ProjectController - DeleteProp", ex.ToString());
+                return AddErrorHeader("Something went wrong while updating the Artifact Order");
+            }
+        }
+
         /// <summary>
         /// Searches a specific user's projects for a given query
         /// it looks at project name, description, documentText

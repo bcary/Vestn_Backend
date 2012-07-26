@@ -339,6 +339,8 @@ namespace Entity
             public string dateModified { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string privacy { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public List<Prop> props { get; set; }
         }
 
         [DataContract]

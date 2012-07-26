@@ -20,6 +20,7 @@ namespace Manager
     {
         LogAccessor logAccessor = new LogAccessor();
         ProjectAccessor pa = new ProjectAccessor();
+        PropAccessor propAccessor = new PropAccessor();
         private CloudQueueClient queueClient;
         private CloudQueue queue;
         CloudStorageAccount storageAccount;
@@ -1295,6 +1296,7 @@ namespace Manager
                         {
                             cp.privacy = p.privacy;
                         }
+                        cp.props = GetProjectProps(p.id);
                         projects.Add(cp);
                     }
                 }
@@ -1306,6 +1308,83 @@ namespace Manager
             else
             {
                 return null;
+            }
+        }
+
+        public JsonModels.Prop AddProp(int projectId, int userId, string message = null)
+        {
+            try
+            {
+                Prop newProp = new Prop();
+                newProp.message = message;
+                newProp.projectId = projectId;
+                newProp.timeStamp = DateTime.Now;
+                newProp.userId = userId;
+                propAccessor.AddProp(newProp);
+
+                JsonModels.Prop response = new JsonModels.Prop();
+                response.id = newProp.id;
+                response.message = newProp.message;
+                response.projectId = newProp.projectId;
+                response.timeStamp = newProp.timeStamp.ToString();
+                response.userId = newProp.userId;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "ProjectManager - AddProp", ex.StackTrace);
+                return null;
+            }
+        }
+        public Prop GetProp(int propId)
+        {
+            return propAccessor.GetProp(propId);
+        }
+        public List<JsonModels.Prop> GetProjectProps(int projectId)
+        {
+            try
+            {
+                List<Prop> projectProps = propAccessor.GetProjectProps(projectId);
+                List<JsonModels.Prop> projectPropJson = new List<JsonModels.Prop>();
+                if (projectProps.Count > 0)
+                {
+                    foreach (Prop p in projectProps)
+                    {
+                        if (p != null)
+                        {
+                            JsonModels.Prop propJson = new JsonModels.Prop();
+                            propJson.id = p.id;
+                            propJson.message = p.message;
+                            propJson.projectId = p.projectId;
+                            propJson.timeStamp = p.timeStamp.ToString();
+                            propJson.userId = p.userId;
+                            projectPropJson.Add(propJson);
+                        }
+                    }
+                    return projectPropJson;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "ProjectManager - GetProjectProps", ex.StackTrace);
+                return null;
+            }
+        }
+        public bool DeleteProp(int propId)
+        {
+            try
+            {
+                bool success = propAccessor.DeleteProp(propAccessor.GetProp(propId));
+                return success;
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "ProjectManager - DeleteProp", ex.StackTrace);
+                return false;
             }
         }
 

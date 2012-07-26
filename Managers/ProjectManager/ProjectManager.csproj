@@ -100,6 +100,10 @@
       <Project>{F52C4CC1-F773-4912-8D96-56286C81BB35}</Project>
       <Name>JsonModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Entities\Prop\Prop.csproj">
+      <Project>{99C78FF1-341F-4CCC-98DF-9D29CD7CCBA7}</Project>
+      <Name>Prop</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Entities\TagLinkTables\TagLinkTables.csproj">
       <Project>{086B6FAF-3D8C-43FB-AA08-F1135BBA3BD8}</Project>
       <Name>TagLinkTables</Name>
@@ -135,6 +139,10 @@
     <ProjectReference Include="..\..\Engines\ThumbnailEngine\ThumbnailEngine.csproj">
       <Project>{75A7DE01-0AF0-42A4-AB70-9C8A2ECCBF1B}</Project>
       <Name>ThumbnailEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PropAccessor\PropAccessor.csproj">
+      <Project>{EFC2299A-E38D-43D8-8537-A0379F07F922}</Project>
+      <Name>PropAccessor</Name>
     </ProjectReference>
     <ProjectReference Include="..\UploadManager\UploadManager.csproj">
       <Project>{031D3153-C506-4929-B8F0-F65901103C14}</Project>
