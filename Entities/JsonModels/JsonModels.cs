@@ -367,58 +367,69 @@ namespace Entity
             public int id { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string token { get; set; }
-            [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public string email { get; set; }
-            [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public string profileUrl { get; set; }
         }
 
         [DataContract]
         public class Experience
         {
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public int id { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string title { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string description { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+           [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string startDate { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string endDate { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+           [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string city { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string state { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string company { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public int userId { get; set; }
         }
 
         [DataContract]
         public class Reference
         {
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int id { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string firstName { get; set; }
+           [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string lastName { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string email { get; set; }
+           [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string company { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string title { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string message { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string videoLink { get; set; }
+           [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string videoType { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int userId { get; set; }
+        }
+
+        [DataContract]
+        public class Prop
+        {
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public int id { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string firstName { get; set; }
+            public int userId { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string lastName { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string email { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string company { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string title { get; set; }
+            public int projectId { get; set; }
             [DataMember(IsRequired = false, EmitDefaultValue = false)]
             public string message { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string videoLink { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public string videoType { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
-            public int userId { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string timeStamp { get; set; }
         }
     }
 }

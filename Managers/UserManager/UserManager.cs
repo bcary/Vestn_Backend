@@ -890,31 +890,34 @@ namespace Manager
                 {
                     return null;
                 }
-                if (videoLink != "videoLink")
+                if (videoLink != null)
                 {
-                    if(videoLink.Contains("youtube"))
+                    if (videoLink != "videoLink")
                     {
-                        if (videoLink.Contains("http://"))
+                        if (videoLink.Contains("youtube"))
                         {
-                            videoLink = videoLink.Substring(31, 11);
+                            if (videoLink.Contains("http://"))
+                            {
+                                videoLink = videoLink.Substring(31, 11);
+                                videoType = "youtube";
+                            }
+                            else
+                            {
+                                videoLink = videoLink.Substring(24, 11);
+                                videoType = "youtube";
+                            }
+                        }
+                        else if (videoLink.Contains("youtu."))
+                        {
+                            videoLink = videoLink.Substring(16);
                             videoType = "youtube";
                         }
-                        else
+                        else if (videoLink.Contains("vimeo"))
                         {
-                            videoLink = videoLink.Substring(24, 11);
-                            videoType = "youtube";
+                            string[] s = videoLink.Split('/');
+                            videoLink = s[s.Count() - 1];
+                            videoType = "vimeo";
                         }
-                    }
-                    else if (videoLink.Contains("youtu."))
-                    {
-                        videoLink = videoLink.Substring(16);
-                        videoType = "youtube";
-                    }
-                    else if (videoLink.Contains("vimeo"))
-                    {
-                        string[] s = videoLink.Split('/');
-                        videoLink = s[s.Count() - 1];
-                        videoType = "vimeo";
                     }
                 }
                 Reference reference = new Reference

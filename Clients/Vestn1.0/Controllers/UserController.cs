@@ -3232,7 +3232,7 @@ namespace UserClientMembers.Controllers
             catch (Exception e)
             {
                 logAccessor.CreateLog(DateTime.Now, "userController - AddReference", e.StackTrace);
-                return AddErrorHeader("Something went wrong while adding the experience");
+                return AddErrorHeader("Something went wrong while adding the reference");
             }
         }
 
