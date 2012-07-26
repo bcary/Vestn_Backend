@@ -363,10 +363,14 @@ namespace Entity
         [DataContract]
         public class RegisterResponse
         {
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public int id { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string token { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string email { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string profileUrl { get; set; }
         }
 
         [DataContract]

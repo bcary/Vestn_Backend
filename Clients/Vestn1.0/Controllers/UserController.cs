@@ -2922,7 +2922,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string AddExperience(string title = "Job Title", string description = "Job Description", string startDate = null, string endDate = null, string city = "City", string state = "State", string company = "Company Name", string token = null)
+        public string AddExperience(string title = null, string description = null, string startDate = null, string endDate = null, string city = null, string state = null, string company = null, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -2957,7 +2957,7 @@ namespace UserClientMembers.Controllers
                 JsonModels.Experience exp = userManager.AddExperience(user.id, startDateTime, endDateTime, title, description, city, state, company);
                 if (exp != null)
                 {
-                    return Serialize(exp);
+                    return AddSuccessHeader(Serialize(exp));
                 }
                 else
                 {
@@ -3094,8 +3094,10 @@ namespace UserClientMembers.Controllers
                     {
                         pi.SetValue(exp, Convert.ChangeType(propertyValue, pi.PropertyType), null);
                     }
-                    userManager.UpdateExperience(exp);
-                    return AddSuccessHeader("Experience with id: " + exp.id + " has been successfully updated", true);
+                    Experience exp1 = userManager.UpdateExperience(exp);
+                    JsonModels.Experience returnExp = userManager.GetExperienceJson(exp1.id);
+                    string ret = Serialize(returnExp);
+                    return AddSuccessHeader(ret);
                 }
 
             }
@@ -3135,7 +3137,8 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return Serialize(userManager.GetExperienceJson(experienceId));
+                    return AddSuccessHeader(Serialize(userManager.GetExperienceJson(experienceId)));
+                    
                 }
             }
             catch (Exception ex)
@@ -3199,7 +3202,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string AddReference(string firstName = "first name", string lastName = "last name", string email="email", string company = "company", string title = "title", string message = "message", string videoLink = "videoLink" , string videoType = "videoType",string token = null)
+        public string AddReference(string firstName = null, string lastName = null, string email = null, string company = null, string title = null, string message = null, string videoLink = null , string videoType = null, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -3222,7 +3225,8 @@ namespace UserClientMembers.Controllers
                 }
                 User user = userManager.GetUser(authUserId);
                 JsonModels.Reference exp = userManager.AddReference(user.id, firstName, lastName, company, email, title, message, videoLink, videoType);
-                return Serialize(exp);
+                return AddSuccessHeader(Serialize(exp));
+ 
 
             }
             catch (Exception e)

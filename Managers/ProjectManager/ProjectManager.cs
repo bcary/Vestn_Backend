@@ -124,7 +124,7 @@ namespace Manager
                 videoType = videoType
             };
             int pID = pa.AddProjectElement(p, pe);
-            return new JsonModels.Artifact { id = pID, artifactLocation = pe.videoId, title = pe.title, fileLocation = videoType, type = "video", description = "This is a video artifact!" };
+            return new JsonModels.Artifact { id = pID, artifactLocation = pe.videoId, title = pe.title, fileLocation = videoType, type = "video", description = description };
         }
 
         public JsonModels.UploadReponse UploadPictureElement(int projectId, Stream pictureStream, string fileName, bool isCoverPicture = false)
@@ -182,7 +182,7 @@ namespace Manager
                     //CloudQueueMessage message2 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, projectElementId, "thumbnail", "PictureElement_Galleria", 1000, 750, "", galleryURL));
                     queue.AddMessage(message);
                     //queue.AddMessage(message2);
-                    return new JsonModels.UploadReponse { id = projectElementId, fileURL = imageURI, name = fileName, galeriaURL = "galleryURL", artifactURL = artifactURL, description = "default description" };
+                    return new JsonModels.UploadReponse { id = projectElementId, fileURL = imageURI, name = fileName, galeriaURL = "galleryURL", artifactURL = artifactURL, description = null };
                 }
             }
             catch (Exception ex)
@@ -357,9 +357,7 @@ namespace Manager
             {
                 code = code,
                 type = "code",
-                description = "New Artifact Description",
-                fileLocation = type,
-                title = "New Code Sample"
+                fileLocation = type
             };
             int projectElementId = pa.AddProjectElement(p, pe);
             return new JsonModels.Artifact { id = pe.id, artifactLocation = code, description = pe.description, title = pe.title, type = pe.type, fileLocation = type };

@@ -70,22 +70,9 @@ namespace UserClientMembers.Controllers
                     //refresh the user object with the changes
                     user = userManager.GetUser(userId);
                     JsonModels.CompleteProject response = new JsonModels.CompleteProject();
-                    if (name == null)
-                    {
-                        response.title = "New Project";
-                    }
-                    else
-                    {
-                        response.title = name;
-                    }
-                    if (description == null)
-                    {
-                        response.description = "New Project";
-                    }
-                    else
-                    {
-                        response.description = description;
-                    }
+
+                    response.title = project.name;
+                    response.description = project.description;
                     response.privacy = project.privacy;
                     response.id = project.id;
                     response.artifacts = null;
@@ -756,7 +743,6 @@ namespace UserClientMembers.Controllers
                     artifactResponse.title = response.name;
                     artifactResponse.type = artifactType;
                     artifactResponse.creationDate = DateTime.Now.ToString();
-                    artifactResponse.description = "This is an artifact!";
 
                     string realReturnVal;
                     try
@@ -900,7 +886,7 @@ namespace UserClientMembers.Controllers
                         return AddErrorHeader("A videoLink was not recieved");
                     }
                     
-                    JsonModels.Artifact response = projectManager.AddVideoElement(projectId, "Video Description", videoLink, vType);
+                    JsonModels.Artifact response = projectManager.AddVideoElement(projectId, null, videoLink, vType);
 
                     aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, "Video link");
                     string returnVal;
@@ -948,11 +934,10 @@ namespace UserClientMembers.Controllers
                         return AddErrorHeader("User is not authenticated, please log in!");
                     }
                     User user = userManager.GetUser(userId);
-                    if (projectId != null)
+                    if (projectId > 0)
                     {
                         if (!projectManager.IsUserOwnerOfProject(projectId, user))
                         {
-                            //return Json(new { Error = "Can't add video at this time" });
                             return AddErrorHeader("User is not authorized to complete this action");
                         }
                     }

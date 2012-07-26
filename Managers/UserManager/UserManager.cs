@@ -741,7 +741,7 @@ namespace Manager
             return vestnMemberIds.OrderBy(x => rnd.Next()).Take(1).FirstOrDefault();
         }
 
-        public JsonModels.Experience AddExperience(int userId, DateTime startDate, DateTime endDate, string title = "Job Title", string description = "Job Description", string city = "city", string state = "state", string company = "company")
+        public JsonModels.Experience AddExperience(int userId, DateTime startDate, DateTime endDate, string title = null, string description = null, string city =null, string state =null, string company = null)
         {
             try
             {
@@ -882,7 +882,7 @@ namespace Manager
             }
         }
 
-        public JsonModels.Reference AddReference(int userId, string firstName = "Reference's First Name", string lastName = "Reference's Last Name", string company = "company", string email = "email", string title = "title", string message = "message", string videoLink = "videoLink", string videoType = "videoType")
+        public JsonModels.Reference AddReference(int userId, string firstName = null, string lastName = null, string company = null, string email = null, string title = null, string message = null, string videoLink = null, string videoType = null)
         {
             try
             {
