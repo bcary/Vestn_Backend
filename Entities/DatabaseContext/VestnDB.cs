@@ -29,6 +29,7 @@ namespace Entity
         public DbSet<Experience> experience{ get; set; }
         public DbSet<Reference> reference { get; set; }
         public DbSet<Prop> prop { get; set; }
+        public DbSet<Activity> activity { get; set; }
         //public DbSet<Network> networks { get; set; }
     }
 }

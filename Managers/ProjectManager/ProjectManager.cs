@@ -473,7 +473,7 @@ namespace Manager
             {
                 return -1;
             }
-        }
+        } 
 
         public int moveProjectNext(User u, int id)
         {

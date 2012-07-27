@@ -77,6 +77,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Activity\Activity.csproj">
+      <Project>{498EE79C-E2D7-46D5-9147-002245CCD005}</Project>
+      <Name>Activity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Authentication\Authentication.csproj">
       <Project>{E638A0C7-AD1E-4C46-A285-2BD1863603F2}</Project>
       <Name>Authentication</Name>

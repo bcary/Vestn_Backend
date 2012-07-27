@@ -10,19 +10,19 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Accessor
 {
-    public class PropAccessor
+    public class ActivityAccessor
     {
         LogAccessor logAccessor = new LogAccessor();
-        public Prop AddProp(Prop prop)
+        public Activity AddActivity(Activity activity)
         {
             try
             {
-                if (prop != null)
+                if (activity != null)
                 {
                     VestnDB db = new VestnDB();
-                    db.prop.Add(prop);
+                    db.activity.Add(activity);
                     db.SaveChanges();
-                    return prop;
+                    return activity;
                 }
                 else
                 {
@@ -31,37 +31,37 @@ namespace Accessor
             }
             catch (Exception e)
             {
-                logAccessor.CreateLog(DateTime.Now, "PropAccessor - AddProp", e.StackTrace);
+                logAccessor.CreateLog(DateTime.Now, "activityAccessor - AddActivity", e.StackTrace);
                 return null;
             }
         }
 
-        public Prop GetProp(int propId)
+        public Activity GetActivity(int activityId)
         {
             try
             {
                 VestnDB db = new VestnDB();
-                Prop prop = db.prop.Where(p => p.id == propId).FirstOrDefault();
-                return prop;
+                Activity activity = db.activity.Where(p => p.id == activityId).FirstOrDefault();
+                return activity;
 
             }
             catch (Exception ex)
             {
-                logAccessor.CreateLog(DateTime.Now, "PropAccessor - GetProp", ex.StackTrace);
+                logAccessor.CreateLog(DateTime.Now, "ActivityAccessor - GetActivity", ex.StackTrace);
                 return null;
             }
         }
 
-        public Prop UpdateProp(Prop prop)
+        public Activity UpdateActivity(Activity activity)
         {
             try
             {
-                if (prop != null)
+                if (activity != null)
                 {
                     VestnDB db = new VestnDB();
-                    db.Entry(prop).State = EntityState.Modified;
+                    db.Entry(activity).State = EntityState.Modified;
                     db.SaveChanges();
-                    return prop;
+                    return activity;
                 }
                 else
                 {
@@ -70,34 +70,36 @@ namespace Accessor
             }
             catch (Exception e)
             {
-                logAccessor.CreateLog(DateTime.Now, "PropAccessor - UpdateProp", e.StackTrace);
+                logAccessor.CreateLog(DateTime.Now, "ActivityAccessor - UpdateActivity", e.StackTrace);
                 return null;
             }
         }
-        public List<Prop> GetProjectProps(int projectId)
+
+        public List<Activity> GetUserActivity(int userId)
         {
             try
             {
                 VestnDB db = new VestnDB();
-                List<Prop> projectProps = (List<Prop>)db.prop.Where(p => p.projectId == projectId);
-                return projectProps;
+                List<Activity> userActivity = (List<Activity>)db.activity.Where(p => p.userId == userId);
+                return userActivity;
             }
             catch (Exception ex)
             {
-                logAccessor.CreateLog(DateTime.Now, "PropAccessor - GetProjectProps", ex.StackTrace);
+                logAccessor.CreateLog(DateTime.Now, "ActivityAccessor - GetUserActivity", ex.StackTrace);
                 return null;
             }
         }
-        public bool DeleteProp(Prop prop)
+
+        public bool DeleteActivity(Activity activity)
         {
             try
             {
                 bool wasDeleted = false;
-                if (prop != null)
+                if (activity != null)
                 {
                     VestnDB db = new VestnDB();
-                    db.prop.Attach(prop);
-                    db.prop.Remove(prop);
+                    db.activity.Attach(activity);
+                    db.activity.Remove(activity);
                     db.SaveChanges();
                     wasDeleted = true;
                     return wasDeleted;
@@ -109,9 +111,10 @@ namespace Accessor
             }
             catch (Exception e)
             {
-                logAccessor.CreateLog(DateTime.Now, "userAccessor - deleteExperience", e.StackTrace);
+                logAccessor.CreateLog(DateTime.Now, "ActivityAccessor - deleteActivity", e.StackTrace);
                 return false;
             }
         }
+
     }
 }
