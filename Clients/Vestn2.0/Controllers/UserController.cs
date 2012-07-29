@@ -1000,7 +1000,7 @@ namespace Controllers
                             originalReference.lastName = referenceFromJson.lastName;
                             originalReference.message = referenceFromJson.message;
                             originalReference.title = referenceFromJson.title;
-                            originalReference.userId = referenceFromJson.userId;
+                            //originalReference.userId = referenceFromJson.userId;
                             originalReference.videoLink = referenceFromJson.videoLink;
                             originalReference.videoType = referenceFromJson.videoType;
 

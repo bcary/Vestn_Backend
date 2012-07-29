@@ -390,8 +390,6 @@ namespace Entity
             public string state { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string company { get; set; }
-            [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public int userId { get; set; }
         }
 
         [DataContract]
@@ -415,8 +413,6 @@ namespace Entity
             public string videoLink { get; set; }
            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string videoType { get; set; }
-            [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public int userId { get; set; }
         }
 
         [DataContract]

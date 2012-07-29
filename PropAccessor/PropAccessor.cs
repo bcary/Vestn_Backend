@@ -79,7 +79,7 @@ namespace Accessor
             try
             {
                 VestnDB db = new VestnDB();
-                List<Prop> projectProps = (List<Prop>)db.prop.Where(p => p.projectId == projectId);
+                List<Prop> projectProps = db.prop.Where(p => p.projectId == projectId).ToList();
                 return projectProps;
             }
             catch (Exception ex)

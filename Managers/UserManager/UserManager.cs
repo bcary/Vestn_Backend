@@ -775,7 +775,7 @@ namespace Manager
                 }
                 JsonModels.Experience response = new JsonModels.Experience();
                 response.id = experience.id;
-                response.userId = userId;
+                //response.userId = userId;
                 response.startDate = startDate.ToString();
                 response.endDate = endDate.ToString();
                 response.description = description;
@@ -802,7 +802,7 @@ namespace Manager
             Experience experience = userAccessor.GetExperience(experienceId);
             JsonModels.Experience response = new JsonModels.Experience();
             response.id = experience.id;
-            response.userId = experience.userId;
+            //response.userId = experience.userId;
             response.startDate = experience.startDate.ToString();
             response.endDate = experience.endDate.ToString();
             response.description = experience.description;
@@ -935,7 +935,7 @@ namespace Manager
                 userAccessor.AddReference(reference);
                 JsonModels.Reference response = new JsonModels.Reference();
                 response.id = reference.id;
-                response.userId = userId;
+                //response.userId = userId;
                 response.message = message;
                 response.email = email;
                 response.firstName = firstName;
@@ -963,7 +963,7 @@ namespace Manager
             Reference reference = userAccessor.GetReference(referenceId);
             JsonModels.Reference response = new JsonModels.Reference();
             response.id = reference.id;
-            response.userId = reference.userId;
+            //response.userId = reference.userId;
             response.message = reference.message;
             response.email = reference.email;
             response.firstName = reference.firstName;

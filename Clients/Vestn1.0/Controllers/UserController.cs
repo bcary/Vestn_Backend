@@ -3003,15 +3003,22 @@ namespace UserClientMembers.Controllers
                         Experience originalExperience = userManager.GetExperience(experienceFromJson.id);
                         if (originalExperience != null)
                         {
-                            originalExperience.city = experienceFromJson.city;
-                            originalExperience.company = experienceFromJson.company;
-                            originalExperience.description = experienceFromJson.description;
-                            originalExperience.endDate = DateTime.Parse(experienceFromJson.endDate);
-                            originalExperience.startDate = DateTime.Parse(experienceFromJson.startDate);
-                            originalExperience.state = experienceFromJson.state;
-                            originalExperience.title = experienceFromJson.title;
-                            userManager.UpdateExperience(originalExperience);
-                            return AddSuccessHeader(Serialize(experienceFromJson));
+                            if (originalExperience.userId == authUserId)
+                            {
+                                originalExperience.city = experienceFromJson.city;
+                                originalExperience.company = experienceFromJson.company;
+                                originalExperience.description = experienceFromJson.description;
+                                originalExperience.endDate = DateTime.Parse(experienceFromJson.endDate);
+                                originalExperience.startDate = DateTime.Parse(experienceFromJson.startDate);
+                                originalExperience.state = experienceFromJson.state;
+                                originalExperience.title = experienceFromJson.title;
+                                userManager.UpdateExperience(originalExperience);
+                                return AddSuccessHeader(Serialize(experienceFromJson));
+                            }
+                            else
+                            {
+                                return AddErrorHeader("User is not authorized to edit this experience");
+                            }
                         }
                         else
                         {
@@ -3336,20 +3343,26 @@ namespace UserClientMembers.Controllers
                         Reference originalReference = userManager.GetReference(referenceFromJson.id);
                         if (originalReference != null)
                         {
-                            originalReference.company = referenceFromJson.company;
-                            originalReference.email = referenceFromJson.email;
-                            originalReference.firstName = referenceFromJson.firstName;
-                            originalReference.id = referenceFromJson.id;
-                            originalReference.lastName = referenceFromJson.lastName;
-                            originalReference.message = referenceFromJson.message;
-                            originalReference.title = referenceFromJson.title;
-                            originalReference.userId = referenceFromJson.userId;
-                            originalReference.videoLink = referenceFromJson.videoLink;
-                            originalReference.videoType = referenceFromJson.videoType;
+                            if (originalReference.userId == authUserId)
+                            {
+                                originalReference.company = referenceFromJson.company;
+                                originalReference.email = referenceFromJson.email;
+                                originalReference.firstName = referenceFromJson.firstName;
+                                originalReference.id = referenceFromJson.id;
+                                originalReference.lastName = referenceFromJson.lastName;
+                                originalReference.message = referenceFromJson.message;
+                                originalReference.title = referenceFromJson.title;
+                                originalReference.videoLink = referenceFromJson.videoLink;
+                                originalReference.videoType = referenceFromJson.videoType;
 
-                            userManager.UpdateReference(originalReference);
+                                userManager.UpdateReference(originalReference);
 
-                            return AddSuccessHeader(Serialize(referenceFromJson));
+                                return AddSuccessHeader(Serialize(referenceFromJson));
+                            }
+                            else
+                            {
+                                return AddErrorHeader("You are not authorized to edit this reference.");
+                            }
                         }
                         else
                         {
