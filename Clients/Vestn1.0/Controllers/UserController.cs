@@ -2652,24 +2652,20 @@ namespace UserClientMembers.Controllers
                 //authenticate via token
                 string returnVal;
                 int authenticateId = -1;
+                int add = 0;
                 try
                 {
                     if (token != null)
                     {
-                        int authenticate = authenticationEngine.authenticate(token);
-                        if (authenticate < 0)
+                        authenticateId = authenticationEngine.authenticate(token);
+                        if (authenticateId < 0)
                         {
                             //Only return PUBLIC projects
                         }
                     }
                     bool requestAll = false;
-                    if (request == null)
-                    {
-                        requestAll = true;
-                    }
-                    //List<JsonModels.ProfileInformation> userInformationList = new List<JsonModels.ProfileInformation>();
+
                     JsonModels.ProfileInformation ui = new JsonModels.ProfileInformation();
-                    int add = 0;
                     User u;
                     if (id < 0)
                     {
@@ -2689,6 +2685,18 @@ namespace UserClientMembers.Controllers
                                 }
                                 else
                                 {
+                                    if (request == null)
+                                    {
+                                        requestAll = true;
+                                        if (u.profileViews != null)
+                                        {
+                                            u.profileViews++;
+                                        }
+                                        else
+                                        {
+                                            u.profileViews = 1;
+                                        }
+                                    }
                                     //TODO need to check if request came from another in the same network or not
                                 }
                             }
@@ -2711,6 +2719,18 @@ namespace UserClientMembers.Controllers
                         }
                         else
                         {
+                            if (request == null)
+                            {
+                                requestAll = true;
+                                if (u.profileViews != null)
+                                {
+                                    u.profileViews++;
+                                }
+                                else
+                                {
+                                    u.profileViews = 1;
+                                }
+                            }
                             //TODO need to check if request came from another in the same network or not
                         }
                     }
@@ -2968,29 +2988,18 @@ namespace UserClientMembers.Controllers
                                 ui.projects = null;
                             }
                         }
-                        //if (requestAll || request.Contains("todo"))
-                        //{
-                        //    List<JsonModels.Todo> todoList = userManager.GetTodo(id);
-                        //    if (todoList != null && todoList.Count != 0)
-                        //    {
-                        //        ui.todo = todoList;
-                        //        add = 1;
-                        //    }
-                        //}
-                        if (requestAll || request.Contains("Activity"))
+                        if (requestAll || request.Contains("profileViews"))
                         {
-                            //List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(id);
-                            //if (recentActivity != null && recentActivity.Count != 0)
-                            //{
-                            //    ui.recentActivity = recentActivity;
-                            //    add = 1;
-                            //}
-                            //else
-                            //{
-                            //    ui.recentActivity = null;
-                            //}
+                            ui.profileViews = u.profileViews;
+                        }
+                        if (requestAll || request.Contains("activity"))
+                        {
                             List<JsonModels.Activity> activity = activityManager.GetUserActivity(id);
                             ui.activity = activity;
+                        }
+                        if (requestAll || request.Contains("profileScore"))
+                        {
+                            ui.profileScore = userManager.GetProfileScore(u);
                         }
                         ui.id = u.id.ToString();
                     }
@@ -3568,7 +3577,6 @@ namespace UserClientMembers.Controllers
                 return AddErrorHeader("Something went wrong while deleting this reference");
             }
         }
-
         public ActionResult testNewRegister()
         {
             return View();

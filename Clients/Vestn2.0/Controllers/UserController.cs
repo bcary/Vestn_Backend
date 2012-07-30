@@ -678,28 +678,28 @@ namespace Controllers
                                 ui.projects = null;
                             }
                         }
-                        //if (requestAll || request.Contains("todo"))
+                        ////if (requestAll || request.Contains("todo"))
+                        ////{
+                        ////    List<JsonModels.Todo> todoList = userManager.GetTodo(id);
+                        ////    if (todoList != null && todoList.Count != 0)
+                        ////    {
+                        ////        ui.todo = todoList;
+                        ////        add = 1;
+                        ////    }
+                        ////}
+                        //if (requestAll || request.Contains("recentActivity"))
                         //{
-                        //    List<JsonModels.Todo> todoList = userManager.GetTodo(id);
-                        //    if (todoList != null && todoList.Count != 0)
+                        //    List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(id);
+                        //    if (recentActivity != null && recentActivity.Count != 0)
                         //    {
-                        //        ui.todo = todoList;
+                        //        ui.recentActivity = recentActivity;
                         //        add = 1;
                         //    }
+                        //    else
+                        //    {
+                        //        ui.recentActivity = null;
+                        //    }
                         //}
-                        if (requestAll || request.Contains("recentActivity"))
-                        {
-                            List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(id);
-                            if (recentActivity != null && recentActivity.Count != 0)
-                            {
-                                ui.recentActivity = recentActivity;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.recentActivity = null;
-                            }
-                        }
                         ui.id = u.id.ToString();
                     }
                     try

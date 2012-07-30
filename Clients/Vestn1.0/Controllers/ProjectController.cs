@@ -1999,10 +1999,12 @@ namespace UserClientMembers.Controllers
                 {
                     return AddErrorHeader("Users cannot give props on their own projects");
                 }
-                //Project x = projectManager.GetProject(projectId);
+                Project x = projectManager.GetProject(projectId);
+            
+                //activityManager.AddActivity(x.UserId, "Prop", "Received", projectId);
                
                 JsonModels.Prop propJson = projectManager.AddProp(projectId, authUser.id, message);
-                activityManager.AddActivity(userId, "Prop", "Added", projectId);
+                activityManager.AddActivity(userId, "Prop", "Gave", projectId);
                 return AddSuccessHeader(Serialize(propJson));
 
             }

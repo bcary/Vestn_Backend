@@ -146,6 +146,13 @@ namespace Entity
 
            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public List<Activity> activity { get; set; }
+
+           [DataMember(IsRequired = true, EmitDefaultValue = true)]
+           public int profileViews { get; set; }
+
+           [DataMember(IsRequired = true, EmitDefaultValue = true)]
+           public ProfileScore profileScore { get; set; }
+
         }
 
 
@@ -445,6 +452,27 @@ namespace Entity
             public int referenceId { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string timeStamp { get; set; }
+        }
+
+        [DataContract]
+        public class ProfileScore
+        {
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int artifacts { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int reflections { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int props { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int featuredProjects { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public bool profilePic { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public bool resume { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public bool location { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public bool school { get; set; }
         }
     }
 }

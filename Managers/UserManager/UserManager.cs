@@ -1049,6 +1049,80 @@ namespace Manager
             }
         }
 
+        public JsonModels.ProfileScore GetProfileScore(User user)
+        {
+            JsonModels.ProfileScore profileScoreJson = new JsonModels.ProfileScore();
+            if (user.profilePicture != null && user.profilePictureThumbnail != null)
+            {
+                profileScoreJson.profilePic = true;
+            }
+            else
+            {
+                profileScoreJson.profilePic = false;
+            }
+            if (user.location != null)
+            {
+                profileScoreJson.location = true;
+            }
+            else
+            {
+                profileScoreJson.location = false;
+            }
+            if (user.organization != null)
+            {
+                profileScoreJson.school = true;
+            }
+            else
+            {
+                profileScoreJson.school = false;
+            }
+            if (user.resume != null)
+            {
+                profileScoreJson.resume = true;
+            }
+            else
+            {
+                profileScoreJson.school = false;
+            }
+
+            int numberOfFeaturedProjects = 0;
+            int numberOfArtifacts = 0;
+            int numberOfReflections = 0;
+            int numberOfProps = 0;
+            if (user.projects != null)
+            {
+                ProjectManager pm = new ProjectManager();
+                foreach (Project p in user.projects)
+                {
+                    //check if project is a featured project
+                    //numberOfFeaturedProjects++;
+
+                    List<JsonModels.Prop> props = pm.GetProjectProps(p.id);
+                    numberOfProps = numberOfProps + props.Count;
+
+                    if (p.projectElements != null)
+                    {
+                        foreach (ProjectElement pe in p.projectElements)
+                        {
+                            numberOfArtifacts++;
+                            if (pe.description != null)
+                            {
+                                numberOfReflections++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            profileScoreJson.artifacts = numberOfArtifacts;
+            profileScoreJson.featuredProjects = numberOfFeaturedProjects;
+            profileScoreJson.props = numberOfProps;
+            profileScoreJson.reflections = numberOfReflections;
+
+            return profileScoreJson;
+
+        }
+
         
     }
 }
