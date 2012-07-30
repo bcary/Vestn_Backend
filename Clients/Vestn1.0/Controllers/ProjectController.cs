@@ -30,6 +30,7 @@ namespace UserClientMembers.Controllers
         AnalyticsAccessor aa = new AnalyticsAccessor();
         LogAccessor logAccessor = new LogAccessor();
         AuthenticaitonEngine authenticationEngine = new AuthenticaitonEngine();
+        ActivityManager activityManager = new ActivityManager();
         public string TestMe()
         {
             return "success";
@@ -87,6 +88,7 @@ namespace UserClientMembers.Controllers
                     {
                         return AddErrorHeader(exception.Message);
                     }
+                    activityManager.AddActivity(user.id, "Project", "Added", response.id);
                     return AddSuccessHeader(returnVal);
                 }
                 catch (Exception ex)
@@ -155,6 +157,7 @@ namespace UserClientMembers.Controllers
                         }
                         else
                         {
+                            activityManager.AddActivity(user.id, "Project Tag", "Added", project.id);
                             return AddSuccessHeader("Tag Added Successfully");
                         }
                     }
@@ -753,6 +756,7 @@ namespace UserClientMembers.Controllers
                     {
                         return AddErrorHeader(exception.Message);
                     }
+                    activityManager.AddActivity(user.id, "Artifact", "Added", artifactResponse.id);
                     return AddSuccessHeader(realReturnVal);
                 }
                 catch (Exception ex)
@@ -898,6 +902,7 @@ namespace UserClientMembers.Controllers
                     {
                         return AddErrorHeader(exception.Message);
                     }
+                    activityManager.AddActivity(user.id, "Artifact", "Added", response.id);
                     return AddSuccessHeader(returnVal);
                 }
                 catch (Exception ex)
@@ -964,6 +969,7 @@ namespace UserClientMembers.Controllers
                     {
                         return AddErrorHeader(exception.Message);
                     }
+                    activityManager.AddActivity(user.id, "Artifact", "Added", response.id); 
                     return AddSuccessHeader(returnVal);
                 }
                 catch (Exception ex)
@@ -1249,7 +1255,7 @@ namespace UserClientMembers.Controllers
 
                         p.dateModified = DateTime.Now;
                         projectManager.UpdateProject(p);
-
+                        activityManager.AddActivity(userId, "Artifact", "Updated", originalElement.id);
                         return AddSuccessHeader(Serialize(projectManager.GetArtifactJson(originalElement)));
                     }
                     else
@@ -1326,6 +1332,7 @@ namespace UserClientMembers.Controllers
                         originalProject.dateModified = DateTime.Now;
 
                         projectManager.UpdateProject(originalProject);
+                        activityManager.AddActivity(userId, "Project", "Updated", originalProject.id);
                         return AddSuccessHeader(Serialize(projectManager.GetProjectJson(originalProject)));
                     }
                     else
@@ -1397,6 +1404,7 @@ namespace UserClientMembers.Controllers
                         }
                         else
                         {
+                            activityManager.AddActivity(user.id, "Project Cover Picture", "Updated", projectId);
                             return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
                         }
                     }
@@ -1991,7 +1999,10 @@ namespace UserClientMembers.Controllers
                 {
                     return AddErrorHeader("Users cannot give props on their own projects");
                 }
+                //Project x = projectManager.GetProject(projectId);
+               
                 JsonModels.Prop propJson = projectManager.AddProp(projectId, authUser.id, message);
+                activityManager.AddActivity(userId, "Prop", "Added", projectId);
                 return AddSuccessHeader(Serialize(propJson));
 
             }

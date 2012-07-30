@@ -24,7 +24,10 @@ namespace Engine
                     //model.projects = new List<Project>();
                     foreach (int x in orderList)
                     {
-                        reorderedProjects.Add(model.projects.Where(u => u.id == x).FirstOrDefault());
+                        if (x > 0)
+                        {
+                            reorderedProjects.Add(model.projects.Where(u => u.id == x).FirstOrDefault());
+                        }
                         //model.projects.Add(projectManager.GetProject(x));
                     }
                     model.projects = reorderedProjects;

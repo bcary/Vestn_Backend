@@ -140,8 +140,8 @@ namespace Manager
             User user = userAccessor.GetUserByProfileURL(profileURL);
 
             //Reorder project elements before sending back to user
-            //ReorderEngine reorderEngine = new ReorderEngine();
-            //user = reorderEngine.ReOrderProjects(user);
+            ReorderEngine reorderEngine = new ReorderEngine();
+            user = reorderEngine.ReOrderProjects(user);
 
             return user;
         }
@@ -576,7 +576,7 @@ namespace Manager
         public JsonModels.ProfileInformation GetProfileJson(User u)
         {
             JsonModels.ProfileInformation ui = new JsonModels.ProfileInformation();
-
+            ActivityManager activityManager = new ActivityManager();
             ui.firstName = u.firstName;
             ui.description = u.description;
             ui.email = u.email;
@@ -631,7 +631,8 @@ namespace Manager
                 ui.projects = null;
             }
 
-            ui.recentActivity = GetRecentActivity(u.id);
+            //ui.recentActivity = GetRecentActivity(u.id);
+            ui.activity = activityManager.GetUserActivity(u.id);
 
             List<JsonModels.Reference> references = GetUserReferences(u.id);
             if (references != null && references.Count != 0)

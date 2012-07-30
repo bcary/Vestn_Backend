@@ -80,7 +80,7 @@ namespace Accessor
             try
             {
                 VestnDB db = new VestnDB();
-                List<Activity> userActivity = (List<Activity>)db.activity.Where(p => p.userId == userId);
+                List<Activity> userActivity = db.activity.Where(p => p.userId == userId).ToList();
                 return userActivity;
             }
             catch (Exception ex)

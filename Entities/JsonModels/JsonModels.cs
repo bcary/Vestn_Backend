@@ -145,7 +145,7 @@ namespace Entity
             public List<Todo> todo { get; set; }
 
            [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public List<RecentActivity> recentActivity { get; set; }
+            public List<Activity> activity { get; set; }
         }
 
 
@@ -418,14 +418,31 @@ namespace Entity
         [DataContract]
         public class Prop
         {
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public int id { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public int userId { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public int projectId { get; set; }
-            [DataMember(IsRequired = false, EmitDefaultValue = false)]
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string message { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string timeStamp { get; set; }
+        }
+
+        [DataContract]
+        public class Activity
+        {
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int id { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int userId { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string type { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string action { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int referenceId { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string timeStamp { get; set; }
         }

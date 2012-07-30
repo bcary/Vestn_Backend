@@ -87,6 +87,10 @@
       <Project>{1502BA66-0AFD-4817-8304-FF77134283DF}</Project>
       <Name>BlobStorageAccessor</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ActivityManager\ActivityManager.csproj">
+      <Project>{F67DFDDC-FEB8-4B41-AB05-6B89D04C8A17}</Project>
+      <Name>ActivityManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Entities\Analytics\Analytics.csproj">
       <Project>{BC962547-338A-4A68-91C3-2C6F2D18F194}</Project>
       <Name>Analytics</Name>

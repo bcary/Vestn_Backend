@@ -345,6 +345,10 @@
       <Project>{ADED7100-BC2B-47FB-9BF4-9696C766F51E}</Project>
       <Name>TagAccessor</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ActivityManager\ActivityManager.csproj">
+      <Project>{F67DFDDC-FEB8-4B41-AB05-6B89D04C8A17}</Project>
+      <Name>ActivityManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\AuthenticationEngine\AuthenticationEngine.csproj">
       <Project>{3C319628-861F-4FD1-B2EA-B67C3EF2AD91}</Project>
       <Name>AuthenticationEngine</Name>

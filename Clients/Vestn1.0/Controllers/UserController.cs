@@ -33,6 +33,7 @@ namespace UserClientMembers.Controllers
         CommunicationManager communicationManager = new CommunicationManager();
         LogAccessor logAccessor = new LogAccessor();
         AuthenticaitonEngine authenticationEngine = new AuthenticaitonEngine();
+        ActivityManager activityManager = new ActivityManager();
 
         //User Account Creation
 
@@ -1212,6 +1213,7 @@ namespace UserClientMembers.Controllers
                         
                         userManager.UpdateUser(originalProfile);
                         JsonModels.ProfileInformation returnProfile = userManager.GetProfileJson(originalProfile);
+                        activityManager.AddActivity(originalProfile.id, "Profile", "Updated", originalProfile.id);
                         return AddSuccessHeader (Serialize(returnProfile));
                     }
                     else
@@ -1272,6 +1274,7 @@ namespace UserClientMembers.Controllers
                             userManager.DeleteProfilePicture(user);
                         }
                         string returnPic = userManager.UploadUserPicture(user, s, "Profile");
+                        activityManager.AddActivity(user.id, "Profile Picture", "Updated", user.id);
                         return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
                     }
                     else
@@ -1289,6 +1292,94 @@ namespace UserClientMembers.Controllers
             {
                 logAccessor.CreateLog(DateTime.Now, "UserController - UpdateProfilePicture",ex.StackTrace);
                 return AddErrorHeader("Something went wrong while updating this profile picture");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateResume(int userId, string token = null, string qqfile = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return AddErrorHeader("An authentication token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return AddErrorHeader("You are not authenticated, please log in!");
+                }
+                User user = userManager.GetUser(userId);
+                if (user == null)
+                {
+                    return AddErrorHeader("User not found");
+                }
+                if (userId == authUserId)
+                {
+                    string fileName = null;
+                    if (qqfile == null)
+                    {
+                        fileName = Request.Files.Get(0).FileName;
+                    }
+                    else
+                    {
+                        fileName = qqfile;
+                    }
+                    var length = Request.ContentLength;
+                    var bytes = new byte[length];
+                    Request.InputStream.Read(bytes, 0, length);
+                    Stream fs = new MemoryStream(bytes);
+                    string[] s2 = fileName.Split('.');
+                    string fileType = s2[s2.Count() - 1].ToLower();
+
+                    string resumeUri = null;
+                    if (String.Compare(fileType, "pdf", true) == 0)
+                    {
+                        resumeUri = userManager.UploadResumePDF(user, fs);
+                        return AddSuccessHeader(resumeUri, true);
+                    }
+                    else if (String.Compare(fileType, "doc", true) == 0)
+                    {
+                        resumeUri = userManager.UploadResumeDoc(user, fs);
+                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                    }
+                    else if (String.Compare(fileType, "docx", true) == 0)
+                    {
+                        resumeUri = userManager.UploadResumeDocx(user, fs);
+                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                    }
+                    else if (String.Compare(fileType, "rtf", true) == 0)
+                    {
+                        resumeUri = userManager.UploadResumeRTF(user, fs);
+                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                    }
+                    else if (String.Compare(fileType, "txt", true) == 0)
+                    {
+                        resumeUri = userManager.UploadResumeTXT(user, fs);
+                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                    }
+                    else
+                    {
+                        return AddErrorHeader("Document Type not supported");
+                    }
+                }
+                else
+                {
+                    return AddErrorHeader("User is not authorized to edit this resume!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return AddErrorHeader("Something went wrong while trying to update this user's resume");
             }
         }
 
@@ -2886,18 +2977,20 @@ namespace UserClientMembers.Controllers
                         //        add = 1;
                         //    }
                         //}
-                        if (requestAll || request.Contains("recentActivity"))
+                        if (requestAll || request.Contains("Activity"))
                         {
-                            List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(id);
-                            if (recentActivity != null && recentActivity.Count != 0)
-                            {
-                                ui.recentActivity = recentActivity;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.recentActivity = null;
-                            }
+                            //List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(id);
+                            //if (recentActivity != null && recentActivity.Count != 0)
+                            //{
+                            //    ui.recentActivity = recentActivity;
+                            //    add = 1;
+                            //}
+                            //else
+                            //{
+                            //    ui.recentActivity = null;
+                            //}
+                            List<JsonModels.Activity> activity = activityManager.GetUserActivity(id);
+                            ui.activity = activity;
                         }
                         ui.id = u.id.ToString();
                     }
@@ -2955,6 +3048,7 @@ namespace UserClientMembers.Controllers
                     endDateTime = DateTime.Parse(endDate);
                 }
                 JsonModels.Experience exp = userManager.AddExperience(user.id, startDateTime, endDateTime, title, description, city, state, company);
+                activityManager.AddActivity(user.id, "Experience", "Added", exp.id);
                 if (exp != null)
                 {
                     return AddSuccessHeader(Serialize(exp));
@@ -3013,6 +3107,7 @@ namespace UserClientMembers.Controllers
                                 originalExperience.state = experienceFromJson.state;
                                 originalExperience.title = experienceFromJson.title;
                                 userManager.UpdateExperience(originalExperience);
+                                activityManager.AddActivity(authUserId, "Experience", "Updated", originalExperience.id);
                                 return AddSuccessHeader(Serialize(experienceFromJson));
                             }
                             else
@@ -3232,6 +3327,7 @@ namespace UserClientMembers.Controllers
                 }
                 User user = userManager.GetUser(authUserId);
                 JsonModels.Reference exp = userManager.AddReference(user.id, firstName, lastName, company, email, title, message, videoLink, videoType);
+                activityManager.AddActivity(user.id, "Reference", "Added", exp.id);
                 return AddSuccessHeader(Serialize(exp));
  
 
@@ -3356,7 +3452,7 @@ namespace UserClientMembers.Controllers
                                 originalReference.videoType = referenceFromJson.videoType;
 
                                 userManager.UpdateReference(originalReference);
-
+                                activityManager.AddActivity(authUserId, "Reference", "Updated", originalReference.id);
                                 return AddSuccessHeader(Serialize(referenceFromJson));
                             }
                             else
