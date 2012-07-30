@@ -1311,7 +1311,7 @@ namespace Manager
             }
         }
 
-        public JsonModels.Prop AddProp(int projectId, int userId, string message = null)
+        public JsonModels.Prop AddProp(int projectId, int userId, string firstName, string lastName, string message = null)
         {
             try
             {
@@ -1320,6 +1320,8 @@ namespace Manager
                 newProp.projectId = projectId;
                 newProp.timeStamp = DateTime.Now;
                 newProp.userId = userId;
+                newProp.firstName = firstName;
+                newProp.lastName = lastName;
                 propAccessor.AddProp(newProp);
 
                 JsonModels.Prop response = new JsonModels.Prop();
@@ -1328,6 +1330,8 @@ namespace Manager
                 response.projectId = newProp.projectId;
                 response.timeStamp = newProp.timeStamp.ToString();
                 response.userId = newProp.userId;
+                response.firstName = newProp.firstName;
+                response.lastName = newProp.lastName;
                 return response;
             }
             catch (Exception ex)
@@ -1358,6 +1362,8 @@ namespace Manager
                             propJson.projectId = p.projectId;
                             propJson.timeStamp = p.timeStamp.ToString();
                             propJson.userId = p.userId;
+                            propJson.firstName = p.firstName;
+                            propJson.lastName = p.lastName;
                             projectPropJson.Add(propJson);
                         }
                     }

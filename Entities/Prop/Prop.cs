@@ -12,5 +12,7 @@ namespace Entity
         public int projectId { get; set; }
         public int userId { get; set; }
         public DateTime timeStamp { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
     }
 }

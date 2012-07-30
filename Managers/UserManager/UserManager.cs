@@ -594,16 +594,9 @@ namespace Manager
             ui.firstName = u.firstName;
             ui.id = u.id.ToString();
             ui.lastName = u.lastName;
-
-            JsonModels.Links links = getUserLinks(u.id);
-            if (links != null)
-            {
-                ui.links = links;
-            }
-            else
-            {
-                ui.links = null;
-            }
+            ui.facebookLink = u.facebookLink;
+            ui.twitterLink = u.twitterLink;
+            ui.linkedinLink = u.linkedinLink;
 
             ui.location = u.location;
             ui.major = u.major;
@@ -1098,16 +1091,22 @@ namespace Manager
                     //numberOfFeaturedProjects++;
 
                     List<JsonModels.Prop> props = pm.GetProjectProps(p.id);
-                    numberOfProps = numberOfProps + props.Count;
+                    if (props != null)
+                    {
+                        numberOfProps = numberOfProps + props.Count;
+                    }
 
                     if (p.projectElements != null)
                     {
                         foreach (ProjectElement pe in p.projectElements)
                         {
-                            numberOfArtifacts++;
-                            if (pe.description != null)
+                            if (pe != null)
                             {
-                                numberOfReflections++;
+                                numberOfArtifacts++;
+                                if (pe.description != null)
+                                {
+                                    numberOfReflections++;
+                                }
                             }
                         }
                     }

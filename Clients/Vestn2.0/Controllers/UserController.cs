@@ -248,12 +248,12 @@ namespace Controllers
                         //model sync
                         originalProfile.description = (profileFromJson.description != null) ? profileFromJson.description : null;
                         originalProfile.email = (profileFromJson.email != null) ? profileFromJson.email : null;
-                        if (profileFromJson.links != null)
-                        {
-                            originalProfile.facebookLink = (profileFromJson.links.facebookLink != null) ? profileFromJson.links.facebookLink : null;
-                            originalProfile.twitterLink = (profileFromJson.links.twitterLink != null) ? profileFromJson.links.twitterLink : null;
-                            originalProfile.linkedinLink = (profileFromJson.links.linkedinLink != null) ? profileFromJson.links.linkedinLink : null;
-                        }
+                        //if (profileFromJson.links != null)
+                        //{
+                        //    originalProfile.facebookLink = (profileFromJson.links.facebookLink != null) ? profileFromJson.links.facebookLink : null;
+                        //    originalProfile.twitterLink = (profileFromJson.links.twitterLink != null) ? profileFromJson.links.twitterLink : null;
+                        //    originalProfile.linkedinLink = (profileFromJson.links.linkedinLink != null) ? profileFromJson.links.linkedinLink : null;
+                        //}
 
                         originalProfile.firstName = (profileFromJson.firstName != null) ? profileFromJson.firstName : null;
                         originalProfile.lastName = (profileFromJson.lastName != null) ? profileFromJson.lastName : null;
@@ -608,16 +608,16 @@ namespace Controllers
                         }
                         if (requestAll || request.Contains("links"))
                         {
-                            JsonModels.Links links = userManager.getUserLinks(id);
-                            if (links != null)
-                            {
-                                ui.links = links;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.links = null;
-                            }
+                            //JsonModels.Links links = userManager.getUserLinks(id);
+                            //if (links != null)
+                            //{
+                            //    ui.links = links;
+                            //    add = 1;
+                            //}
+                            //else
+                            //{
+                            //    ui.links = null;
+                            //}
                         }
                         if (requestAll || request.Contains("experiences"))
                         {

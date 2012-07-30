@@ -1193,12 +1193,10 @@ namespace UserClientMembers.Controllers
                         //model sync
                         originalProfile.description = (profileFromJson.description != null) ? profileFromJson.description : null;
                         originalProfile.email = (profileFromJson.email != null) ? profileFromJson.email : null;
-                        if (profileFromJson.links != null)
-                        {
-                            originalProfile.facebookLink = (profileFromJson.links.facebookLink != null) ? profileFromJson.links.facebookLink : null;
-                            originalProfile.twitterLink = (profileFromJson.links.twitterLink != null) ? profileFromJson.links.twitterLink : null;
-                            originalProfile.linkedinLink = (profileFromJson.links.linkedinLink != null) ? profileFromJson.links.linkedinLink : null;
-                        }
+
+                        originalProfile.facebookLink = (profileFromJson.facebookLink != null) ? profileFromJson.facebookLink : null;
+                        originalProfile.twitterLink = (profileFromJson.twitterLink != null) ? profileFromJson.twitterLink : null;
+                        originalProfile.linkedinLink = (profileFromJson.linkedinLink != null) ? profileFromJson.linkedinLink : null;
 
                         originalProfile.firstName = (profileFromJson.firstName != null) ? profileFromJson.firstName : null;
                         originalProfile.lastName = (profileFromJson.lastName != null) ? profileFromJson.lastName : null;
@@ -2640,7 +2638,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string GetProfile(int id = -1, string profileURL = null, string[] request = null, string token = null)
+        public string GetProfile(int id = -1, string profileURL = null, string[] request = null, bool ignoreViewCount = false, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
@@ -2688,7 +2686,7 @@ namespace UserClientMembers.Controllers
                                     if (request == null)
                                     {
                                         requestAll = true;
-                                        if (u.profileViews != null)
+                                        if (u.profileViews != null && !ignoreViewCount)
                                         {
                                             u.profileViews++;
                                         }
@@ -2722,7 +2720,7 @@ namespace UserClientMembers.Controllers
                             if (request == null)
                             {
                                 requestAll = true;
-                                if (u.profileViews != null)
+                                if (u.profileViews != null && !ignoreViewCount)
                                 {
                                     u.profileViews++;
                                 }
@@ -2918,16 +2916,19 @@ namespace UserClientMembers.Controllers
                         }
                         if (requestAll || request.Contains("links"))
                         {
-                            JsonModels.Links links = userManager.getUserLinks(id);
-                            if (links != null)
-                            {
-                                ui.links = links;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.links = null;
-                            }
+                            //JsonModels.Links links = userManager.getUserLinks(id);
+                            //if (links != null)
+                            //{
+                            //    ui.links = links;
+                            //    add = 1;
+                            //}
+                            //else
+                            //{
+                            //    ui.links = null;
+                            //}
+                            ui.facebookLink = u.facebookLink;
+                            ui.twitterLink = u.twitterLink;
+                            ui.linkedinLink = u.linkedinLink;
                         }
                         if (requestAll || request.Contains("experiences"))
                         {
@@ -3577,6 +3578,32 @@ namespace UserClientMembers.Controllers
                 return AddErrorHeader("Something went wrong while deleting this reference");
             }
         }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string GetProfileScore(int userId, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                User u = userManager.GetUser(userId);
+                JsonModels.ProfileScore profileScoreJson = userManager.GetProfileScore(u);
+                return AddSuccessHeader(Serialize(profileScoreJson));
+            }
+            catch (Exception ex)
+            {
+                return AddErrorHeader("Something went wrong while fetching this profile score");
+            }
+        }
+
         public ActionResult testNewRegister()
         {
             return View();

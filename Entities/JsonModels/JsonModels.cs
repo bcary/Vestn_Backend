@@ -127,7 +127,13 @@ namespace Entity
             public UserStats stats { get; set; }
 
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public Links links { get; set; }
+            public string facebookLink { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string twitterLink { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string linkedinLink { get; set; }
 
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public List<Experience> experiences { get; set; }
@@ -435,6 +441,10 @@ namespace Entity
             public string message { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string timeStamp { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string firstName { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string lastName { get; set; }
         }
 
         [DataContract]
