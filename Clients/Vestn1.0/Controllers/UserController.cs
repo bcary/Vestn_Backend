@@ -2638,7 +2638,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string GetProfile(int id = -1, string profileURL = null, string[] request = null, bool ignoreViewCount = false, string token = null)
+        public string GetProfile(int id = -1, string profileURL = null, IEnumerable<string> request = null, bool ignoreViewCount = false, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
@@ -2736,7 +2736,6 @@ namespace UserClientMembers.Controllers
                     if (u != null)
                     {
                         add = 0;
-                        //TODO add company
                         if (requestAll || request.Contains("firstName"))
                         {
                             if (u.firstName != null)
@@ -2999,10 +2998,10 @@ namespace UserClientMembers.Controllers
                             List<JsonModels.Activity> activity = activityManager.GetUserActivity(id);
                             ui.activity = activity;
                         }
-                        if (requestAll || request.Contains("profileScore"))
-                        {
-                            ui.profileScore = userManager.GetProfileScore(u);
-                        }
+                        //if (requestAll || request.Contains("profileScore"))
+                        //{
+                        //    ui.profileScore = userManager.GetProfileScore(u);
+                        //}
                         ui.id = u.id.ToString();
                     }
                     try

@@ -46,6 +46,24 @@ namespace Accessor
             try
             {
                 //save ordering with new project
+                if (u.projectOrder == null)
+                {
+                    List<int> currentProjects = new List<int>();
+                    string newProjectOrder = null;
+                    foreach (Project p in u.projects)
+                    {
+                        if (p.isActive == true && p.privacy != "deleted")
+                        {
+                            currentProjects.Add(p.id);
+                        }
+                    }
+                    foreach (int y in currentProjects)
+                    {
+                        newProjectOrder += y + " ";
+                    }
+                    newProjectOrder = newProjectOrder.TrimEnd().Replace(' ', ',');
+                    u.projectOrder = newProjectOrder;
+                }
                 if (u.projects.Count() == 1)
                 {
                     u.projectOrder += project.id;

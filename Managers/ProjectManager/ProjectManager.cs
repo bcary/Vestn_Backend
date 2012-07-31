@@ -1200,6 +1200,7 @@ namespace Manager
                 cp.id = project.id;
                 cp.title = project.name;
                 cp.dateModified = project.dateModified.ToString();
+                cp.props = GetProjectProps(project.id);
                 if (project.projectElements == null)
                 {
                     cp.artifacts = null;

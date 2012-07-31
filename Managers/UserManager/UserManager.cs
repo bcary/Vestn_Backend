@@ -349,7 +349,7 @@ namespace Manager
             string newProjectOrder = null;
             foreach (Project p in u.projects)
             {
-                if (p.isActive == true)
+                if (p.isActive == true && p.privacy != "deleted")
                 {
                     currentProjects.Add(p.id);
                 }
@@ -378,6 +378,8 @@ namespace Manager
                 string resumeLocation = blobStorageAccessor.uploadDOC(stmDoc, false, ".doc").ToString();
                 CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", resumeLocation, user.id, "userDocumentConversion", @"http://do.convertapi.com/Word2Pdf", 0, 0, fullName, uniqueBlobName));
                 queue.AddMessage(message);
+                user.resume = "http://vestnstaging.blob.core.windows.net/pdfs/" + uniqueBlobName;
+                user = UpdateUser(user);
                 return uniqueBlobName;
             }
             else
@@ -399,6 +401,8 @@ namespace Manager
                 string resumeLocation = blobStorageAccessor.uploadDOC(stmDoc, false, ".docx").ToString();
                 CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", resumeLocation, user.id, "userDocumentConversion", @"http://do.convertapi.com/Word2Pdf", 0, 0, fullName, uniqueBlobName));
                 queue.AddMessage(message);
+                user.resume = "http://vestnstaging.blob.core.windows.net/pdfs/" + uniqueBlobName;
+                user = UpdateUser(user);
                 return uniqueBlobName;
             }
             else
@@ -433,6 +437,8 @@ namespace Manager
                 string resumeLocation = blobStorageAccessor.uploadUnknown(s, false, "rtf").ToString();
                 CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", resumeLocation, user.id, "userDocumentConversion", @"http://do.convertapi.com/RichText2Pdf", 0, 0, fullName, uniqueBlobName));
                 queue.AddMessage(message);
+                user.resume = "http://vestnstaging.blob.core.windows.net/pdfs/" + uniqueBlobName;
+                user = UpdateUser(user);
                 return uniqueBlobName;
             }
             else
@@ -454,6 +460,8 @@ namespace Manager
                 string resumeLocation = blobStorageAccessor.uploadUnknown(s, false, "txt").ToString();
                 CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", resumeLocation, user.id, "userDocumentConversion", @"http://do.convertapi.com/Text2Pdf", 0, 0, fullName, uniqueBlobName));
                 queue.AddMessage(message);
+                user.resume = "http://vestnstaging.blob.core.windows.net/pdfs/" + uniqueBlobName;
+                user = UpdateUser(user);
                 return uniqueBlobName;
             }
             else
