@@ -2713,6 +2713,7 @@ namespace UserClientMembers.Controllers
                         }
                         if (id == authenticateId)
                         {
+                            requestAll = true;
                             //TODO request is coming from owner, return EVERYTHING
                         }
                         else
@@ -3249,8 +3250,15 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return AddSuccessHeader(Serialize(userManager.GetExperienceJson(experienceId)));
-                    
+                    JsonModels.Experience expModelJson = userManager.GetExperienceJson(experienceId);
+                    if (expModelJson == null)
+                    {
+                        return AddErrorHeader("The experience was not found in the database");
+                    }
+                    else
+                    {
+                        return AddSuccessHeader(Serialize(expModelJson));
+                    }
                 }
             }
             catch (Exception ex)
@@ -3517,11 +3525,19 @@ namespace UserClientMembers.Controllers
                 }
                 if (referenceId < 0)
                 {
-                    return AddErrorHeader("An experienceId must be passed in");
+                    return AddErrorHeader("An referenceId must be passed in");
                 }
                 else
                 {
-                    return Serialize(userManager.GetReferenceJson(referenceId));
+                    JsonModels.Reference refJson = userManager.GetReferenceJson(referenceId);
+                    if (refJson == null)
+                    {
+                        return AddErrorHeader("The reference was not found in the database");
+                    }
+                    else
+                    {
+                        return AddSuccessHeader(Serialize(refJson));
+                    }
                 }
             }
             catch (Exception ex)
@@ -3556,11 +3572,15 @@ namespace UserClientMembers.Controllers
                 }
                 if (referenceId < 0)
                 {
-                    return AddErrorHeader("An experienceId must be passed in");
+                    return AddErrorHeader("An referenceId must be passed in");
                 }
                 else
                 {
                     Reference reference = userManager.GetReference(referenceId);
+                    if (reference == null)
+                    {
+                        return AddErrorHeader("The reference was not found in the database");
+                    }
                     string response = userManager.DeleteReference(reference);
                     if (response == null)
                     {
