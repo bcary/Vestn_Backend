@@ -2679,7 +2679,15 @@ namespace UserClientMembers.Controllers
                                 id = u.id;
                                 if (id == authenticateId)
                                 {
-                                    //TODO request is coming from owner, return EVERYTHING
+                                    if (request == null)
+                                    {
+                                        requestAll = true;
+                                        //anything that might need to happen knowing the owner is requesting...
+                                    }
+                                    else
+                                    {
+                                        //requestAll is false still
+                                    }
                                 }
                                 else
                                 {
@@ -2695,7 +2703,6 @@ namespace UserClientMembers.Controllers
                                             u.profileViews = 1;
                                         }
                                     }
-                                    //TODO need to check if request came from another in the same network or not
                                 }
                             }
                         }
@@ -2713,8 +2720,14 @@ namespace UserClientMembers.Controllers
                         }
                         if (id == authenticateId)
                         {
-                            requestAll = true;
-                            //TODO request is coming from owner, return EVERYTHING
+                            if (request == null)
+                            {
+                                requestAll = true;
+                            }
+                            else
+                            {
+                                //requestAll is still false
+                            }
                         }
                         else
                         {
