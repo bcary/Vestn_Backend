@@ -136,7 +136,7 @@ namespace UserClientMembers.Controllers
                     Project project = projectManager.GetProject(projectId);
                     if (!projectManager.IsUserOwnerOfProject(projectId, user))
                     {
-                        return AddErrorHeader("User not authorized to delete this project");
+                        return AddErrorHeader("User not authorized to add a tag to this project");
                     }
                     TagManager tm = new TagManager();
                     string type;
@@ -158,7 +158,7 @@ namespace UserClientMembers.Controllers
                         else
                         {
                             activityManager.AddActivity(user.id, "Project Tag", "Added", project.id);
-                            return AddSuccessHeader("Tag Added Successfully");
+                            return AddSuccessHeader("Tag Added Successfully" , true);
                         }
                     }
                     else
@@ -234,7 +234,7 @@ namespace UserClientMembers.Controllers
                     }
                     if (result == true)
                     {
-                        return AddSuccessHeader("Tag Removed from Project: " + projectId);
+                        return AddSuccessHeader("Tag Removed from Project: " + projectId , true);
                     }
                     else
                     {
