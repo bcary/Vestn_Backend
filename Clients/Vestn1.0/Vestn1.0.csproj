@@ -117,6 +117,7 @@
   <ItemGroup>
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NetworkController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\ResourcesController.cs" />
     <Compile Include="Controllers\SubdomainController.cs" />
@@ -365,6 +366,10 @@
       <Project>{F52C4CC1-F773-4912-8D96-56286C81BB35}</Project>
       <Name>JsonModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Entities\Networks\Networks.csproj">
+      <Project>{0D8DD8AE-5812-4B54-8B35-86ED8B11E568}</Project>
+      <Name>Networks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Entities\Prop\Prop.csproj">
       <Project>{99C78FF1-341F-4CCC-98DF-9D29CD7CCBA7}</Project>
       <Name>Prop</Name>
@@ -448,6 +453,14 @@
     <ProjectReference Include="..\..\Engines\ValidationEngine\ValidationEngine.csproj">
       <Project>{E4F892EF-FB39-4408-928A-05AC3DEFDB87}</Project>
       <Name>ValidationEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetworkAccessor\NetworkAccessor.csproj">
+      <Project>{5C7F9181-91EB-4622-B105-321FBFCF6479}</Project>
+      <Name>NetworkAccessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetworkManager\NetworkManager.csproj">
+      <Project>{276AA689-A38A-4C80-9D12-B8CE908E6DA9}</Project>
+      <Name>NetworkManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\PropAccessor\PropAccessor.csproj">
       <Project>{EFC2299A-E38D-43D8-8537-A0379F07F922}</Project>

@@ -97,6 +97,10 @@
       <Project>{BC962547-338A-4A68-91C3-2C6F2D18F194}</Project>
       <Name>Analytics</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Networks\Networks.csproj">
+      <Project>{0D8DD8AE-5812-4B54-8B35-86ED8B11E568}</Project>
+      <Name>Networks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Prop\Prop.csproj">
       <Project>{99C78FF1-341F-4CCC-98DF-9D29CD7CCBA7}</Project>
       <Name>Prop</Name>

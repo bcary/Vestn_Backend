@@ -173,27 +173,89 @@ namespace Entity
             public int numberOfArtifacts { get; set; }
         }
 
-        //[DataContract]
-        //public class Experience
-        //{
-        //    [DataMember(IsRequired = false, EmitDefaultValue = false)]
-        //    public string jobTitle { get; set; }
-        //    [DataMember(IsRequired = false, EmitDefaultValue = false)]
-        //    public string jobDescription { get; set; }
-        //    [DataMember(IsRequired = false, EmitDefaultValue = false)]
-        //    public string company { get; set; }
-        //    [DataMember(IsRequired = false, EmitDefaultValue = false)]
-        //    public string startDate { get; set; }
-        //    [DataMember(IsRequired = false, EmitDefaultValue = false)]
-        //    public string endDate { get; set; }
-        //}
+        [DataContract]
+        public class Network
+        {
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int id { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string name { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string description { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string coverPicture { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string privacy { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string profileURL { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public List<NetworkUserShell> admins { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public List<NetworkShell> subNetworks { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public NetworkShell parentNetwork { get; set; }
+        }
 
-        //[DataContract]
-        //public class Reference
-        //{
-        //    [DataMember(IsRequired = false, EmitDefaultValue = false)]
-        //    public string name { get; set; }
-        //}
+        [DataContract]
+        public class NetworkUserShell
+        {
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int userId { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string firstName { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string lastName { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string profileURL { get; set; }
+        }
+
+        [DataContract]
+        public class NetworkShell
+        {
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int networkId { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string name { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string coverPicture { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string profileURL { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string privacy { get; set; }
+        }
+
+        [DataContract]
+        public class NetworkUsers
+        {
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public List<NetworkUserShell> users { get; set; }
+        }
+
+        [DataContract]
+        public class UserNetworkShell
+        {
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int networkId { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string name { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string profileURL { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string userAuthorization { get; set; }
+        }
+
+        [DataContract]
+        public class UserInformationModel
+        {
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int userId { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public List<UserNetworkShell> networks { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string profileURL { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string profilePrivacy { get; set; }
+        }
 
         [DataContract]
         public class Links

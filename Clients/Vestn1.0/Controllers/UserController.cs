@@ -3636,6 +3636,56 @@ namespace UserClientMembers.Controllers
             }
         }
 
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string GetUserModel(int userId)
+        {
+            try
+            {
+                User user = userManager.GetUser(userId);
+                if (user != null)
+                {
+                    NetworkManager networkManager = new NetworkManager();
+                    JsonModels.UserInformationModel userInfoJson = new JsonModels.UserInformationModel();
+                    userInfoJson.userId = user.id;
+                    userInfoJson.profileURL = user.profileURL;
+                    //no profilePrivacy - TODO//userInfoJson.profilePrivacy = user.
+                    ReorderEngine re = new ReorderEngine();
+                    List<int> networks = re.stringOrderToList(user.networks);
+                    foreach (int i in networks)
+                    {
+                        if (i != null)
+                        {
+                            JsonModels.UserNetworkShell networkShell = new JsonModels.UserNetworkShell();
+                            Network n = networkManager.GetNetwork(i);
+                            networkShell.name = n.name;
+                            networkShell.networkId = n.id;
+                            networkShell.profileURL = n.profileURL;
+                            if (n.networkUsers.Contains(user))
+                            {
+                                networkShell.userAuthorization = "member";
+                            }
+                            else if (n.admins.Contains(user))
+                            {
+                                networkShell.userAuthorization = "admin";
+                            }
+                            userInfoJson.networks.Add(networkShell);
+                        }
+                    }
+                    return AddSuccessHeader(Serialize(userInfoJson));
+                }
+                else
+                {
+                    return AddErrorHeader("User not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - GetUserModel", ex.StackTrace);
+                return AddErrorHeader("something went wrong while retrieving this user's info");
+            }
+        }
+
         public ActionResult testNewRegister()
         {
             return View();

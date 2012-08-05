@@ -41,6 +41,7 @@ namespace Entity
         public string twitterLink { get; set; }
         public string linkedinLink { get; set; }
         public int profileViews { get; set; }
+        public string networks { get; set; }
     }
 
     public enum WillingToRelocateType

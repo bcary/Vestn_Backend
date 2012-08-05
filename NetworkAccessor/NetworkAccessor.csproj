@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0D8DD8AE-5812-4B54-8B35-86ED8B11E568}</ProjectGuid>
+    <ProjectGuid>{5C7F9181-91EB-4622-B105-321FBFCF6479}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Networks</RootNamespace>
-    <AssemblyName>Networks</AssemblyName>
+    <RootNamespace>NetworkAccessor</RootNamespace>
+    <AssemblyName>NetworkAccessor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,8 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.4.1.10715.0\lib\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,17 +46,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Network_Group.cs" />
-    <Compile Include="Network.cs" />
-    <Compile Include="Network_TopNetwork.cs" />
+    <Compile Include="NetworkAccessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Network_SubNetwork.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Users\Users.csproj">
-      <Project>{5E71E86E-850C-4160-8475-D2801F3D4614}</Project>
-      <Name>Users</Name>
+    <ProjectReference Include="..\Accessors\LogAccessor\LogAccessor.csproj">
+      <Project>{E93BC31C-2391-4A9D-9D6A-B717F915D64B}</Project>
+      <Name>LogAccessor</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Entities\DatabaseContext\DatabaseContext.csproj">
+      <Project>{835E4CCE-E754-4368-9D60-D6D2DC0FDEEE}</Project>
+      <Name>DatabaseContext</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities\Log\Log.csproj">
+      <Project>{5BEFDC6C-F543-4AB2-AC74-6AB07F7CBAB8}</Project>
+      <Name>Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities\Networks\Networks.csproj">
+      <Project>{0D8DD8AE-5812-4B54-8B35-86ED8B11E568}</Project>
+      <Name>Networks</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

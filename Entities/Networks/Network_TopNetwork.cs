@@ -5,9 +5,8 @@ using System.Text;
 
 namespace Entity
 {
-    public class Group : Network
+    public class Network_TopNetwork : Network
     {
-        public int groupId { get; set; }
-        public int subNetworkId { get; set; }
+        public List<Network_SubNetwork> subNetworks { get; set; }
     }
 }

@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0D8DD8AE-5812-4B54-8B35-86ED8B11E568}</ProjectGuid>
+    <ProjectGuid>{276AA689-A38A-4C80-9D12-B8CE908E6DA9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Networks</RootNamespace>
-    <AssemblyName>Networks</AssemblyName>
+    <RootNamespace>NetworkManager</RootNamespace>
+    <AssemblyName>NetworkManager</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,16 +40,45 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Network_Group.cs" />
-    <Compile Include="Network.cs" />
-    <Compile Include="Network_TopNetwork.cs" />
+    <Compile Include="NetworkManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Network_SubNetwork.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Users\Users.csproj">
+    <ProjectReference Include="..\Accessors\LogAccessor\LogAccessor.csproj">
+      <Project>{E93BC31C-2391-4A9D-9D6A-B717F915D64B}</Project>
+      <Name>LogAccessor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engines\ReorderEngine\ReorderEngine.csproj">
+      <Project>{88EEE859-7550-499B-AF53-034C19D5CD6F}</Project>
+      <Name>ReorderEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities\JsonModels\JsonModels.csproj">
+      <Project>{F52C4CC1-F773-4912-8D96-56286C81BB35}</Project>
+      <Name>JsonModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities\Log\Log.csproj">
+      <Project>{5BEFDC6C-F543-4AB2-AC74-6AB07F7CBAB8}</Project>
+      <Name>Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities\Networks\Networks.csproj">
+      <Project>{0D8DD8AE-5812-4B54-8B35-86ED8B11E568}</Project>
+      <Name>Networks</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities\UserAgreement\UserAgreement.csproj">
+      <Project>{1B13A8E4-7682-401A-ADAF-3B5420A01D91}</Project>
+      <Name>UserAgreement</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities\Users\Users.csproj">
       <Project>{5E71E86E-850C-4160-8475-D2801F3D4614}</Project>
       <Name>Users</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Managers\UserManager\UserManager.csproj">
+      <Project>{6F593A74-2D84-4D50-AAC7-34A1AD871CB1}</Project>
+      <Name>UserManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NetworkAccessor\NetworkAccessor.csproj">
+      <Project>{5C7F9181-91EB-4622-B105-321FBFCF6479}</Project>
+      <Name>NetworkAccessor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

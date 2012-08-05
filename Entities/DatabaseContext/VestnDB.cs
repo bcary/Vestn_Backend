@@ -30,6 +30,6 @@ namespace Entity
         public DbSet<Reference> reference { get; set; }
         public DbSet<Prop> prop { get; set; }
         public DbSet<Activity> activity { get; set; }
-        //public DbSet<Network> networks { get; set; }
+        public DbSet<Network> networks { get; set; }
     }
 }
