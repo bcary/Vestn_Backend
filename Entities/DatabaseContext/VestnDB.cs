@@ -12,7 +12,7 @@ namespace Entity
     {
         public VestnDB() : base("VestnDB")
         {
-
+           // this.Configuration.LazyLoadingEnabled = false;
         }
         public DbSet<User> users { get; set; }
         public DbSet<fTag> fTag { get; set; }
@@ -31,5 +31,41 @@ namespace Entity
         public DbSet<Prop> prop { get; set; }
         public DbSet<Activity> activity { get; set; }
         public DbSet<Network> networks { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Network>()
+                .HasMany(n => n.networkUsers)
+                .WithMany(u => u.networks)
+                .Map(m =>
+                    {
+                        m.MapLeftKey("NetworkId");
+                        m.MapRightKey("UserId");
+                        m.ToTable("UserNetworks");
+                    });
+
+            modelBuilder.Entity<Network>()
+                .HasMany(n => n.admins)
+                .WithMany(u => u.adminNetworks)
+                .Map(m =>
+                    {
+                        m.MapLeftKey("AdminNetworkId");
+                        m.MapRightKey("AdminId");
+                        m.ToTable("AdminNetworks");
+                    });
+
+            //modelBuilder.Entity<Network_TopNetwork>()
+            //    .HasMany(s => s.subNetworks)
+            //    .WithOptional()
+            //    .Map(m => m.MapKey("TopNetworkId"));
+
+            //modelBuilder.Entity<Network_SubNetwork>()
+            //    .HasMany(g => g.groups)
+            //    .WithOptional()
+            //    .Map(m => m.MapKey("SubNetworkId"));
+                
+
+            //base.OnModelCreating(modelBuilder);
+        }
     }
 }

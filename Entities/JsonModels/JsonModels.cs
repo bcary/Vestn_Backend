@@ -231,6 +231,18 @@ namespace Entity
             public List<NetworkUserShell> users { get; set; }
         }
 
+
+
+        [DataContract]
+        public class UserInformationModel
+        {
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public List<UserNetworkShell> networks { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public UserSettings settings { get; set; }
+        }
+
         [DataContract]
         public class UserNetworkShell
         {
@@ -239,22 +251,23 @@ namespace Entity
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string name { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public string profileURL { get; set; }
+            public string networkURL { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string userAuthorization { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public List<UserNetworkShell> subnetworks { get; set; }
         }
 
         [DataContract]
-        public class UserInformationModel
+        public class UserSettings
         {
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public int userId { get; set; }
-            [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public List<UserNetworkShell> networks { get; set; }
+            public string visibility { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string profileURL { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public string profilePrivacy { get; set; }
+            public string email { get; set; }
+            
         }
 
         [DataContract]

@@ -1030,7 +1030,7 @@ namespace UserClientMembers.Controllers
                     model.tagValues = tagValues;
                 }*/
 
-                ViewBag.WillingToRelocate = new List<string>(Enum.GetNames(typeof(WillingToRelocateType)));
+                //ViewBag.WillingToRelocate = new List<string>(Enum.GetNames(typeof(WillingToRelocateType)));
 
                 if (user.userName == User.Identity.Name && User.Identity.IsAuthenticated)
                 {
@@ -3640,38 +3640,163 @@ namespace UserClientMembers.Controllers
         [AllowCrossSiteJson]
         public string GetUserModel(int userId)
         {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
             try
             {
-                User user = userManager.GetUser(userId);
+                User user = userManager.GetUserWithNetworks(userId);
                 if (user != null)
                 {
                     NetworkManager networkManager = new NetworkManager();
                     JsonModels.UserInformationModel userInfoJson = new JsonModels.UserInformationModel();
-                    userInfoJson.userId = user.id;
-                    userInfoJson.profileURL = user.profileURL;
-                    //no profilePrivacy - TODO//userInfoJson.profilePrivacy = user.
-                    ReorderEngine re = new ReorderEngine();
-                    List<int> networks = re.stringOrderToList(user.networks);
-                    foreach (int i in networks)
+                    JsonModels.UserSettings userSettingsJson = new JsonModels.UserSettings();
+                    List<JsonModels.UserNetworkShell> userNetworksJson = new List<JsonModels.UserNetworkShell>();
+
+                    List<Network> topLevelNetworks = new List<Network>();
+                    List<Network> subNetworks = new List<Network>();
+                    List<Network> groupNetworks = new List<Network>();
+
+                    foreach (Network n in user.networks)
                     {
-                        if (i != null)
+                        if (n != null)
                         {
-                            JsonModels.UserNetworkShell networkShell = new JsonModels.UserNetworkShell();
-                            Network n = networkManager.GetNetwork(i);
-                            networkShell.name = n.name;
-                            networkShell.networkId = n.id;
-                            networkShell.profileURL = n.profileURL;
-                            if (n.networkUsers.Contains(user))
+                            if (n.GetType().Name.Contains("Network_TopNetwork"))
                             {
-                                networkShell.userAuthorization = "member";
+                                if (!topLevelNetworks.Contains(n))
+                                {
+                                    topLevelNetworks.Add(n);
+                                }
                             }
-                            else if (n.admins.Contains(user))
+                            else if (n.GetType().Name.Contains("Network_SubNetwork"))
                             {
-                                networkShell.userAuthorization = "admin";
+                                if (!subNetworks.Contains(n))
+                                {
+                                    subNetworks.Add(n);
+                                }
                             }
-                            userInfoJson.networks.Add(networkShell);
+                            else if (n.GetType().Name.Contains("Network_Group"))
+                            {
+                                if (!groupNetworks.Contains(n))
+                                {
+                                    groupNetworks.Add(n);
+                                }
+                            }
                         }
                     }
+                    foreach (Network n in user.adminNetworks)
+                    {
+                        if (n != null)
+                        {
+                            if (n.GetType().Name.Contains("Network_TopNetwork"))
+                            {
+                                if (!topLevelNetworks.Contains(n))
+                                {
+                                    topLevelNetworks.Add(n);
+                                }
+                            }
+                            else if (n.GetType().Name.Contains("Network_SubNetwork"))
+                            {
+                                if (!subNetworks.Contains(n))
+                                {
+                                    subNetworks.Add(n);
+                                }
+                            }
+                            else if (n.GetType().Name.Contains("Network_Group"))
+                            {
+                                if (!groupNetworks.Contains(n))
+                                {
+                                    groupNetworks.Add(n);
+                                }
+                            }
+                        }
+                    }
+
+                    for (int i = 0; i < topLevelNetworks.Count; i++)
+                    {
+                        Network topNet = topLevelNetworks.ElementAt(i);
+                        JsonModels.UserNetworkShell topNetShell = new JsonModels.UserNetworkShell();
+                        topNetShell.name = topNet.name;
+                        topNetShell.networkId = topNet.id;
+                        topNetShell.networkURL = topNet.profileURL;
+                        if (user.adminNetworks.Contains(topNet))
+                        {
+                            topNetShell.userAuthorization = "admin";
+                        }
+                        else
+                        {
+                            topNetShell.userAuthorization = "member";
+                        }
+
+                        for (int j = 0; j < subNetworks.Count; j++)
+                        {
+                            Network_SubNetwork subNet = (Network_SubNetwork)subNetworks.ElementAt(j);
+                            JsonModels.UserNetworkShell subNetShell = new JsonModels.UserNetworkShell();
+                            if (subNet.Network_TopNetwork.id == topNet.id)
+                            {
+                                subNetShell.name = subNet.name;
+                                subNetShell.networkId = subNet.id;
+                                subNetShell.networkURL = subNet.profileURL;
+                                if (user.adminNetworks.Contains(subNet))
+                                {
+                                    subNetShell.userAuthorization = "admin";
+                                }
+                                else
+                                {
+                                    subNetShell.userAuthorization = "member";
+                                }
+
+                                for (int k = 0; k < groupNetworks.Count; k++)
+                                {
+                                    Network_Group groupNet = (Network_Group)groupNetworks.ElementAt(k);
+                                    if (groupNet.Network_SubNetwork.id == subNet.id)
+                                    {
+                                        JsonModels.UserNetworkShell groupNetShell = new JsonModels.UserNetworkShell();
+                                        groupNetShell.name = groupNet.name;
+                                        groupNetShell.networkId = groupNet.id;
+                                        groupNetShell.networkURL = groupNet.profileURL;
+                                        if (user.adminNetworks.Contains(groupNet))
+                                        {
+                                            groupNetShell.userAuthorization = "admin";
+                                        }
+                                        else
+                                        {
+                                            groupNetShell.userAuthorization = "member";
+                                        }
+                                        if (subNetShell.subnetworks == null)
+                                        {
+                                            subNetShell.subnetworks = new List<JsonModels.UserNetworkShell>();
+                                        }
+                                        subNetShell.subnetworks.Add(groupNetShell);
+                                    }
+                                }
+                                if (topNetShell.subnetworks == null)
+                                {
+                                    topNetShell.subnetworks = new List<JsonModels.UserNetworkShell>();
+                                }
+                                topNetShell.subnetworks.Add(subNetShell);
+
+                            }
+                        }
+
+                        userNetworksJson.Add(topNetShell);
+
+                    }
+                    userSettingsJson.email = user.email;
+                    userSettingsJson.profileURL = user.profileURL;
+                    if(user.isPublic == 1)
+                    {
+                        userSettingsJson.visibility = "visible";
+                    }
+                    else
+                    {
+                        userSettingsJson.visibility = "hidden";
+                    }
+
+                    userInfoJson.networks = userNetworksJson;
+                    userInfoJson.settings = userSettingsJson;
+
                     return AddSuccessHeader(Serialize(userInfoJson));
                 }
                 else

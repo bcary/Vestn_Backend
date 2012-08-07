@@ -16,23 +16,25 @@ namespace Manager
         UserManager userManager = new UserManager();
         
 
-        public JsonModels.Network CreateNetwork(int adminUserId)
+        public JsonModels.Network CreateNetwork(int adminUserId = -1)
         {
             try
             {
                 Network_TopNetwork newNetwork = new Network_TopNetwork();
-                User networkAdmin = userManager.GetUser(adminUserId);
-                newNetwork.admins.Add(networkAdmin);
-                if (networkAdmin.networks == null)
+                if (adminUserId < 0)
                 {
-                    networkAdmin.networks = newNetwork.id.ToString();
+                    Network returnNetwork = networkAccessor.CreateNetwork(newNetwork);
+                    return GetNetworkJson(returnNetwork);
                 }
                 else
                 {
-                    networkAdmin.networks += ("," + newNetwork.id.ToString());
+                    Network returnNetwork = networkAccessor.CreateNetwork(newNetwork);
+
+                    //User networkAdmin = userManager.GetUser(adminUserId);
+                    bool adminAdded = networkAccessor.AddAdmin(returnNetwork.id, adminUserId);
+                    return GetNetworkJson(returnNetwork);
                 }
-                Network returnNetwork = networkAccessor.CreateNetwork(newNetwork);
-                return GetNetworkJson(returnNetwork);
+
             }
             catch (Exception ex)
             {
@@ -50,11 +52,15 @@ namespace Manager
                 if (topNet != null)
                 {
                     Network_SubNetwork newSubNetwork = new Network_SubNetwork();
-                    newSubNetwork.Network_TopNetwork_Id = topNetworkId;
+
                     returnNetwork = (Network_SubNetwork)networkAccessor.CreateNetwork(newSubNetwork);
 
-                    topNet.subNetworks.Add(returnNetwork);
-                    networkAccessor.UpdateNetwork(topNet);
+                   bool created = networkAccessor.AddSubNetwork(topNet.id, returnNetwork.id);
+
+                   if (created)
+                   {
+                       return GetNetworkJson(networkAccessor.GetSubNetwork(returnNetwork.id));
+                   }
                 }
                 else
                 {
@@ -80,11 +86,15 @@ namespace Manager
                 if (subNet != null)
                 {
                     Network_Group newGroup = new Network_Group();
-                    newGroup.Network_SubNetwork_Id = subNetworkId;
+                    //newGroup.SubNetworkId = subNetworkId;
                     returnNetwork = (Network_Group)networkAccessor.CreateNetwork(newGroup);
 
-                    subNet.groups.Add(returnNetwork);
-                    networkAccessor.UpdateNetwork(subNet);
+                    bool created = networkAccessor.AddGroupNetwork(subNet.id, returnNetwork.id);
+
+                    if (created)
+                    {
+                        return GetNetworkJson(networkAccessor.GetGroupNetwork(returnNetwork.id));
+                    }
                 }
                 else
                 {
@@ -191,31 +201,31 @@ namespace Manager
                                 User addUser = userManager.GetUserByEmail(email);
                                 if (addUser != null)
                                 {
-                                    network.networkUsers.Add(addUser);
-                                    if (addUser.networks == null)
+                                    bool added = networkAccessor.AddNetworkUser(network.id, addUser.id);
+                                    if (network.GetType().Name.Contains("Network_SubNetwork"))
                                     {
-                                        addUser.networks = network.id.ToString();
-                                        userManager.UpdateUser(addUser);
+                                        Network_SubNetwork subNet = (Network_SubNetwork)network;
+                                        bool added2 = networkAccessor.AddNetworkUser(subNet.Network_TopNetwork.id, addUser.id);
                                     }
-                                    else
+                                    else if (network.GetType().Name.Contains("Network_Group"))
                                     {
-                                        addUser.networks += ("," + network.id.ToString());
-                                        userManager.UpdateUser(addUser);
+                                        Network_Group groupNet = (Network_Group)network;
+                                        bool added3 = networkAccessor.AddNetworkUser(groupNet.Network_SubNetwork.id, addUser.id);
+                                        bool added4 = networkAccessor.AddNetworkUser(groupNet.Network_SubNetwork.Network_TopNetwork.id, addUser.id);
                                     }
                                 }
                                 else
                                 {
                                     //TODO
                                     //user does not exist, send invite email with network creds
-                                    return null; //for now
                                 }
                             }
                         }
-                        return GetNetworkJson(networkAccessor.UpdateNetwork(network));
+                        return GetNetworkJson(networkAccessor.GetNetwork(network.id));
                     }
                     else
                     {
-                        //no emails to add
+                        //no emails
                         return null;
                     }
                 }
@@ -232,59 +242,60 @@ namespace Manager
             }
         }
 
-        public JsonModels.Network AddNetworkAdmin(Network network, string adminEmail)
+        public bool AddNetworkAdmin(int networkId, string adminEmail)
         {
             try
             {
-                if (network != null)
+
+                if (adminEmail != null)
                 {
-                    if (adminEmail != null)
+                    User admin = userManager.GetUserByEmail(adminEmail);
+                    if (admin != null)
                     {
-                        User admin = userManager.GetUserByEmail(adminEmail);
-                        if (admin != null)
+                        Network network = networkAccessor.GetNetwork(networkId);
+                        if (network != null)
                         {
-                            network.admins.Add(admin);
-                            if (admin.networks == null)
+                            if (network.admins.Contains(admin))
                             {
-                                admin.networks = network.id.ToString();
+                                //User is already an admin of this network
+                                return false;
                             }
                             else
                             {
-                                admin.networks += ("," + network.id.ToString());
+                                bool added = networkAccessor.AddAdmin(networkId, admin.id);
+                                return added;
                             }
-                            userManager.UpdateUser(admin);
-                            Network returnNetwork = networkAccessor.UpdateNetwork(network);
-                            return GetNetworkJson(returnNetwork);
                         }
                         else
                         {
-                            //email does not exist in system, send email invitation with network admin creds
-                            return null;
+                            //Network not found in database
+                            return false;
                         }
                     }
                     else
                     {
-                        //need the email
-                        return null;
+                        //TODO when email complete
+                        //email does not exist in system, send email invitation with network admin creds
+                        return false;
                     }
                 }
                 else
                 {
-                    return null;
-                    //must have network
+                    //need the email
+                    return false;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "Network Manager - AddNetworkAdmin", ex.StackTrace);
-                return null;
+                return false;
             }
         }
 
         public bool IsNetworkAdmin(int networkId, int userId)
         {
             Network network = networkAccessor.GetNetwork(networkId);
-            if (network.GetType() == typeof(Network_TopNetwork))
+            if (network.GetType().Name.Contains("Network_TopNetwork"))
             {
                 if (network.admins != null)
                 {
@@ -298,23 +309,15 @@ namespace Manager
                             }
                         }
                     }
-                    return false;
-                }
-                else
-                {
-                    return false;
                 }
             }
-            else if (network.GetType() == typeof(Network_SubNetwork))
+            else if (network.GetType().Name.Contains("Network_SubNetwork"))
             {
                 Network_SubNetwork subNet = (Network_SubNetwork)network;
-                Network_TopNetwork topNet = (Network_TopNetwork)networkAccessor.GetNetwork(subNet.Network_TopNetwork_Id);
-                List<User> allAdmins = new List<User>();
-                allAdmins.Concat(subNet.admins);
-                allAdmins.Concat(topNet.admins);
-                if (allAdmins != null)
+                Network_TopNetwork topNet = subNet.Network_TopNetwork;
+                if (subNet.admins.Count > 0)
                 {
-                    foreach (User u in allAdmins)
+                    foreach (User u in subNet.admins)
                     {
                         if (u != null)
                         {
@@ -324,25 +327,30 @@ namespace Manager
                             }
                         }
                     }
-                    return false;
                 }
-                else
+                if (topNet.admins.Count > 0)
                 {
-                    return false;
+                    foreach (User u in topNet.admins)
+                    {
+                        if (u != null)
+                        {
+                            if (u.id == userId)
+                            {
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
-            else if (network.GetType() == typeof(Network_Group))
+            else if (network.GetType().Name.Contains("Network_Group"))
             {
                 Network_Group groupNet = (Network_Group)network;
-                Network_SubNetwork subNet = (Network_SubNetwork)networkAccessor.GetNetwork(groupNet.Network_SubNetwork_Id);
-                Network_TopNetwork topNet = (Network_TopNetwork)networkAccessor.GetNetwork(subNet.Network_TopNetwork_Id);
-                List<User> allAdmins = new List<User>();
-                allAdmins.Concat(groupNet.admins);
-                allAdmins.Concat(subNet.admins);
-                allAdmins.Concat(topNet.admins);
-                if (allAdmins != null)
+                Network_SubNetwork subNet = groupNet.Network_SubNetwork;
+                Network_TopNetwork topNet = groupNet.Network_SubNetwork.Network_TopNetwork;
+
+                if (subNet.admins != null)
                 {
-                    foreach (User u in allAdmins)
+                    foreach (User u in subNet.admins)
                     {
                         if (u != null)
                         {
@@ -352,11 +360,32 @@ namespace Manager
                             }
                         }
                     }
-                    return false;
                 }
-                else
+                if (topNet.admins != null)
                 {
-                    return false;
+                    foreach (User u in topNet.admins)
+                    {
+                        if (u != null)
+                        {
+                            if (u.id == userId)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                if (groupNet.admins != null)
+                {
+                    foreach (User u in groupNet.admins)
+                    {
+                        if (u != null)
+                        {
+                            if (u.id == userId)
+                            {
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
             return false;
@@ -369,21 +398,21 @@ namespace Manager
                 Network network = networkAccessor.GetNetwork(networkId);
                 User networkUser = userManager.GetUser(userId);
                 ReorderEngine re = new ReorderEngine();
-                List<int> networkIds = re.stringOrderToList(networkUser.networks);
-                networkIds.Remove(networkId);
-                string newUserNetworkList = null;
-                foreach (int i in networkIds)
-                {
-                    if (newUserNetworkList == null)
-                    {
-                        newUserNetworkList = i.ToString();
-                    }
-                    else
-                    {
-                        newUserNetworkList += ("," + i.ToString());
-                    }
-                }
-                networkUser.networks = newUserNetworkList;
+                //List<int> networkIds = re.stringOrderToList(networkUser.networks);
+                //networkIds.Remove(networkId);
+                //string newUserNetworkList = null;
+                //foreach (int i in networkIds)
+                //{
+                //    if (newUserNetworkList == null)
+                //    {
+                //        newUserNetworkList = i.ToString();
+                //    }
+                //    else
+                //    {
+                //        newUserNetworkList += ("," + i.ToString());
+                //    }
+                //}
+                //networkUser.networks = newUserNetworkList;
                 userManager.UpdateUser(networkUser);
 
                 network.networkUsers.Remove(networkUser);
@@ -404,21 +433,21 @@ namespace Manager
                 Network network = networkAccessor.GetNetwork(networkId);
                 User adminUser = userManager.GetUser(adminUserId);
                 ReorderEngine re = new ReorderEngine();
-                List<int> networkIds = re.stringOrderToList(adminUser.networks);
-                networkIds.Remove(networkId);
-                string newUserNetworkList = null;
-                foreach (int i in networkIds)
-                {
-                    if (newUserNetworkList == null)
-                    {
-                        newUserNetworkList = i.ToString();
-                    }
-                    else
-                    {
-                        newUserNetworkList += ("," + i.ToString());
-                    }
-                }
-                adminUser.networks = newUserNetworkList;
+                //List<int> networkIds = re.stringOrderToList(adminUser.networks);
+                //networkIds.Remove(networkId);
+                //string newUserNetworkList = null;
+                //foreach (int i in networkIds)
+                //{
+                //    if (newUserNetworkList == null)
+                //    {
+                //        newUserNetworkList = i.ToString();
+                //    }
+                //    else
+                //    {
+                //        newUserNetworkList += ("," + i.ToString());
+                //    }
+                //}
+                //adminUser.networks = newUserNetworkList;
                 userManager.UpdateUser(adminUser);
 
                 network.admins.Remove(adminUser);
@@ -445,10 +474,10 @@ namespace Manager
                     networkJson.name = network.name;
                     networkJson.privacy = network.privacy;
                     networkJson.profileURL = network.profileURL;
-                    if (network.GetType() == typeof(Network_TopNetwork))
+                    if (network.GetType().Name.Contains("Network_TopNetwork"))
                     {
-                        Network_TopNetwork topNetwork = (Network_TopNetwork)network;
-                        if (topNetwork.subNetworks != null)
+                        Network_TopNetwork topNetwork = networkAccessor.GetTopNetwork(network.id);
+                        if (topNetwork.subNetworks.Count > 0)
                         {
                             List<JsonModels.NetworkShell> subNetShells = new List<JsonModels.NetworkShell>();
                             foreach (Network_SubNetwork subNetwork in topNetwork.subNetworks)
@@ -472,10 +501,10 @@ namespace Manager
                             networkJson.subNetworks = null;
                         }
                     }
-                    else if (network.GetType() == typeof(Network_SubNetwork))
+                    else if (network.GetType().Name.Contains("Network_SubNetwork"))
                     {
                         Network_SubNetwork subNetwork = (Network_SubNetwork)network;
-                        if (subNetwork.groups != null)
+                        if (subNetwork.groups.Count > 0)
                         {
                             List<JsonModels.NetworkShell> groupShells = new List<JsonModels.NetworkShell>();
                             foreach (Network_Group group in subNetwork.groups)
@@ -494,8 +523,9 @@ namespace Manager
                             networkJson.subNetworks = groupShells;
 
                             JsonModels.NetworkShell parentNetworkShell = new JsonModels.NetworkShell();
-                            Network_TopNetwork topNet = (Network_TopNetwork)networkAccessor.GetNetwork(subNetwork.Network_TopNetwork_Id);
-                            parentNetworkShell.networkId = subNetwork.Network_TopNetwork_Id;
+                            Network_TopNetwork topNet = subNetwork.Network_TopNetwork;
+
+                            parentNetworkShell.networkId = topNet.id;
                             parentNetworkShell.name = topNet.name;
                             parentNetworkShell.profileURL = topNet.profileURL;
                             parentNetworkShell.coverPicture = topNet.coverPicture;
@@ -507,8 +537,9 @@ namespace Manager
                             networkJson.subNetworks = null;
 
                             JsonModels.NetworkShell parentNetworkShell = new JsonModels.NetworkShell();
-                            Network_TopNetwork topNet = (Network_TopNetwork)networkAccessor.GetNetwork(subNetwork.Network_TopNetwork_Id);
-                            parentNetworkShell.networkId = subNetwork.Network_TopNetwork_Id;
+                            Network_TopNetwork topNet = subNetwork.Network_TopNetwork;
+
+                            parentNetworkShell.networkId = topNet.id;
                             parentNetworkShell.name = topNet.name;
                             parentNetworkShell.profileURL = topNet.profileURL;
                             parentNetworkShell.coverPicture = topNet.coverPicture;
@@ -517,12 +548,12 @@ namespace Manager
                         }
 
                     }
-                    else if (network.GetType() == typeof(Network_Group))
+                    else if (network.GetType().Name.Contains("Network_Group"))
                     {
                         Network_Group networkGroup = (Network_Group)network;
                         JsonModels.NetworkShell parentNetworkShell = new JsonModels.NetworkShell();
-                        Network_SubNetwork subNet = (Network_SubNetwork)networkAccessor.GetNetwork(networkGroup.Network_SubNetwork_Id);
-                        parentNetworkShell.networkId = networkGroup.Network_SubNetwork_Id;
+                        Network_SubNetwork subNet = networkGroup.Network_SubNetwork;
+                        parentNetworkShell.networkId = subNet.id;
                         parentNetworkShell.name = subNet.name;
                         parentNetworkShell.profileURL = subNet.profileURL;
                         parentNetworkShell.coverPicture = subNet.coverPicture;
@@ -530,7 +561,7 @@ namespace Manager
                         networkJson.parentNetwork = parentNetworkShell;
                     }
 
-                    if (network.admins != null)
+                    if (network.admins.Count > 0)
                     {
                         List<JsonModels.NetworkUserShell> adminShells = new List<JsonModels.NetworkUserShell>();
                         foreach (User admin in network.admins)

@@ -109,7 +109,7 @@ namespace UserClientMembers.Models
         public string major { get; set; }
         [DataType(DataType.PhoneNumber)]
         public string phoneNumber { get; set; }
-        public WillingToRelocateType willingToRelocate { get; set; }
+       // public WillingToRelocateType willingToRelocate { get; set; }
         public List<string> userTags { get; set; }
         public string profilePicture { get; set; }
         public string profilePictureThumbnail { get; set; }
@@ -117,7 +117,7 @@ namespace UserClientMembers.Models
         public string aboutPictureThumbnail { get; set; }
         public string resume { get; set; }
         public string description { get; set; }
-        public EmploymentStatus status { get; set; }
+       // public EmploymentStatus status { get; set; }
         public DateTime graduationDate { get; set; }
         public int emailVerified { get; set; }
         public int isPublic { get; set; }

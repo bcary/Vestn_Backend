@@ -135,6 +135,18 @@ namespace Manager
             return user;
         }
 
+        public User GetUserWithNetworks(int userId)
+        {
+            User user = userAccessor.GetUserWithNetworks(userId);
+
+            //NOT re-ordering projects, as my query to include network Collections does not, by default, return all FK relationships. Plus I dont need the projects for what this method is used for.
+            //Reorder project elements before sending back to user
+            //ReorderEngine reorderEngine = new ReorderEngine();
+            //user = reorderEngine.ReOrderProjects(user);
+
+            return user;
+        }
+
         public User GetUserByProfileURL(string profileURL)
         {
             User user = userAccessor.GetUserByProfileURL(profileURL);

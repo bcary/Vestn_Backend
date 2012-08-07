@@ -19,7 +19,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string CreateNetwork(int adminUserId)
+        public string CreateNetwork(int adminUserId = -1)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
@@ -27,7 +27,14 @@ namespace UserClientMembers.Controllers
             }
             try
             {
-                return AddSuccessHeader(Serialize(networkManager.CreateNetwork(adminUserId)));
+                if (adminUserId < 0)
+                {
+                    return AddSuccessHeader(Serialize(networkManager.CreateNetwork()));
+                }
+                else
+                {
+                    return AddSuccessHeader(Serialize(networkManager.CreateNetwork(adminUserId)));
+                }
             }
             catch (Exception ex)
             {
@@ -55,7 +62,8 @@ namespace UserClientMembers.Controllers
                 Network network = networkManager.GetNetwork(networkId);
                 if (network != null)
                 {
-                    if (network.GetType() == typeof(Network_TopNetwork))
+                    string type = network.GetType().Name;
+                    if (network.GetType().Name.Contains("Network_TopNetwork"))
                     {
                         Network_TopNetwork topNet = (Network_TopNetwork)network;
                         if (topNet != null)
@@ -75,7 +83,7 @@ namespace UserClientMembers.Controllers
                             return AddErrorHeader("error fetching top level network");
                         }
                     }
-                    else if (network.GetType() == typeof(Network_SubNetwork))
+                    else if (network.GetType().Name.Contains("Network_SubNetwork"))
                     {
                         Network_SubNetwork subNet = (Network_SubNetwork)network;
                         if (subNet != null)
@@ -132,11 +140,10 @@ namespace UserClientMembers.Controllers
 
                 if (networkManager.IsNetworkAdmin(networkId, userId))
                 {
-                    Network network = networkManager.GetNetwork(networkId);
-                    JsonModels.Network networkJson = networkManager.AddNetworkAdmin(network, adminEmail);
-                    if (networkJson != null)
+                    bool added = networkManager.AddNetworkAdmin(networkId, adminEmail);
+                    if (added)
                     {
-                        return AddSuccessHeader(Serialize(networkJson));
+                        return AddSuccessHeader("Admin Successfully Added", true);
                     }
                     else
                     {

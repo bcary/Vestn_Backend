@@ -54,6 +54,10 @@
       <Project>{E93BC31C-2391-4A9D-9D6A-B717F915D64B}</Project>
       <Name>LogAccessor</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Accessors\UserAccessor\UserAccessor.csproj">
+      <Project>{BC27F985-DE61-4094-8694-C1A174C59EA6}</Project>
+      <Name>UserAccessor</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Entities\DatabaseContext\DatabaseContext.csproj">
       <Project>{835E4CCE-E754-4368-9D60-D6D2DC0FDEEE}</Project>
       <Name>DatabaseContext</Name>
@@ -62,9 +66,9 @@
       <Project>{5BEFDC6C-F543-4AB2-AC74-6AB07F7CBAB8}</Project>
       <Name>Log</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Entities\Networks\Networks.csproj">
-      <Project>{0D8DD8AE-5812-4B54-8B35-86ED8B11E568}</Project>
-      <Name>Networks</Name>
+    <ProjectReference Include="..\Entities\Users\Users.csproj">
+      <Project>{5E71E86E-850C-4160-8475-D2801F3D4614}</Project>
+      <Name>Users</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

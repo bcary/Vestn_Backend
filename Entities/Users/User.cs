@@ -41,21 +41,62 @@ namespace Entity
         public string twitterLink { get; set; }
         public string linkedinLink { get; set; }
         public int profileViews { get; set; }
-        public string networks { get; set; }
+        //public string networks { get; set; }
+
+        public virtual ICollection<Network> networks { get; set; }
+        public virtual ICollection<Network> adminNetworks { get; set; }
+
+        public User()
+        {
+            networks = new HashSet<Network>();
+            adminNetworks = new HashSet<Network>();
+        }
     }
 
-    public enum WillingToRelocateType
+    public class Network
     {
-        undecided = -1,
-        yes = 1,
-        no = 0
+        public int id { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
+        public string privacy { get; set; } //if isPublic is true -> any user can access the network. if false -> only members of networkUsers can access the network (and subnetworks)
+        public string coverPicture { get; set; }
+        public string profileURL { get; set; }
+        public string networkIdentifier { get; set; }
+
+        public virtual ICollection<User> admins { get; set; }//determine how to flag admin status and for what network?
+        public virtual ICollection<User> networkUsers { get; set; } //all users in all subnetworks
+
+        public Network()
+        {
+            admins = new HashSet<User>();
+            networkUsers = new HashSet<User>();
+        }
     }
 
-    public enum EmploymentStatus
+    public class Network_SubNetwork : Network
     {
-        Employed = -1,
-        LookingForInternship = 0,
-        LookingForJob = 1,
-        NotLooking = 2
+        public virtual ICollection<Network_Group> groups { get; set; }
+        public virtual Network_TopNetwork Network_TopNetwork { get; set; }
+
+        public Network_SubNetwork()
+        {
+            groups = new List<Network_Group>();
+        }
     }
+
+    public class Network_Group : Network
+    {
+        public virtual Network_SubNetwork Network_SubNetwork { get; set; }
+    }
+
+    public class Network_TopNetwork : Network
+    {
+        public virtual ICollection<Network_SubNetwork> subNetworks { get; set; }
+
+        public Network_TopNetwork()
+        {
+            subNetworks = new List<Network_SubNetwork>();
+        }
+    }
+
 }

@@ -148,6 +148,27 @@ namespace Accessor
             return user;
         }
 
+        public User GetUserWithNetworks(int userId)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                User user = db.users.Where(u => u.id == userId).Include(u => u.adminNetworks).Include(u => u.networks).Include(u => u.projects).FirstOrDefault();
+                if (user != null)
+                {
+                    return user;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public User GetUser(string userName)
         {
             if (userName == null)

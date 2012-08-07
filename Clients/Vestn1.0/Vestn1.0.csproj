@@ -366,10 +366,6 @@
       <Project>{F52C4CC1-F773-4912-8D96-56286C81BB35}</Project>
       <Name>JsonModels</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Entities\Networks\Networks.csproj">
-      <Project>{0D8DD8AE-5812-4B54-8B35-86ED8B11E568}</Project>
-      <Name>Networks</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Entities\Prop\Prop.csproj">
       <Project>{99C78FF1-341F-4CCC-98DF-9D29CD7CCBA7}</Project>
       <Name>Prop</Name>
