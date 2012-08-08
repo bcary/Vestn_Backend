@@ -213,7 +213,7 @@ namespace Entity
         public class NetworkShell
         {
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public int networkId { get; set; }
+            public int id { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string name { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
@@ -267,6 +267,10 @@ namespace Entity
             public string profileURL { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string email { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string firstName { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string lastName { get; set; }
             
         }
 

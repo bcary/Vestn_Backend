@@ -3638,7 +3638,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string GetUserModel(int userId)
+        public string GetUserModel(int userId, string token)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -3646,6 +3646,15 @@ namespace UserClientMembers.Controllers
             }
             try
             {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                if (authUserId != userId)
+                {
+                    return AddErrorHeader("User must be profile owner to retrieve the User Model");
+                }
                 User user = userManager.GetUserWithNetworks(userId);
                 if (user != null)
                 {
@@ -3785,6 +3794,8 @@ namespace UserClientMembers.Controllers
                     }
                     userSettingsJson.email = user.email;
                     userSettingsJson.profileURL = user.profileURL;
+                    userSettingsJson.firstName = user.firstName;
+                    userSettingsJson.lastName = user.lastName;
                     if(user.isPublic == 1)
                     {
                         userSettingsJson.visibility = "visible";

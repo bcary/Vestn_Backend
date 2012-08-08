@@ -225,5 +225,42 @@ namespace Accessor
                 return false;
             }
         }
+
+        public Network GetNetworkByUrl(string networkURL)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+
+                Network network = db.networks.Where(n => n.profileURL == networkURL).FirstOrDefault();
+                return network;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public bool IsNetworkUrlAvailable(string networkURL)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+
+                List<Network> query = db.networks.Where(n => n.profileURL == networkURL).ToList();
+                if (query == null || query.Count == 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }

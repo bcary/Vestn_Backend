@@ -398,21 +398,6 @@ namespace Manager
                 Network network = networkAccessor.GetNetwork(networkId);
                 User networkUser = userManager.GetUser(userId);
                 ReorderEngine re = new ReorderEngine();
-                //List<int> networkIds = re.stringOrderToList(networkUser.networks);
-                //networkIds.Remove(networkId);
-                //string newUserNetworkList = null;
-                //foreach (int i in networkIds)
-                //{
-                //    if (newUserNetworkList == null)
-                //    {
-                //        newUserNetworkList = i.ToString();
-                //    }
-                //    else
-                //    {
-                //        newUserNetworkList += ("," + i.ToString());
-                //    }
-                //}
-                //networkUser.networks = newUserNetworkList;
                 userManager.UpdateUser(networkUser);
 
                 network.networkUsers.Remove(networkUser);
@@ -433,21 +418,6 @@ namespace Manager
                 Network network = networkAccessor.GetNetwork(networkId);
                 User adminUser = userManager.GetUser(adminUserId);
                 ReorderEngine re = new ReorderEngine();
-                //List<int> networkIds = re.stringOrderToList(adminUser.networks);
-                //networkIds.Remove(networkId);
-                //string newUserNetworkList = null;
-                //foreach (int i in networkIds)
-                //{
-                //    if (newUserNetworkList == null)
-                //    {
-                //        newUserNetworkList = i.ToString();
-                //    }
-                //    else
-                //    {
-                //        newUserNetworkList += ("," + i.ToString());
-                //    }
-                //}
-                //adminUser.networks = newUserNetworkList;
                 userManager.UpdateUser(adminUser);
 
                 network.admins.Remove(adminUser);
@@ -457,6 +427,42 @@ namespace Manager
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "Network Manager - RemoveNetworkAdmin", ex.StackTrace);
+                return null;
+            }
+        }
+
+        public Network GetNetworkByUrl(string networkURL)
+        {
+            try
+            {
+                Network network = networkAccessor.GetNetworkByUrl(networkURL);
+                return network;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public string UpdateNetworkUrl(int networkId, string desiredURL)
+        {
+            try
+            {
+                if (networkAccessor.IsNetworkUrlAvailable(desiredURL))
+                {
+                    Network network = networkAccessor.GetNetwork(networkId);
+                    network.profileURL = desiredURL;
+                    networkAccessor.UpdateNetwork(network);
+                    return "success";
+                }
+                else
+                {
+                    return "URL taken";
+                }
+
+            }
+            catch (Exception ex)
+            {
                 return null;
             }
         }
@@ -485,7 +491,7 @@ namespace Manager
                                 if (subNetwork != null)
                                 {
                                     JsonModels.NetworkShell netShell = new JsonModels.NetworkShell();
-                                    netShell.networkId = subNetwork.id;
+                                    netShell.id = subNetwork.id;
                                     netShell.name = subNetwork.name;
                                     netShell.profileURL = subNetwork.profileURL;
                                     netShell.coverPicture = subNetwork.coverPicture;
@@ -512,11 +518,11 @@ namespace Manager
                                 if (group != null)
                                 {
                                     JsonModels.NetworkShell gShell = new JsonModels.NetworkShell();
-                                    gShell.networkId = subNetwork.id;
-                                    gShell.name = subNetwork.name;
-                                    gShell.profileURL = subNetwork.profileURL;
-                                    gShell.coverPicture = subNetwork.coverPicture;
-                                    gShell.privacy = subNetwork.privacy;
+                                    gShell.id = group.id;
+                                    gShell.name = group.name;
+                                    gShell.profileURL = group.profileURL;
+                                    gShell.coverPicture = group.coverPicture;
+                                    gShell.privacy = group.privacy;
                                     groupShells.Add(gShell);
                                 }
                             }
@@ -525,7 +531,7 @@ namespace Manager
                             JsonModels.NetworkShell parentNetworkShell = new JsonModels.NetworkShell();
                             Network_TopNetwork topNet = subNetwork.Network_TopNetwork;
 
-                            parentNetworkShell.networkId = topNet.id;
+                            parentNetworkShell.id = topNet.id;
                             parentNetworkShell.name = topNet.name;
                             parentNetworkShell.profileURL = topNet.profileURL;
                             parentNetworkShell.coverPicture = topNet.coverPicture;
@@ -539,7 +545,7 @@ namespace Manager
                             JsonModels.NetworkShell parentNetworkShell = new JsonModels.NetworkShell();
                             Network_TopNetwork topNet = subNetwork.Network_TopNetwork;
 
-                            parentNetworkShell.networkId = topNet.id;
+                            parentNetworkShell.id = topNet.id;
                             parentNetworkShell.name = topNet.name;
                             parentNetworkShell.profileURL = topNet.profileURL;
                             parentNetworkShell.coverPicture = topNet.coverPicture;
@@ -553,7 +559,7 @@ namespace Manager
                         Network_Group networkGroup = (Network_Group)network;
                         JsonModels.NetworkShell parentNetworkShell = new JsonModels.NetworkShell();
                         Network_SubNetwork subNet = networkGroup.Network_SubNetwork;
-                        parentNetworkShell.networkId = subNet.id;
+                        parentNetworkShell.id = subNet.id;
                         parentNetworkShell.name = subNet.name;
                         parentNetworkShell.profileURL = subNet.profileURL;
                         parentNetworkShell.coverPicture = subNet.coverPicture;

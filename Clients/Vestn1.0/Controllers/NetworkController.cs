@@ -269,6 +269,88 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
+        public string GetNetworkByURL(string networkURL, string token)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                int userId = authenticationEngine.authenticate(token);
+                if (userId < 0)
+                {
+                    return AddErrorHeader("You are not authenticated, please log in!");
+                }
+
+                Network network = networkManager.GetNetworkByUrl(networkURL);
+                if (network == null)
+                {
+                    return AddErrorHeader("Network with networkURL was not found");
+                }
+                else
+                {
+                    return AddSuccessHeader(Serialize(networkManager.GetNetworkJson(network)));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return AddErrorHeader("Something went wrong while attmpting to retreive this networkURL");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string UpdateNetworkURL(int networkId, string desiredURL, string token)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                int userId = authenticationEngine.authenticate(token);
+                if (userId < 0)
+                {
+                    return AddErrorHeader("You are not authenticated, please log in!");
+                }
+                if (networkManager.IsNetworkAdmin(networkId, userId))
+                {
+                    string status = networkManager.UpdateNetworkUrl(networkId, desiredURL);
+                    if (status != null)
+                    {
+                        if (status == "success")
+                        {
+                            return AddSuccessHeader("Network URL updated successfully");
+                        }
+                        else if (status == "URL taken")
+                        {
+                            return AddErrorHeader("Network URL is already taken.");
+                        }
+                        else
+                        {
+                            return AddErrorHeader("error");
+                        }
+                    }
+                    else
+                    {
+                        return AddErrorHeader("An error occurred while attempting to update this networkURL");
+                    }
+                }
+                else
+                {
+                    return AddErrorHeader("User must be network administrator to update the URL");
+                }
+            }
+            catch (Exception ex)
+            {
+                return AddErrorHeader("Something went wrong while attempting to update this networkURL");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
         public string UpdateNetworkModel(IEnumerable<JsonModels.Network> network, string token)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
