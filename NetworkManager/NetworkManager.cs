@@ -125,6 +125,7 @@ namespace Manager
                 if (network != null)
                 {
                     JsonModels.NetworkUsers networkUsersJson = new JsonModels.NetworkUsers();
+                    networkUsersJson.users = new List<JsonModels.NetworkUserShell>();
                     foreach (User u in network.networkUsers)
                     {
                         if (u != null)
@@ -165,7 +166,7 @@ namespace Manager
                         originalNetwork.name = networkJson.name;
                         originalNetwork.privacy = networkJson.privacy;
 
-                        Network returnNetwork = networkAccessor.UpdateNetwork(originalNetwork);
+                        Network returnNetwork = networkAccessor.UpdateNetworkInformation(originalNetwork);
                         return (GetNetworkJson(returnNetwork));
                     }
                     else
@@ -452,8 +453,14 @@ namespace Manager
                 {
                     Network network = networkAccessor.GetNetwork(networkId);
                     network.profileURL = desiredURL;
-                    networkAccessor.UpdateNetwork(network);
-                    return "success";
+                    if (networkAccessor.UpdateNetworkUrl(network) != null)
+                    {
+                        return "success";
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {

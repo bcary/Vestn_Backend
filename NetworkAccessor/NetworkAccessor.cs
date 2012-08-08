@@ -120,7 +120,48 @@ namespace Accessor
             try
             {
                 VestnDB db = new VestnDB();
-                db.Entry(network).State = EntityState.Modified;
+                var n = new Network { id = network.id };
+                n.profileURL = network.profileURL;
+                db.SaveChanges();
+                return network;
+            }
+            catch (Exception ex)
+            {
+                LogAccessor la = new LogAccessor();
+                la.CreateLog(DateTime.Now, "Network Accessor Update Network", ex.StackTrace);
+                return null;
+            }
+        }
+
+        public Network UpdateNetworkUrl(Network network)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                var n = new Network { id = network.id };
+                db.networks.Attach(n);
+                n.profileURL = network.profileURL;
+                db.SaveChanges();
+                return network;
+            }
+            catch (Exception ex)
+            {
+                LogAccessor la = new LogAccessor();
+                la.CreateLog(DateTime.Now, "Network Accessor Update Network", ex.StackTrace);
+                return null;
+            }
+        }
+
+        public Network UpdateNetworkInformation(Network network)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                var n = new Network { id = network.id };
+                db.networks.Attach(n);
+                n.name = network.name;
+                n.privacy = network.privacy;
+                n.description = network.description;
                 db.SaveChanges();
                 return network;
             }
