@@ -822,29 +822,72 @@ namespace UserClientMembers.Controllers
             return View();
         }
 
-        [Authorize]
-        [HttpPost]
-        public ActionResult ChangePassword(ChangePasswordModel model)
+        [AcceptVerbs("POST","OPTIONS")]
+        [AllowCrossSiteJson]
+        public string ChangePassword(string oldPassword, string newPassword, string token)
         {
-            if (ModelState.IsValid)
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
-                User user = userManager.GetUser(User.Identity.Name);
-                bool changePasswordSucceeded = userManager.ChangePassword(user, model.OldPassword, model.NewPassword);
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                User user = userManager.GetUser(authUserId);
+                bool changePasswordSucceeded = userManager.ChangePassword(user, oldPassword, newPassword);
 
                 if (changePasswordSucceeded)
                 {
-                    TempData.Add("Popup", "Your password has been changed successfully.");
-                    return RedirectToAction("Index");
+                    return AddSuccessHeader("Password Successfully Changed", true);
                 }
                 else
                 {
-                    TempData.Add("MessageBar", "Your password change has failed.");
-                    return RedirectToAction("Index");
+                    return AddErrorHeader("An error occurred changing the password");
                 }
             }
+            catch (Exception ex)
+            {
+                return AddErrorHeader("Something went wrong changing the password");
+            }
+        }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+        [AcceptVerbs("POST","OPTIONS")]
+        [AllowCrossSiteJson]
+        public string ChangeProfileURL(string desiredProfileURL, string token)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                User user = userManager.GetUser(authUserId);
+                string validationResult = ValidationEngine.ValidateProfileURL(desiredProfileURL);
+                if (validationResult == "success")
+                {
+                    user.profileURL = desiredProfileURL;
+                    userManager.UpdateUser(user);
+                    return AddSuccessHeader("Successfully updated profileURL", true);
+                }
+                else
+                {
+                    return AddErrorHeader(validationResult);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return AddErrorHeader("Something went wrong while updating this profileURL");
+            }
         }
 
         public JsonResult ForgotPassword(string email)
@@ -1148,18 +1191,6 @@ namespace UserClientMembers.Controllers
             }
         }
 
-        [AcceptVerbs("POST", "OPTIONS")]
-        [AllowCrossSiteJson]
-        public string UpdateModelUser(IEnumerable<User> user)
-        {
-            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return null;
-            }
-            return "i";
-
-        }
-
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
         public string UpdateProfileModel(IEnumerable<JsonModels.ProfileInformation> profile, string token = null)
@@ -1204,7 +1235,7 @@ namespace UserClientMembers.Controllers
                         originalProfile.major = (profileFromJson.major != null) ? profileFromJson.major : null;
                         originalProfile.phoneNumber = (profileFromJson.phoneNumber != null) ? profileFromJson.phoneNumber : null;
                         originalProfile.projectOrder = (profileFromJson.projectOrder != null) ? profileFromJson.projectOrder : null;
-                        originalProfile.resume = (profileFromJson.resume != null) ? profileFromJson.resume : null;
+                        //originalProfile.resume = (profileFromJson.resume != null) ? profileFromJson.resume : null;
                         originalProfile.organization = (profileFromJson.organization != null) ? profileFromJson.organization : null;
                         originalProfile.tagLine = (profileFromJson.tagLine != null) ? profileFromJson.tagLine : null;
                         originalProfile.title = (profileFromJson.title != null) ? profileFromJson.title : null;

@@ -275,9 +275,11 @@ namespace Accessor
                 return null;
             }
 
+            User u = new User { id = user.id };
+
             if (user.profileURL == null)
             {
-                user.profileURL = user.userName;
+                u.profileURL = user.userName;
             }
 
             User oldUser = GetUser(user.id);
@@ -301,22 +303,45 @@ namespace Accessor
 
             if (user.graduationDate.Year < 1800)
             {
-                user.graduationDate = new DateTime(1800, 1, 1);
+                u.graduationDate = new DateTime(1800, 1, 1);
             }
             if (user.birthDate.Year < 1800)
             {
-                user.birthDate = new DateTime(1800, 1, 1);
+                u.birthDate = new DateTime(1800, 1, 1);
             }
 
             //Entity logic for everything else (except password)
             try
             {
                 VestnDB db = new VestnDB();
-                db.Entry(user).State = EntityState.Modified;
+                db.users.Attach(u);
+                //db.Entry(user).State = EntityState.Modified;
+                u.description = user.description;
+                u.email = user.email;
+                u.facebookLink = user.facebookLink;
+                u.linkedinLink = user.linkedinLink;
+                u.twitterLink = user.twitterLink;
+                u.firstName = user.firstName;
+                u.lastName = user.lastName;
+                u.major = user.major;
+                u.location = user.location;
+                u.phoneNumber = user.phoneNumber;
+                u.projectOrder = user.projectOrder;
+                u.organization = user.organization;
+                u.tagLine = user.tagLine;
+                u.title = user.title;
+
+                u.resume = user.resume;
+                u.profilePicture = user.profilePicture;
+                u.profilePictureThumbnail = user.profilePictureThumbnail;
+
+                u.profileURL = user.profileURL;
+
                 db.SaveChanges();
             }
             catch (Exception e)
             {
+
                 logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), e.ToString());
                 return null;
             }
