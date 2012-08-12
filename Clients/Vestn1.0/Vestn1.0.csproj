@@ -75,6 +75,9 @@
     <Reference Include="RazorJS">
       <HintPath>..\..\packages\RazorJS.0.4.3\lib\RazorJS.dll</HintPath>
     </Reference>
+    <Reference Include="SendGridMail">
+      <HintPath>..\..\packages\Sendgrid.1.0.1\lib\net40\SendGridMail.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -270,6 +273,7 @@
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="Global.asax" />
     <None Include="Resources\freelancer tags.txt" />
+    <Content Include="lib\CodeScales.Http.dll" />
     <Content Include="Scripts\bbq.js" />
     <Content Include="Scripts\autogrow.js" />
     <Content Include="Scripts\completeProfile.js" />

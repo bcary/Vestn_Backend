@@ -15,6 +15,8 @@ using Entity;
 using System.Data.Entity;
 using System.Data;
 using System.Data.Linq;
+using SendGridMail;
+using SendGridMail.Transport;
 
 namespace Manager
 {

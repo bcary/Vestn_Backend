@@ -59,6 +59,9 @@
     <Reference Include="RazorEngine">
       <HintPath>..\..\packages\RazorJS.0.4.3\lib\RazorEngine.dll</HintPath>
     </Reference>
+    <Reference Include="SendGridMail">
+      <HintPath>..\..\packages\Sendgrid.1.0.1\lib\net40\SendGridMail.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
