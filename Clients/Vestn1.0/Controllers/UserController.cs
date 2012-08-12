@@ -665,7 +665,8 @@ namespace UserClientMembers.Controllers
                 {
                     User user = userManager.GetUser(username);
                     //MembershipUser mu = Membership.GetUser(username);
-                    //mu.ChangePassword(mu.ResetPassword(), "vestn2227");
+                    //mu.UnlockUser();
+                    //mu.ChangePassword(mu.ResetPassword(), "Mpos104*");
                     if (user == null)
                     {
                         user = userManager.GetUserByEmail(username);
@@ -837,6 +838,14 @@ namespace UserClientMembers.Controllers
                 {
                     authUserId = authenticationEngine.authenticate(token);
                 }
+                else
+                {
+                    return AddErrorHeader("A token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return AddErrorHeader("The authenticaiton token is not valid");
+                }
                 User user = userManager.GetUser(authUserId);
                 bool changePasswordSucceeded = userManager.ChangePassword(user, oldPassword, newPassword);
 
@@ -869,6 +878,14 @@ namespace UserClientMembers.Controllers
                 if (token != null)
                 {
                     authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return AddErrorHeader("A token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return AddErrorHeader("The authenticaiton token is not valid");
                 }
                 User user = userManager.GetUser(authUserId);
                 string validationResult = ValidationEngine.ValidateProfileURL(desiredProfileURL);
@@ -3682,6 +3699,15 @@ namespace UserClientMembers.Controllers
                 {
                     authUserId = authenticationEngine.authenticate(token);
                 }
+                else
+                {
+                    return AddErrorHeader("A token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return AddErrorHeader("The authenticaiton token is not valid");
+                }
+
                 if (authUserId != userId)
                 {
                     return AddErrorHeader("User must be profile owner to retrieve the User Model");

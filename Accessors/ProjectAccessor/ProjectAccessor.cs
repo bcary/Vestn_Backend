@@ -19,61 +19,23 @@ namespace Accessor
 
         public Project CreateProject(User u, List<ProjectElement> projectElements)
         {
-
-            Project project = new Project(){ isActive = true, dateModified = DateTime.Now };
+            Project project = new Project() { isActive = true, dateModified = DateTime.Now };
             project.projectElements = projectElements;
-
             try
             {
+                User user = new User { id = u.id };
                 if (u.projects == null)
                 {
-                    u.projects = new List<Project>();
-                }
-
-                u.projects.Add(project);
-
-                VestnDB db = new VestnDB();
-                db.projects.Add(project);
-                db.Entry(u).State = EntityState.Modified;
-                db.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), e.ToString());
-                return null;
-            }
-
-            try
-            {
-                //save ordering with new project
-                if (u.projectOrder == null)
-                {
-                    List<int> currentProjects = new List<int>();
-                    string newProjectOrder = null;
-                    foreach (Project p in u.projects)
-                    {
-                        if (p.isActive == true && p.privacy != "deleted")
-                        {
-                            currentProjects.Add(p.id);
-                        }
-                    }
-                    foreach (int y in currentProjects)
-                    {
-                        newProjectOrder += y + " ";
-                    }
-                    newProjectOrder = newProjectOrder.TrimEnd().Replace(' ', ',');
-                    u.projectOrder = newProjectOrder;
-                }
-                if (u.projects.Count() == 1)
-                {
-                    u.projectOrder += project.id;
+                    user.projects = new List<Project>();
                 }
                 else
                 {
-                    u.projectOrder += "," + project.id;
+                    user.projects = u.projects;
                 }
                 VestnDB db = new VestnDB();
-                db.Entry(u).State = EntityState.Modified;
+                user.projects.Add(project);
+                db.projects.Add(project);
+                db.users.Attach(user);
                 db.SaveChanges();
             }
             catch (Exception e)
@@ -81,7 +43,6 @@ namespace Accessor
                 logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), e.ToString());
                 return null;
             }
-
             return project;
         }
 

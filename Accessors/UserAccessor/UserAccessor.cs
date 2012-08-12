@@ -118,7 +118,45 @@ namespace Accessor
             return randomString;
         }
 
+        public void AddProjectIdToOrder(int newProjectId, User user)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                User u = new User { id = user.id };
+                db.users.Attach(u);
+                u.projectOrder = user.projectOrder;
 
+                if (u.projectOrder == null)
+                {
+                    List<int> currentProjects = new List<int>();
+                    string newProjectOrder = null;
+                    foreach (Project p in user.projects)
+                    {
+                        if (p.isActive == true && p.privacy != "deleted")
+                        {
+                            currentProjects.Add(p.id);
+                        }
+                    }
+                    foreach (int y in currentProjects)
+                    {
+                        newProjectOrder += y + " ";
+                    }
+                    newProjectOrder = newProjectOrder.TrimEnd().Replace(' ', ',');
+                    u.projectOrder = newProjectOrder;
+                    user.projectOrder = newProjectOrder;
+                }
+                else
+                {
+                    u.projectOrder += ("," + newProjectId.ToString());
+                    user.projectOrder += ("," + newProjectId.ToString());
+                }
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
 
 
         public List<User> GetAllUsers()
@@ -135,14 +173,9 @@ namespace Accessor
             {
                 return null;
             }
-
-            //TODO do not let this go live uncommented....
-            //Make sure MembershipUser exists
             MembershipUser membershipUser = Membership.GetUser(user.userName);
             if (membershipUser == null)
             {
-                //MembershipCreateStatus createStatus;
-                //Membership.CreateUser(user.userName, "safasfsd", user.email, null, null, false, null, out createStatus);
                 return null;
             }
             return user;
@@ -153,7 +186,11 @@ namespace Accessor
             try
             {
                 VestnDB db = new VestnDB();
-                User user = db.users.Where(u => u.id == userId).Include(u => u.adminNetworks).Include(u => u.networks).Include(u => u.projects).FirstOrDefault();
+                User user = db.users.Where(u => u.id == userId)
+                    .Include(u => u.adminNetworks)
+                    .Include(u => u.networks)
+                    .Include(u => u.projects.Select(b => b.projectElements))
+                    .FirstOrDefault();
                 if (user != null)
                 {
                     return user;
@@ -443,9 +480,9 @@ namespace Accessor
             User user;
             try
             {
-                //user = db.users.Find(id);
-                user = db.users
-                    .Where(u => u.id == id)
+                user = db.users.Where(u => u.id == id)
+                    .Include(u => u.adminNetworks)
+                    .Include(u => u.networks)
                     .Include(u => u.projects.Select(b => b.projectElements))
                     .FirstOrDefault();
             }
@@ -460,20 +497,22 @@ namespace Accessor
         private User GetEntityUser(string userName)
         {
             VestnDB db = new VestnDB();
-            User user = db.users
-                    .Where(u => u.userName == userName)
-                    .Include(u => u.projects.Select(b => b.projectElements))
-                    .FirstOrDefault();
+            User user = db.users.Where(u => u.userName == userName)
+                .Include(u => u.adminNetworks)
+                .Include(u => u.networks)
+                .Include(u => u.projects.Select(b => b.projectElements))
+                .FirstOrDefault();
             return user;
         }
 
         private User GetEntityUserByProfileURL(string profileURL)
         {
             VestnDB db = new VestnDB();
-            User user = db.users
-                    .Where(u => u.profileURL == profileURL)
-                    .Include(u => u.projects.Select(b => b.projectElements))
-                    .FirstOrDefault();
+            User user = db.users.Where(u => u.profileURL == profileURL)
+                .Include(u => u.adminNetworks)
+                .Include(u => u.networks)
+                .Include(u => u.projects.Select(b => b.projectElements))
+                .FirstOrDefault();
             return user;
         }
 

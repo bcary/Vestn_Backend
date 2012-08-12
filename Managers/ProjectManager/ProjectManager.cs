@@ -35,16 +35,14 @@ namespace Manager
 
         public Project CreateProject(User u, List<ProjectElement> projectElements)
         {
-            //if (u.projects != null)
-            //{
-            //    int activeSum = 0;
-            //    foreach(Project p in u.projects){
-            //        activeSum += Convert.ToInt32(p.isActive);
-            //    }
-            //}
             Project project = pa.CreateProject(u, projectElements);
+
+            UserAccessor ua = new UserAccessor();
+            ua.AddProjectIdToOrder(project.id, u);
+
             AnalyticsAccessor aa = new AnalyticsAccessor();
             aa.CreateAnalytic("Project Created", DateTime.Now, u.userName);
+
             return project;
         }
 

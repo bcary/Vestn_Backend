@@ -70,6 +70,7 @@ namespace UserClientMembers.Controllers
 
                     //refresh the user object with the changes
                     user = userManager.GetUser(userId);
+                    //User try2 = userManager.GetUserWithNetworks(userId);
                     JsonModels.CompleteProject response = new JsonModels.CompleteProject();
 
                     response.title = project.name;
