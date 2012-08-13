@@ -2395,13 +2395,16 @@ namespace UserClientMembers.Controllers
                         if (authenticateId < 0)
                         {
                             //Only return PUBLIC projects
+                            //retreive user
+                            //two lists of networks
+                            //networks, admin networks <- list of network where i am an admin
                         }
                     }
                     bool requestAll = false;
 
                     JsonModels.ProfileInformation ui = new JsonModels.ProfileInformation();
                     User u;
-                    if (id < 0)
+                    if (id < 0)//???? && profileURL != ""
                     {
                         if (profileURL != null)
                         {
@@ -2450,9 +2453,44 @@ namespace UserClientMembers.Controllers
                     else
                     {
                         u = userManager.GetUser(id);
+                        Boolean adminOrMemberCheck = false;
                         if (u == null)
                         {
                             return AddErrorHeader("A user with the specified id was not found");
+                        }
+                        if (id != authenticateId && u.isPublic == 0)//check to see if the authenticated user is an admin of the requested user's networks
+                        {
+                            User authenticatedUser = userManager.GetUser(authenticateId);
+                            List<int> authenticatedUserAdminandNetworkIds = new List<int>();
+                            List<int> requestedUserNetworkIds = new List<int>();
+                            foreach (Network n in u.networks)
+                            {
+                                requestedUserNetworkIds.Add(n.id);
+                            }
+                            foreach (Network n in authenticatedUser.adminNetworks)
+                            {
+                                authenticatedUserAdminandNetworkIds.Add(n.id);
+                            }
+                            foreach (Network n in authenticatedUser.networks)
+                            {
+                                authenticatedUserAdminandNetworkIds.Add(n.id);
+                            }
+                            foreach (int i in authenticatedUserAdminandNetworkIds)
+                            {
+                                foreach (int n in requestedUserNetworkIds)
+                                {
+                                    if (i == n)
+                                    {
+                                        adminOrMemberCheck = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (u.isPublic == 0 && !adminOrMemberCheck)
+                        {
+                            return AddErrorHeader("User is hidden");
                         }
                         if (id == authenticateId)
                         {
@@ -2482,6 +2520,8 @@ namespace UserClientMembers.Controllers
                             //TODO need to check if request came from another in the same network or not
                         }
                     }
+                    
+
                     if (u != null)
                     {
                         add = 0;
@@ -3369,6 +3409,50 @@ namespace UserClientMembers.Controllers
             catch (Exception ex)
             {
                 return AddErrorHeader("Something went wrong while fetching this profile score");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string SetUserPrivacy(string privacy, string token)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            User user = null;
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return AddErrorHeader("A token must be passed in");
+                }
+                if (authUserId < 0)
+                {
+                    return AddErrorHeader("The authenticaiton token is not valid");
+                }
+                user = userManager.GetUser(authUserId);
+                if (privacy == "public")
+                {
+                    user.isPublic = 1;
+                }
+                else if (privacy == "network")
+                {
+                    user.isPublic = 0;
+                }
+                userManager.UpdateUser(user);
+                //JsonModels.ProfileInformation returnProfile = userManager.GetProfileJson(user);
+                //return AddSuccessHeader(Serialize(returnProfile));
+                return AddSuccessHeader("Privacy settings changed", true);
+            }
+            catch (Exception e)
+            {
+                return AddErrorHeader("Error saving user privacy settigns");
             }
         }
 

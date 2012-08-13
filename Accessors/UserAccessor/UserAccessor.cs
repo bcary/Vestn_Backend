@@ -367,6 +367,7 @@ namespace Accessor
                 u.organization = user.organization;
                 u.tagLine = user.tagLine;
                 u.title = user.title;
+                u.isPublic = user.isPublic;
 
                 u.resume = user.resume;
                 u.profilePicture = user.profilePicture;
