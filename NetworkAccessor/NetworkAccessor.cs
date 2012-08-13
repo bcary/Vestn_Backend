@@ -115,6 +115,25 @@ namespace Accessor
             }
         }
 
+        public Network GetNetworkByIdentifier(string identifier)
+        {
+            VestnDB db = new VestnDB();
+            try
+            {
+                Network network = db.networks.Where(n => n.networkIdentifier == identifier)
+                    .Include(n => n.admins)
+                    .Include(n => n.networkUsers)
+                    .FirstOrDefault();
+                return network;
+            }
+            catch (Exception ex)
+            {
+                LogAccessor la = new LogAccessor();
+                la.CreateLog(DateTime.Now, "Network Accessor GetNetworkByIdentifier", ex.StackTrace);
+                return null;
+            }
+        }
+
         public Network UpdateNetwork(Network network)
         {
             try
@@ -170,6 +189,25 @@ namespace Accessor
                 LogAccessor la = new LogAccessor();
                 la.CreateLog(DateTime.Now, "Network Accessor Update Network", ex.StackTrace);
                 return null;
+            }
+        }
+
+        public bool UpdateNetworkIdentifier(int networkId, string identifier)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                Network n = new Network { id = networkId };
+                db.networks.Attach(n);
+                n.networkIdentifier = identifier;
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogAccessor la = new LogAccessor();
+                la.CreateLog(DateTime.Now, "Network Accessor Update Network Identifier", ex.StackTrace);
+                return false;
             }
         }
 

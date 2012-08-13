@@ -303,7 +303,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
-        public string Register(string email, string password)
+        public string Register(string email, string password, string networkJoinCode = null)
         {
             if (Request != null)
             {
@@ -351,6 +351,17 @@ namespace UserClientMembers.Controllers
 
                     userManager.ActivateUser(newUser, true);
                     //communicationManager.SendVerificationMail(userManager.GetProviderUserKey(newUser), newUser.userName, newUser.email);
+
+                    if (networkJoinCode != null)
+                    {
+                        NetworkManager nm = new NetworkManager();
+                        Network network = nm.GetNetworkByIdentifier(networkJoinCode);
+                        if (network != null)
+                        {
+                            string[] emailArray = { email };
+                            nm.AddNetworkUsers(network, emailArray);
+                        }
+                    }
 
                     AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
                     string token = authEngine.logIn(newUser.id, newUser.userName);
@@ -1799,392 +1810,12 @@ namespace UserClientMembers.Controllers
             }
         }
 
-
-        /*
-        //User Managing Their AccessKeys
-        [Authorize]
-        public ActionResult AccessKeys()
-        {
-            try
-            {
-                User user = userManager.GetUser(User.Identity.Name);
-                List<AccessKey> accessKeyList = userManager.GetAllAccessKeys(user);
-
-                List<AccessKeysModel> modelList = new List<AccessKeysModel>();
-                foreach (AccessKey accessKey in accessKeyList)
-                {
-                    modelList.Add(new AccessKeysModel(accessKey));
-                }
-
-                return View(modelList);
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return View("Error");
-            }
-        }
-
-        [Authorize]
-        public ActionResult AccessKeyCreate()
-        {
-            return View();
-        }
-
-        [Authorize]
-        [HttpPost]
-        public ActionResult AccessKeyCreate(AccessKeysModel model)
-        {
-            try
-            {
-                User loggedInUser = userManager.GetUser(User.Identity.Name);
-                AccessKey accessKey = model.toAccessKey();
-
-                userManager.CreateAccessKey(loggedInUser, accessKey);
-
-                return RedirectToAction("AccessKeys");
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return View("Error");
-            }
-        }
-
-
-        [Authorize]
-        public ActionResult AccessKeyUpdate(int id)
-        {
-            try
-            {
-                AccessKey newAccessKey = userManager.GetAccessKey(id);
-                AccessKeysModel model = new AccessKeysModel(newAccessKey);
-                return View(model);
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return View("Error");
-            }
-        }
-
-        [Authorize]
-        [HttpPost]
-        public ActionResult AccessKeyUpdate(AccessKeysModel model)
-        {
-            try
-            {
-                AccessKey newAccessKey = model.toAccessKey();
-                userManager.UpdateAccessKey(newAccessKey);
-
-                return RedirectToAction("AccessKeys");
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return View("Error");
-            }
-        }
-
-        [Authorize]
-        public ActionResult AccessKeyDelete(int id)
-        {
-            try
-            {
-                AccessKey accessKey = userManager.GetAccessKey(id);
-                AccessKeysModel accessKeysModel = new AccessKeysModel(accessKey);
-                return View(accessKeysModel);
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return View("Error");
-            }
-        }
-
-        [Authorize]
-        [HttpPost, ActionName("AccessKeyDelete")]
-        public ActionResult AccessKeyDeleteConfirmed(int id)
-        {
-            try
-            {
-                User user = userManager.GetUser(User.Identity.Name);
-                AccessKey accessKey = userManager.GetAccessKey(id);
-                accessKey = userManager.DeleteAccessKey(user, accessKey);
-                return RedirectToAction("AccessKeys");
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return View("Error");
-            }
-        }
-        */
-
-
         //Dispose
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
         }
-
-        //Sample user creation
-
-        //public ActionResult CreateSampleUser()
-        //{
-        //    string password = "wongwong";
-        //    User user = createMohammadWong(password);
-        //    LogOnModel model = new LogOnModel()
-        //    {
-        //        UserName = user.userName,
-        //        Password = password,
-        //        RememberMe = false
-        //    };
-        //    return LogOn(model, null);
-        //}
-
-        //private User createMohammadWong(string password)
-        //{
-        //    UserManager userManager = new UserManager();
-        //    ProjectManager projectManager = new ProjectManager();
-        //    TagManager tagManager = new TagManager();
-
-
-        //    User user = new User()
-        //    {
-        //        userName = "mwong",
-        //        birthDate = DateTime.Now,
-        //        email = "m.wong@gmail.com",
-        //        firstName = "Mohammad",
-        //        lastName = "Wong",
-        //        location = "Cupertino",
-        //        phoneNumber = "8675309",
-        //        school = "Peking University",
-        //        major = "English/Psychology",
-        //        willingToRelocate = WillingToRelocateType.yes
-        //    };
-
-        //    //delete any existing mwongs
-        //    User userToDelete = userManager.GetUser(user.userName);
-        //    if (userToDelete != null)
-        //    {
-        //        userManager.DeleteUser(userToDelete);
-        //    }
-
-        //    user = userManager.CreateUser(user, password);
-        //    userManager.ActivateUser(user, true);
-
-        //    //profile picture
-        //    string fileLocation = @"http://newsletter.thebikeboutique.com/200910-TBB-Gobal-Newsletter-Issue-14/images/wong2.jpg";
-        //    WebClient client = new WebClient();
-        //    byte[] data = client.DownloadData(fileLocation);
-        //    Stream stream = new MemoryStream(data);
-        //    userManager.UploadUserPicture(user, stream, "Profile");
-
-
-
-        //    //tags
-        //    Tag[] tagList = tagManager.GetAllLowestLevel().ToArray();
-        //    Tag randomTag1 = tagList[DateTime.Now.Millisecond % tagList.Length];
-        //    Tag randomTag2 = tagList[DateTime.Now.Second % tagList.Length];
-        //    userManager.addTag(user, randomTag1.value);
-        //    userManager.addTag(user, randomTag2.value);
-
-        //    //projects
-        //    List<ProjectElement> projectElements = new List<ProjectElement>();
-
-        //    ProjectElement_Experience projectElement_Experience = new ProjectElement_Experience()
-        //    {
-        //        jobTitle = "Poet",
-        //        description = "Poetry writer",
-        //        startDate = new DateTime(2010, 3, 14),
-        //        endDate = new DateTime(2010, 9, 11)
-        //    };
-
-        //    ProjectElement_Information projectElement_Information = new ProjectElement_Information()
-        //    {
-        //        description = "I wrote and continue to write soulful stanzas.",
-        //        email = user.email,
-        //        location = "Paris (on the sidewalks and stuff)",
-        //        major = "French Women",
-        //        minor = "Art",
-        //        phone = user.phoneNumber,
-        //        school = "University of Paris"
-        //    };
-        //    ProjectElement_Video projectElement_Video = new ProjectElement_Video
-        //    {
-        //        //put a test id you know in here haun
-        //        videoId = "xxxxx",
-        //        description = "asdfsadfasdf"
-        //    };
-
-        //    projectElements.Add(projectElement_Information);
-        //    projectElements.Add(projectElement_Experience);
-        //    projectElements.Add(projectElement_Video);
-
-        //    //about project
-        //    /*
-        //    Project aboutProject = userManager.GetUser(user.userName).projects.First();
-        //    List<ProjectElement> aboutProjectElements = new List<ProjectElement>();
-        //    aboutProjectElements.Add(projectElement_Information);
-        //    aboutProjectElements.Add(projectElement_Experience);
-        //    aboutProject.projectElements = aboutProjectElements;
-        //    projectManager.UpdateProject(aboutProject);
-        //    */
-
-        //    projectManager.CreateProject(user, projectElements);
-        //    //projectManager.CreateProject(user, projectElements);
-        //    //projectManager.CreateProject(user, projectElements);
-        //    //projectManager.CreateProject(user, projectElements);
-
-        //    //accessKeys
-        //    AccessKey accessKey = new AccessKey()
-        //    {
-        //        accessString = "public",
-        //        infoVisible = true,
-        //        pictureVisible = true,
-        //        projectVisible = new List<bool>() { true, true, true, true }
-        //    };
-
-        //    userManager.CreateAccessKey(user, accessKey);
-
-        //    return userManager.GetUser(user.id);
-        //}
-
-        //[Authorize]
-        //[HttpPost]
-        //public JsonResult UpdateProfilePicture()
-        //{
-        //    try
-        //    {
-        //        User user = userManager.GetUser(User.Identity.Name);
-
-        //        if (Request != null)
-        //        {
-        //            if (Request.Files.Count == 0)
-        //            {
-        //                return Json(new { Error = "No files submitted to server" });
-        //            }
-        //            else if (Request.Files[0].ContentLength == 0)
-        //            {
-        //                return Json(new { Error = "No files submitted to server" });
-        //            }
-
-        //            foreach (string inputFileId in Request.Files)
-        //            {
-        //                HttpPostedFileBase file = Request.Files[inputFileId];
-        //                if (file.ContentLength > 0)
-        //                {
-
-        //                    System.IO.Stream fs = file.InputStream;
-
-        //                    if (ValidationEngine.ValidatePicture(file) != ValidationEngine.Success)
-        //                    {
-        //                        return Json(new { Error = ValidationEngine.ValidatePicture(file) });
-        //                    }
-
-        //                    if (user.profilePicture != null && user.profilePictureThumbnail != null)
-        //                    {
-        //                        userManager.DeleteProfilePicture(user);
-        //                    }
-        //                    user = userManager.UploadUserPicture(user, fs, "Profile");
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return Json(new { Error = "Server did not receive file post" });
-        //        }
-
-        //        return Json(new { PictureLocation = "http://vestnstorage.blob.core.windows.net/images/uploadSuccessful2.png" });
-
-        //        //return Json(new { Status = "success", responseText = RedirectToAction("Profile", "User", new ProfileModel(user)) });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-        //        return Json(new { Error = "Problem saving to cloud" });
-        //    }
-        //}
-
-
-
-        //[Authorize]
-        //public JsonResult UpdateResume()
-        //{
-        //    try
-        //    {
-        //        User user = userManager.GetUser(User.Identity.Name);
-
-        //        if (Request != null)
-        //        {
-        //            if (Request.Files.Count == 0)
-        //            {
-        //                return Json(new { Error = "No files submitted to server" });
-        //            }
-        //            else if (Request.Files[0].ContentLength == 0)
-        //            {
-        //                return Json(new { Error = "No files submitted to server" });
-        //            }
-
-        //            foreach (string inputFileId in Request.Files)
-        //            {
-        //                HttpPostedFileBase file = Request.Files[inputFileId];
-        //                if (file.ContentLength > 0)
-        //                {
-        //                    System.IO.Stream fs = file.InputStream;
-        //                    string s = file.FileName;
-        //                    string[] s2 = s.Split('.');
-        //                    string fileType = s2[s2.Count() - 1].ToLower();
-
-        //                    if (ValidationEngine.ValidateDocument(file) != ValidationEngine.Success)
-        //                    {
-        //                        return Json(new { Error = ValidationEngine.ValidateDocument(file) });
-        //                    }
-
-        //                    if (fileType == "pdf")
-        //                    {
-        //                        user = userManager.UploadResumePDF(user, fs);
-        //                    }
-        //                    else if (fileType == "doc")
-        //                    {
-        //                        user = userManager.UploadResumeDoc(user, fs);
-        //                    }
-        //                    else if (fileType == "docx")
-        //                    {
-        //                        user = userManager.UploadResumeDocx(user, fs);
-        //                    }
-        //                    else if (fileType == "rtf")
-        //                    {
-        //                        user = userManager.UploadResumeRTF(user, fs);
-        //                    }
-        //                    else if (fileType == "txt")
-        //                    {
-        //                        user = userManager.UploadResumeTXT(user, fs);
-        //                    }
-        //                    else
-        //                    {
-        //                        return Json(new { Error = "File type not supported for resumes." });
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return Json(new { Error = "Server did not receive file post" });
-        //        }
-
-        //        return Json(new { UpdatedPartial = RenderPartialViewToString("_UserResume", new ProfileModel(user)) });
-
-        //        //return Json(new { Status = "success", responseText = RedirectToAction("Profile", "User", new ProfileModel(user)) });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-        //        return Json(new { Error = "Problem saving to cloud" });
-        //    }
-        //}
 
         //This get use by both add feedback and Get help request
         public JsonResult AddFeedback(string message, string subject)
@@ -2277,6 +1908,30 @@ namespace UserClientMembers.Controllers
             {
                 logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
                 return Json(new { Error = "Problem sharing link" });
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string SendUserFeedback(int userId, string feedbackMessage, string fromAlias = null)
+        {
+            try
+            {
+                User user = userManager.GetUser(userId);
+                if (fromAlias == null)
+                {
+                    communicationManager.SendUserFeedback(user.email, user.firstName, feedbackMessage);
+                }
+                else
+                {
+                    communicationManager.SendUserFeedback(user.email, user.firstName, feedbackMessage, fromAlias);
+                }
+                return AddSuccessHeader("Feedback Sent to User",true);
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - SendUserFeedback", ex.StackTrace);
+                return AddErrorHeader("Something went wrong while sending feedback to this user");
             }
         }
 
@@ -3877,6 +3532,11 @@ namespace UserClientMembers.Controllers
                 logAccessor.CreateLog(DateTime.Now, "UserController - GetUserModel", ex.StackTrace);
                 return AddErrorHeader("something went wrong while retrieving this user's info");
             }
+        }
+
+        public void sendTestEmail(string to, string subject, string greeting, string body)
+        {
+            communicationManager.SendTestEmail(to, subject, greeting, body);
         }
 
         public ActionResult testNewRegister()

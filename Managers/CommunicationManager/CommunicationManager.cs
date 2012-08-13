@@ -52,6 +52,99 @@ namespace Manager
             }
         }
 
+        private void SendEmail(string mailTo, string subject, string greeting, string body)
+        {
+            try
+            {
+                var message = SendGrid.GenerateInstance();
+                System.Net.NetworkCredential credentials = new System.Net.NetworkCredential("vestn", "V3stn.com!");
+                var transportInstance = SMTP.GenerateInstance(credentials, "smtp.sendgrid.net", Convert.ToInt32(587));
+
+                message.AddTo(mailTo);
+                message.From = new MailAddress("vestnteam@vestn.com", "Vestn");
+                message.Subject = subject;
+                message.Text = greeting + "\n" + body;
+                transportInstance.Deliver(message);
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "Communicaiton Manager - SendEmail", ex.StackTrace);
+            }
+        }
+
+        public void SendTestEmail(string to, string subject, string greeting, string body)
+        {
+            SendEmail(to, subject, greeting, body);
+        }
+
+        public void SendUserFeedback(string userEmail, string userFirstName, string feedback, string fromAlias = null)
+        {
+            try
+            {
+                string messageBody;
+                if (fromAlias == null)
+                {
+                    messageBody = fromAlias + " has left you the following feedback: " + feedback;
+                }
+                else
+                {
+                    messageBody = "You have received the following feedback on your profile: " + feedback;
+                }
+                string greeting = userFirstName + ",";
+                SendEmail(userEmail, "New Feedback!", greeting, messageBody);
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "Communicaiton Manager - SendUserFeedback", ex.StackTrace);
+            }
+        }
+
+        public void SendRegisterNetworkInvite(string email, string networkJoinCode)
+        {
+            try
+            {
+                string registerLink = "http://qa.vestn.com/#splash=signUp&joinCode=" + networkJoinCode + "&email=" + email;
+                string messageBody = "You have been invited to join a Vestn Network! Click the link below to start demonstrating your excellence: \n" + registerLink;
+
+                SendEmail(email, "You've Been Invited!", "Greetings!", messageBody);
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "Communicaiton Manager - SendRegisterNetworkInvite", ex.StackTrace);
+            }
+        }
+
+        public void SendVerifyEmail(string email)
+        {
+            try
+            {
+                string verifyLink = "http://qa.vestn.com/#splash=verifyEmail&email="+email+"&userId";
+                string messageBody = "Please click the link below to verify your email address: \n"+verifyLink;
+
+                SendEmail(email, "Verify Your Email Address", "Greetings!", messageBody);
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "Communicaiton Manager - SendVerifyEmail", ex.StackTrace);
+            }
+        }
+
+        public void SendForgotPassword(string email, string forgotHash, string userFirstName)
+        {
+            try
+            {
+                string forgotLink = "http://qa.vestn.com/#splash=forgotPassword&resetHash=" + forgotHash;
+                string messageBody = "Please click the link below to reset you password: \n" + forgotLink;
+                string greeting = userFirstName + ",";
+
+                SendEmail(email, "Reset Password", greeting, messageBody);
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "Communicaiton Manager - SendForgotPassword", ex.StackTrace);
+            }
+        }
+
         [ExcludeFromCodeCoverage]
         private void SendMessage(string mailFrom, string mailFromDisplayName, string[] mailTo, string[] mailCc, string[] mailBcc, string subject, string body)
         {

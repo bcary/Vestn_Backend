@@ -187,6 +187,48 @@ namespace Manager
             }
         }
 
+        public string SetNetworkIdentifier(Network network)
+        {
+            try
+            {
+                AuthenticaitonEngine ae = new AuthenticaitonEngine();
+                string input = network.id.ToString();
+                input += DateTime.Now.ToString();
+                string newIdentifier = ae.GetHash(input);
+                bool set = networkAccessor.UpdateNetworkIdentifier(network.id, newIdentifier);
+                if (set)
+                {
+                    return newIdentifier;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "Network Manager - SetNetworkIdentifier", ex.StackTrace);
+                return null;
+            }
+        }
+
+        public Network GetNetworkByIdentifier(string identifier)
+        {
+            try
+            {
+                return networkAccessor.GetNetworkByIdentifier(identifier);
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "Network Manager - GetNetworkByIdentifier", ex.StackTrace);
+                return null;
+            }
+        }
+
+        //public bool DeActivateIdentifier(Network network)
+        //{
+        //}
+
         public JsonModels.Network AddNetworkUsers(Network network, IEnumerable<string> userEmails)
         {
             try
@@ -217,8 +259,16 @@ namespace Manager
                                 }
                                 else
                                 {
-                                    //TODO
-                                    //user does not exist, send invite email with network creds
+                                    CommunicationManager communicationManager = new CommunicationManager();
+                                    if (network.networkIdentifier == null)
+                                    {
+                                        string identifier = SetNetworkIdentifier(network);
+                                        communicationManager.SendRegisterNetworkInvite(email, identifier);
+                                    }
+                                    else
+                                    {
+                                        communicationManager.SendRegisterNetworkInvite(email, network.networkIdentifier);
+                                    }
                                 }
                             }
                         }

@@ -48,6 +48,10 @@
       <Project>{E93BC31C-2391-4A9D-9D6A-B717F915D64B}</Project>
       <Name>LogAccessor</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AuthenticationEngine\AuthenticationEngine.csproj">
+      <Project>{3C319628-861F-4FD1-B2EA-B67C3EF2AD91}</Project>
+      <Name>AuthenticationEngine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engines\ReorderEngine\ReorderEngine.csproj">
       <Project>{88EEE859-7550-499B-AF53-034C19D5CD6F}</Project>
       <Name>ReorderEngine</Name>
@@ -67,6 +71,10 @@
     <ProjectReference Include="..\Entities\Users\Users.csproj">
       <Project>{5E71E86E-850C-4160-8475-D2801F3D4614}</Project>
       <Name>Users</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Managers\CommunicationManager\CommunicationManager.csproj">
+      <Project>{1EE4B5CB-CC17-448C-8992-FCB4E2058656}</Project>
+      <Name>CommunicationManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\Managers\UserManager\UserManager.csproj">
       <Project>{6F593A74-2D84-4D50-AAC7-34A1AD871CB1}</Project>
