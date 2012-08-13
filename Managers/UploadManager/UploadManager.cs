@@ -51,16 +51,17 @@ namespace Manager
                 int idValue = entityId;
                 CloudBlob inputBlob = blobContainer.GetBlobReference(imageURI);
                 var ms = new MemoryStream(inputBlob.DownloadByteArray());
-                Bitmap image = TEngine.CreateThumbnail(ms, displayWidth, displayHeight);
                 Uri uri = null;
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    // Save image to stream.
-                    image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
-                    uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
-                }
                 if (type == "User")
                 {
+                    Bitmap image = TEngine.CreateProfileThumbnail(ms, displayWidth, displayHeight);
+                    
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        // Save image to stream.
+                        image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
+                        uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
+                    }
                     UserAccessor ua = new UserAccessor();
                     User u = ua.GetEntityUser(idValue);
                     u.profilePictureThumbnail = uri.ToString();
@@ -68,6 +69,14 @@ namespace Manager
                 }
                 if (type == "About")
                 {
+                    Bitmap image = TEngine.CreateProfileThumbnail(ms, displayWidth, displayHeight);
+                    
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        // Save image to stream.
+                        image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
+                        uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
+                    }
                     UserAccessor ua = new UserAccessor();
                     User u = ua.GetEntityUser(idValue);
                     u.aboutPictureThumbnail = uri.ToString();
@@ -78,24 +87,56 @@ namespace Manager
                     ProjectAccessor pa = new ProjectAccessor();
                     if (type == "PictureElement")
                     {
+                        Bitmap image = TEngine.CreateThumbnail(ms, displayWidth, displayHeight);
+                        
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            // Save image to stream.
+                            image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
+                            uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
+                        }
                         ProjectElement_Picture pe = (ProjectElement_Picture)pa.GetProjectElement(idValue);
                         pe.pictureThumbnailLocation = uri.ToString();
                         pa.UpdateProjectElement(pe);
                     }
                     else if (type == "PictureElement_Galleria")
                     {
+                        Bitmap image = TEngine.CreateThumbnail(ms, displayWidth, displayHeight);
+                        
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            // Save image to stream.
+                            image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
+                            uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
+                        }
                         ProjectElement_Picture pe = (ProjectElement_Picture)pa.GetProjectElement(idValue);
                         pe.pictureGalleriaThumbnailLocation = uri.ToString();
                         pa.UpdateProjectElement(pe);
                     }
                     else if (type == "DocumentElement")
                     {
+                        Bitmap image = TEngine.CreateThumbnail(ms, displayWidth, displayHeight);
+                        
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            // Save image to stream.
+                            image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
+                            uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
+                        }
                         ProjectElement_Document pe = (ProjectElement_Document)pa.GetProjectElement(idValue);
                         pe.documentThumbnailLocation = uri.ToString();
                         pa.UpdateProjectElement(pe);
                     }
                     else if (type == "ProjectPicture")
                     {
+                        Bitmap image = TEngine.CreateProfileThumbnail(ms, displayWidth, displayHeight);
+
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            // Save image to stream.
+                            image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
+                            uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
+                        }
                         Project p = pa.GetProject(idValue);
                         p.coverPictureThumbnail = uri.ToString();
                         pa.UpdateProject(p);

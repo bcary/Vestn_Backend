@@ -63,7 +63,7 @@ namespace Manager
                 message.AddTo(mailTo);
                 message.From = new MailAddress("vestnteam@vestn.com", "Vestn");
                 message.Subject = subject;
-                message.Text = greeting + "\n" + body;
+                message.Text = greeting + "\n \n" + body;
                 transportInstance.Deliver(message);
             }
             catch (Exception ex)
@@ -82,13 +82,13 @@ namespace Manager
             try
             {
                 string messageBody;
-                if (fromAlias == null)
+                if (fromAlias != null)
                 {
-                    messageBody = fromAlias + " has left you the following feedback: " + feedback;
+                    messageBody = fromAlias + " has left you the following feedback: \n \n" + feedback;
                 }
                 else
                 {
-                    messageBody = "You have received the following feedback on your profile: " + feedback;
+                    messageBody = "You have received the following feedback on your profile: \n \n" + feedback;
                 }
                 string greeting = userFirstName + ",";
                 SendEmail(userEmail, "New Feedback!", greeting, messageBody);

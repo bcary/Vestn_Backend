@@ -100,11 +100,12 @@ namespace UserClientMembers.Controllers
                 res.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
                 res.AddHeader("Access-Control-Allow-Headers", "X-Request");
                 res.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
+                res.AddHeader("Access-Control-Allow-Headers", "X-Mime-Type");
                 res.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+                res.AddHeader("Access-Control-Allow-Headers", "Accept");
                 res.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
             }
             base.OnActionExecuting(filterContext);
-            
         }
     }
 
