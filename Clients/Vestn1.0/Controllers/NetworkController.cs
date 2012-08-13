@@ -269,6 +269,60 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
+        public string GetNetworkJoinCode(int networkId, string token)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                int userId = authenticationEngine.authenticate(token);
+                if (userId < 0)
+                {
+                    return AddErrorHeader("You are not authenticated, please log in!");
+                }
+                if (networkManager.IsNetworkAdmin(networkId, userId))
+                {
+                    Network network = networkManager.GetNetwork(networkId);
+                    if (network != null)
+                    {
+                        if (network.networkIdentifier == null)
+                        {
+                            string identifier = networkManager.SetNetworkIdentifier(network);
+                            if (identifier != null)
+                            {
+                                return AddSuccessHeader(identifier, true);
+                            }
+                            else
+                            {
+                                return AddErrorHeader("An Error Occurred");
+                            }
+                        }
+                        else
+                        {
+                            return AddSuccessHeader(network.networkIdentifier, true);
+                        }
+                    }
+                    else
+                    {
+                        return AddErrorHeader("Network id not found");
+                    }
+                }
+                else
+                {
+                    return AddErrorHeader("Must be network admin to access join code");
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "NetworkController - GetNetworkJoinCode", ex.StackTrace);
+                return AddErrorHeader("something went wrong while getting the network join code");
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
         public string GetNetworkByURL(string networkURL, string token)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
