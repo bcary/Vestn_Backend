@@ -491,7 +491,7 @@ namespace Manager
             {
                 u = GetUserByEmail(query.ToLower());
 
-                if (u != null)
+                if (u != null && u.isPublic == 1)
                 {
                     return new List<string> {(u.firstName + ' ' + u.lastName + " - vestn.com/v/" + u.profileURL)};
                 }
@@ -502,20 +502,23 @@ namespace Manager
                 List<User> allUsers = GetAllUsers();
                 foreach (User um in allUsers)
                 {
-                    if (um.lastName.ToLower() == name[1].ToLower())
+                    if (um.lastName.ToLower() == name[1].ToLower() && um.isPublic == 1)
                     {
                         lastMatch.Add(um);
                     }
                 }
                 foreach (User um in lastMatch)
                 {
-                    if (um.firstName.ToLower() == name[0].ToLower())
+                    if (um.isPublic == 1)
                     {
-                        userExactMatch.Add(um.firstName + ' ' + um.lastName + " - vestn.com/v/" + um.profileURL);
-                    }
-                    else
-                    {
-                        userApproxMatch.Add(um.firstName + ' ' + um.lastName + " - vestn.com/v/" + um.profileURL);
+                        if (um.firstName.ToLower() == name[0].ToLower())
+                        {
+                            userExactMatch.Add(um.firstName + ' ' + um.lastName + " - vestn.com/v/" + um.profileURL);
+                        }
+                        else
+                        {
+                            userApproxMatch.Add(um.firstName + ' ' + um.lastName + " - vestn.com/v/" + um.profileURL);
+                        }
                     }
                 }
                 foreach (string s in userApproxMatch)
@@ -527,7 +530,7 @@ namespace Manager
             if (u == null)
             {
                 u = GetUserByProfileURL(query.ToLower());
-                if (u != null)
+                if (u != null && u.isPublic == 1)
                 {
                     return new List<string> {(u.firstName + ' ' + u.lastName + " - vestn.com/v/" + u.profileURL)};
                 }
@@ -537,7 +540,7 @@ namespace Manager
                 List<string> lastName = new List<string>();
                 foreach (User um in GetAllUsers())
                 {
-                    if (um.lastName.ToLower() == query.ToLower())
+                    if (um.lastName.ToLower() == query.ToLower() && um.isPublic == 1)
                     {
                         lastName.Add(um.firstName + ' ' + um.lastName + " - vestn.com/v/" + um.profileURL);
                     }

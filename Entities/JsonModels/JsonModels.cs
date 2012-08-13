@@ -123,6 +123,9 @@ namespace Entity
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string profilePictureThumbnail { get; set; }
 
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]//visible hidden
+            public string privacy { get; set; }
+
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public UserStats stats { get; set; }
 
