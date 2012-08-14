@@ -143,7 +143,20 @@ namespace UserClientMembers.Controllers
                     bool added = networkManager.AddNetworkAdmin(networkId, adminEmail);
                     if (added)
                     {
-                        return AddSuccessHeader("Admin Successfully Added", true);
+                        User admin = userManager.GetUserByEmail(adminEmail);
+                        if (admin != null)
+                        {
+                            JsonModels.NetworkUserShell uShell = new JsonModels.NetworkUserShell();
+                            uShell.firstName = admin.firstName;
+                            uShell.profileURL = admin.profileURL;
+                            uShell.lastName = admin.lastName;
+                            uShell.userId = admin.id;
+                            return AddSuccessHeader(Serialize(uShell));
+                        }
+                        else
+                        {
+                            return AddSuccessHeader("Admin Email Sent", true);
+                        }
                     }
                     else
                     {
@@ -183,7 +196,8 @@ namespace UserClientMembers.Controllers
                     JsonModels.Network networkJson = networkManager.AddNetworkUsers(network, userEmails);
                     if (networkJson != null)
                     {
-                        return AddSuccessHeader(Serialize(networkJson));
+                        JsonModels.NetworkUsers netUsers = networkManager.GetNetworkUsers(network.id);
+                        return AddSuccessHeader(Serialize(netUsers));
                     }
                     else
                     {
@@ -251,18 +265,96 @@ namespace UserClientMembers.Controllers
                 }
                 Network network = networkManager.GetNetwork(networkId);
                 JsonModels.Network networkJson = networkManager.GetNetworkJson(network);
-                foreach (User u in network.admins)
+                if (network.GetType().Name.Contains("Network_TopNetwork"))
                 {
-                    if (u.id == userId)
+                    foreach (User u in network.admins)
                     {
-                        networkJson.role = "admin";
+                        if (u.id == userId)
+                        {
+                            networkJson.role = "admin";
+                        }
+                    }
+                    foreach (User v in network.networkUsers)
+                    {
+                        if (v.id == userId)
+                        {
+                            if (networkJson.role == null)
+                            {
+                                networkJson.role = "member";
+                            }
+                        }
                     }
                 }
-                foreach (User v in network.networkUsers)
+                else if (network.GetType().Name.Contains("Network_SubNetwork"))
                 {
-                    if (v.id == userId)
+                    Network_SubNetwork sn = (Network_SubNetwork)network;
+                    foreach (User u in network.admins)
                     {
-                        networkJson.role = "member";
+                        if (u.id == userId)
+                        {
+                            networkJson.role = "admin";
+                        }
+                    }
+                    if (networkJson.role == null)
+                    {
+                        foreach (User u in sn.Network_TopNetwork.admins)
+                        {
+                            if (u.id == userId)
+                            {
+                                networkJson.role = "admin";
+                            }
+                        }
+                    }
+                    if (networkJson.role == null)
+                    {
+                        foreach (User v in network.networkUsers)
+                        {
+                            if (v.id == userId)
+                            {
+                                networkJson.role = "member";
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Network_Group gn = (Network_Group)network;
+                    foreach (User u in network.admins)
+                    {
+                        if (u.id == userId)
+                        {
+                            networkJson.role = "admin";
+                        }
+                    }
+                    if (networkJson.role == null)
+                    {
+                        foreach (User u in gn.Network_SubNetwork.admins)
+                        {
+                            if (u.id == userId)
+                            {
+                                networkJson.role = "admin";
+                            }
+                        }
+                    }
+                    if (networkJson.role == null)
+                    {
+                        foreach (User u in gn.Network_SubNetwork.Network_TopNetwork.admins)
+                        {
+                            if (u.id == userId)
+                            {
+                                networkJson.role = "admin";
+                            }
+                        }
+                    }
+                    if (networkJson.role == null)
+                    {
+                        foreach (User v in network.networkUsers)
+                        {
+                            if (v.id == userId)
+                            {
+                                networkJson.role = "member";
+                            }
+                        }
                     }
                 }
                 if (networkJson != null)
@@ -477,16 +569,16 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("You are not authenticated, please log in!");
+                    return AddErrorHeader("Not Authenticated");
                 }
                 if (networkId > 0 && networkUserId > 0)
                 {
                     if (networkManager.IsNetworkAdmin(networkId, userId))
                     {
-                        JsonModels.Network networkJson = networkManager.RemoveNetworkUser(networkId, networkUserId);
-                        if (networkJson != null)
+                        bool removed = networkManager.DeleteNetworkUser(networkId, networkUserId);
+                        if (removed)
                         {
-                            return AddSuccessHeader(Serialize(networkJson));
+                            return AddSuccessHeader("User removed successfully");
                         }
                         else
                         {
@@ -495,7 +587,7 @@ namespace UserClientMembers.Controllers
                     }
                     else
                     {
-                        return AddErrorHeader("User must be network administrator to remove users from the network");
+                        return AddErrorHeader("Not Authorized");
                     }
                 }
                 else
@@ -525,16 +617,16 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("You are not authenticated, please log in!");
+                    return AddErrorHeader("Not Authenticated");
                 }
                 if (networkId > 0 && networkAdminId > 0)
                 {
                     if (networkManager.IsNetworkAdmin(networkId, userId))
                     {
-                        JsonModels.Network networkJson = networkManager.RemoveNetworkAdmin(networkId, networkAdminId);
-                        if (networkJson != null)
+                        bool removed = networkManager.DeleteNetworkAdmin(networkId, networkAdminId);
+                        if (removed)
                         {
-                            return AddSuccessHeader(Serialize(networkJson));
+                            return AddSuccessHeader("Admin removed successfully");
                         }
                         else
                         {
@@ -543,7 +635,7 @@ namespace UserClientMembers.Controllers
                     }
                     else
                     {
-                        return AddErrorHeader("User must be network administrator to remove admins from the network");
+                        return AddErrorHeader("Not Authorized");
                     }
                 }
                 else
@@ -555,6 +647,71 @@ namespace UserClientMembers.Controllers
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - RemoveNetworkAdmin", ex.StackTrace);
+                return AddErrorHeader("something went wrong while removing the network admin");
+            }
+
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string RemoveChildNetwork(int networkId, int childNetworkId, string token)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                int userId = authenticationEngine.authenticate(token);
+                if (userId < 0)
+                {
+                    return AddErrorHeader("Not Authenticated");
+                }
+                if (networkManager.IsNetworkAdmin(networkId, userId))
+                {
+                    Network network = networkManager.GetNetwork(networkId);
+                    if (network.GetType().Name.Contains("Network_TopNetwork"))
+                    {
+                        Network_TopNetwork tn = (Network_TopNetwork)network;
+                        Network_SubNetwork sn = (Network_SubNetwork)networkManager.GetNetwork(childNetworkId);
+                        string status = networkManager.DeleteSubNetwork(tn, sn);
+                        if (status == "Success")
+                        {
+                            return AddSuccessHeader("SubNetwork removed");
+                        }
+                        else
+                        {
+                            return AddErrorHeader(status);
+                        }
+                    }
+                    else if (network.GetType().Name.Contains("Network_SubNetwork"))
+                    {
+                        Network_SubNetwork sn = (Network_SubNetwork)network;
+                        Network_Group gn = (Network_Group)networkManager.GetNetwork(childNetworkId);
+                        string status = networkManager.DeleteGroupNetwork(sn, gn);
+                        if (status == "Success")
+                        {
+                            return AddSuccessHeader("GroupNetwork removed");
+                        }
+                        else
+                        {
+                            return AddErrorHeader(status);
+                        }
+                    }
+                    else
+                    {
+                        return AddErrorHeader("This will never get hit");
+                    }
+                }
+                else
+                {
+                    return AddErrorHeader("Not Authorized");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "NetworkController - RemoveChildNetwork", ex.StackTrace);
                 return AddErrorHeader("something went wrong while removing the network admin");
             }
 

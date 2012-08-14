@@ -305,6 +305,98 @@ namespace Accessor
             }
         }
 
+        public bool DeleteNetworkUser(int networkId, int userId)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                var u = new User { id = userId };
+                var n = new Network { id = networkId };
+                db.networks.Attach(n);
+                db.users.Attach(u);
+
+                n.networkUsers.Remove(u);
+
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogAccessor la = new LogAccessor();
+                la.CreateLog(DateTime.Now, "Network Accessor DeleteNetworkUser", ex.StackTrace);
+                return false;
+            }
+        }
+
+        public bool DeleteNetworkAdmin(int networkId, int adminId)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                var u = new User { id = adminId };
+                var n = new Network { id = networkId };
+                db.networks.Attach(n);
+                db.users.Attach(u);
+
+                n.admins.Remove(u);
+
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogAccessor la = new LogAccessor();
+                la.CreateLog(DateTime.Now, "Network Accessor DeleteNetworkAdmin", ex.StackTrace);
+                return false;
+            }
+        }
+
+        public bool DeleteSubNetwork(int topNetworkId, int subNetworkId)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                var n = new Network_TopNetwork { id = topNetworkId };
+                var s = new Network_SubNetwork { id = subNetworkId };
+                db.networks.Attach(n);
+                db.networks.Attach(s);
+
+                n.subNetworks.Remove(s);
+
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogAccessor la = new LogAccessor();
+                la.CreateLog(DateTime.Now, "Network Accessor DeleteSubnetwork", ex.StackTrace);
+                return false;
+            }
+        }
+
+        public bool DeleteGroupNetwork(int subNetworkId, int groupNetworkId)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                var s = new Network_SubNetwork { id = subNetworkId };
+                var g = new Network_Group { id = groupNetworkId };
+                db.networks.Attach(s);
+                db.networks.Attach(g);
+
+                s.groups.Remove(g);
+
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogAccessor la = new LogAccessor();
+                la.CreateLog(DateTime.Now, "Network Accessor DeleteGroupNetwork", ex.StackTrace);
+                return false;
+            }
+        }
+
         public Network GetNetworkByUrl(string networkURL)
         {
             try

@@ -33,7 +33,7 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    string redirectURL = "http://50.17.232.163/#profile=" + subdomain;
+                    string redirectURL = "http://50.17.232.163/#profile=" + user.id.ToString();
                     return Redirect(redirectURL);
                 }
             }

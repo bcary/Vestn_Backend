@@ -442,43 +442,99 @@ namespace Manager
             return false;
         }
 
-        public JsonModels.Network RemoveNetworkUser(int networkId, int userId)
+        public bool DeleteNetworkUser(int networkId, int userId)
         {
             try
             {
-                Network network = networkAccessor.GetNetwork(networkId);
-                User networkUser = userManager.GetUser(userId);
-                ReorderEngine re = new ReorderEngine();
-                userManager.UpdateUser(networkUser);
-
-                network.networkUsers.Remove(networkUser);
-                Network returnNetwork = networkAccessor.UpdateNetwork(network);
-                return GetNetworkJson(returnNetwork);
+                if (networkAccessor.DeleteNetworkUser(networkId, userId))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {
-                logAccessor.CreateLog(DateTime.Now, "Network Manager - RemoveNetworkUser", ex.StackTrace);
-                return null;
+                return false;
             }
         }
 
-        public JsonModels.Network RemoveNetworkAdmin(int networkId, int adminUserId)
+        public bool DeleteNetworkAdmin(int networkId, int adminId)
         {
             try
             {
-                Network network = networkAccessor.GetNetwork(networkId);
-                User adminUser = userManager.GetUser(adminUserId);
-                ReorderEngine re = new ReorderEngine();
-                userManager.UpdateUser(adminUser);
-
-                network.admins.Remove(adminUser);
-                Network returnedNetwork = networkAccessor.UpdateNetwork(network);
-                return GetNetworkJson(returnedNetwork);
+                if (networkAccessor.DeleteNetworkAdmin(networkId, adminId))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {
-                logAccessor.CreateLog(DateTime.Now, "Network Manager - RemoveNetworkAdmin", ex.StackTrace);
-                return null;
+                return false;
+            }
+        }
+
+        public string DeleteSubNetwork(Network_TopNetwork topNetwork, Network_SubNetwork subNetwork)
+        {
+            try
+            {
+                if (subNetwork.groups.Count > 0)
+                {
+                    return "SubNetwork contains Groups";
+                }
+                if (subNetwork.admins.Count > 0)
+                {
+                    return "SubNetwork contains Admins";
+                }
+                if (subNetwork.networkUsers.Count > 0)
+                {
+                    return "Subnetwork contains Members";
+                }
+                if(networkAccessor.DeleteSubNetwork(topNetwork.id, subNetwork.id))
+                {
+                    return "Success";
+                }
+                else
+                {
+                    return "Error";
+                }
+            }
+            catch (Exception ex)
+            {
+                return "Error";
+            }
+        }
+
+        public string DeleteGroupNetwork(Network_SubNetwork subNetwork, Network_Group groupNetwork)
+        {
+            try
+            {
+                if (groupNetwork.admins.Count > 0)
+                {
+                    return "GroupNetwork contains Admins";
+                }
+                if (groupNetwork.networkUsers.Count > 0)
+                {
+                    return "GroupNetwork contains Members";
+                }
+                if (networkAccessor.DeleteGroupNetwork(subNetwork.id, groupNetwork.id))
+                {
+                    return "Success";
+                }
+                else
+                {
+                    return "Error";
+                }
+            }
+            catch (Exception ex)
+            {
+                return "Error";
             }
         }
 
