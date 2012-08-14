@@ -2404,7 +2404,7 @@ namespace UserClientMembers.Controllers
 
                     JsonModels.ProfileInformation ui = new JsonModels.ProfileInformation();
                     User u;
-                    if (id < 0)//???? && profileURL != ""
+                    if (id < 0)//???? && profileURL != "" ===>>> this endpoint supports getting by id OR profileURL. if the id is < 0, we must try to retrieve the profileURL
                     {
                         if (profileURL != null)
                         {
@@ -2413,34 +2413,77 @@ namespace UserClientMembers.Controllers
                             {
                                 return AddErrorHeader("A user with the specified profileURL was not found");
                             }
-                            else
+                            id = u.id;
+                            Boolean adminOrMemberCheck = false;
+                            if (id != authenticateId && u.isPublic == 0)//check to see if the authenticated user is an admin of the requested user's networks
                             {
-                                id = u.id;
-                                if (id == authenticateId)
+                                User authenticatedUser = userManager.GetUser(authenticateId);
+                                if (authenticatedUser == null)
                                 {
-                                    if (request == null)
+                                    //This means somebody is attempting to hit the profile PUBLICLY, without a token
+                                    if (u.isPublic == 0)
                                     {
-                                        requestAll = true;
-                                        //anything that might need to happen knowing the owner is requesting...
+                                        return AddErrorHeader("Not Authorized");
                                     }
-                                    else
-                                    {
-                                        //requestAll is false still
-                                    }
+                                    //TODO
+                                    //whatever setting needs to happen so that only public projects are returned
                                 }
                                 else
                                 {
-                                    if (request == null)
+                                    List<int> authenticatedUserAdminandNetworkIds = new List<int>();
+                                    List<int> requestedUserNetworkIds = new List<int>();
+                                    foreach (Network n in u.networks)
                                     {
-                                        requestAll = true;
-                                        if (u.profileViews != null && !ignoreViewCount)
+                                        requestedUserNetworkIds.Add(n.id);
+                                    }
+                                    foreach (Network n in authenticatedUser.adminNetworks)
+                                    {
+                                        authenticatedUserAdminandNetworkIds.Add(n.id);
+                                    }
+                                    foreach (Network n in authenticatedUser.networks)
+                                    {
+                                        authenticatedUserAdminandNetworkIds.Add(n.id);
+                                    }
+                                    foreach (int i in authenticatedUserAdminandNetworkIds)
+                                    {
+                                        foreach (int n in requestedUserNetworkIds)
                                         {
-                                            u.profileViews++;
+                                            if (i == n)
+                                            {
+                                                adminOrMemberCheck = true;
+                                                break;
+                                            }
                                         }
-                                        else
-                                        {
-                                            u.profileViews = 1;
-                                        }
+                                    }
+                                    if (u.isPublic == 0 && !adminOrMemberCheck)
+                                    {
+                                        return AddErrorHeader("Not Authorized");
+                                    }
+                                }
+                            }
+                            if (id == authenticateId)
+                            {
+                                if (request == null)
+                                {
+                                    requestAll = true;
+                                }
+                                else
+                                {
+                                    //requestAll is false still
+                                }
+                            }
+                            else
+                            {
+                                if (request == null)
+                                {
+                                    requestAll = true;
+                                    if (u.profileViews != null && !ignoreViewCount)
+                                    {
+                                        u.profileViews++;
+                                    }
+                                    else
+                                    {
+                                        u.profileViews = 1;
                                     }
                                 }
                             }
@@ -2461,36 +2504,46 @@ namespace UserClientMembers.Controllers
                         if (id != authenticateId && u.isPublic == 0)//check to see if the authenticated user is an admin of the requested user's networks
                         {
                             User authenticatedUser = userManager.GetUser(authenticateId);
-                            List<int> authenticatedUserAdminandNetworkIds = new List<int>();
-                            List<int> requestedUserNetworkIds = new List<int>();
-                            foreach (Network n in u.networks)
+                            if (authenticatedUser == null)
                             {
-                                requestedUserNetworkIds.Add(n.id);
-                            }
-                            foreach (Network n in authenticatedUser.adminNetworks)
-                            {
-                                authenticatedUserAdminandNetworkIds.Add(n.id);
-                            }
-                            foreach (Network n in authenticatedUser.networks)
-                            {
-                                authenticatedUserAdminandNetworkIds.Add(n.id);
-                            }
-                            foreach (int i in authenticatedUserAdminandNetworkIds)
-                            {
-                                foreach (int n in requestedUserNetworkIds)
+                                if (u.isPublic == 0)
                                 {
-                                    if (i == n)
+                                    return AddErrorHeader("Not Authorized");
+                                }
+                                //whatever setting needs to happen so that only public projects are returned
+                            }
+                            else
+                            {
+                                List<int> authenticatedUserAdminandNetworkIds = new List<int>();
+                                List<int> requestedUserNetworkIds = new List<int>();
+                                foreach (Network n in u.networks)
+                                {
+                                    requestedUserNetworkIds.Add(n.id);
+                                }
+                                foreach (Network n in authenticatedUser.adminNetworks)
+                                {
+                                    authenticatedUserAdminandNetworkIds.Add(n.id);
+                                }
+                                foreach (Network n in authenticatedUser.networks)
+                                {
+                                    authenticatedUserAdminandNetworkIds.Add(n.id);
+                                }
+                                foreach (int i in authenticatedUserAdminandNetworkIds)
+                                {
+                                    foreach (int n in requestedUserNetworkIds)
                                     {
-                                        adminOrMemberCheck = true;
-                                        break;
+                                        if (i == n)
+                                        {
+                                            adminOrMemberCheck = true;
+                                            break;
+                                        }
                                     }
                                 }
+                                if (u.isPublic == 0 && !adminOrMemberCheck)
+                                {
+                                    return AddErrorHeader("Not Authorized");
+                                }
                             }
-                        }
-
-                        if (u.isPublic == 0 && !adminOrMemberCheck)
-                        {
-                            return AddErrorHeader("User is hidden");
                         }
                         if (id == authenticateId)
                         {
@@ -2517,10 +2570,10 @@ namespace UserClientMembers.Controllers
                                     u.profileViews = 1;
                                 }
                             }
-                            //TODO need to check if request came from another in the same network or not
                         }
                     }
-                    
+
+                    //END OF DETECTING SETTINGS
 
                     if (u != null)
                     {
@@ -2705,16 +2758,6 @@ namespace UserClientMembers.Controllers
                         }
                         if (requestAll || request.Contains("links"))
                         {
-                            //JsonModels.Links links = userManager.getUserLinks(id);
-                            //if (links != null)
-                            //{
-                            //    ui.links = links;
-                            //    add = 1;
-                            //}
-                            //else
-                            //{
-                            //    ui.links = null;
-                            //}
                             ui.facebookLink = u.facebookLink;
                             ui.twitterLink = u.twitterLink;
                             ui.linkedinLink = u.linkedinLink;

@@ -197,6 +197,9 @@ namespace Entity
             public List<NetworkShell> subNetworks { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public NetworkShell parentNetwork { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string role { get; set; }
+
         }
 
         [DataContract]

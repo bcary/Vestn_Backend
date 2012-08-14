@@ -59,7 +59,7 @@ namespace Manager
                     user.profilePicture = blobStorageAccessor.uploadImage(stmPicture, false).ToString();
                     user.profilePictureThumbnail = "http://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL;
                     photoURL = artifactURL;
-                    message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", user.profilePicture, user.id, "thumbnail", "User", 100, 100, "", artifactURL));
+                    message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", user.profilePicture, user.id, "thumbnail", "User", 170, 170, "", artifactURL));
                 }
                 else if (type == "About")
                 {

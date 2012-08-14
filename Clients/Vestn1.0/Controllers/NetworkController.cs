@@ -251,6 +251,20 @@ namespace UserClientMembers.Controllers
                 }
                 Network network = networkManager.GetNetwork(networkId);
                 JsonModels.Network networkJson = networkManager.GetNetworkJson(network);
+                foreach (User u in network.admins)
+                {
+                    if (u.id == userId)
+                    {
+                        networkJson.role = "admin";
+                    }
+                }
+                foreach (User v in network.networkUsers)
+                {
+                    if (v.id == userId)
+                    {
+                        networkJson.role = "member";
+                    }
+                }
                 if (networkJson != null)
                 {
                     return AddSuccessHeader(Serialize(networkJson));
