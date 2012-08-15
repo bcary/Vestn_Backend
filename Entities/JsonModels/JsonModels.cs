@@ -213,6 +213,8 @@ namespace Entity
             public string lastName { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string profileURL { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string pictureLocation { get; set; }
         }
 
         [DataContract]

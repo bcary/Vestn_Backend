@@ -305,18 +305,36 @@ namespace Accessor
             }
         }
 
+        public bool UpdateNetworkCoverPicture(int networkId, string coverPictureLocation)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                var n = new Network {id = networkId};
+                db.networks.Attach(n);
+                n.coverPicture = coverPictureLocation;
+
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogAccessor la = new LogAccessor();
+                la.CreateLog(DateTime.Now, "Network Accessor UpdateNetworkCoverPicture", ex.StackTrace);
+                return false;
+            }
+        }
+
         public bool DeleteNetworkUser(int networkId, int userId)
         {
             try
             {
                 VestnDB db = new VestnDB();
-                var u = new User { id = userId };
-                var n = new Network { id = networkId };
-                db.networks.Attach(n);
-                db.users.Attach(u);
 
-                n.networkUsers.Remove(u);
-
+                Network net = db.networks.Single(n => n.id == networkId);
+                User user = db.users.Single(u => u.id == userId);
+                net.networkUsers.Remove(user);
+                
                 db.SaveChanges();
                 return true;
             }
@@ -333,12 +351,9 @@ namespace Accessor
             try
             {
                 VestnDB db = new VestnDB();
-                var u = new User { id = adminId };
-                var n = new Network { id = networkId };
-                db.networks.Attach(n);
-                db.users.Attach(u);
-
-                n.admins.Remove(u);
+                Network net = db.networks.Single(n => n.id == networkId);
+                User admin = db.users.Single(u => u.id == adminId);
+                net.admins.Remove(admin);
 
                 db.SaveChanges();
                 return true;
@@ -356,12 +371,9 @@ namespace Accessor
             try
             {
                 VestnDB db = new VestnDB();
-                var n = new Network_TopNetwork { id = topNetworkId };
-                var s = new Network_SubNetwork { id = subNetworkId };
-                db.networks.Attach(n);
-                db.networks.Attach(s);
-
-                n.subNetworks.Remove(s);
+                Network_TopNetwork topnet = (Network_TopNetwork)db.networks.Single(top => top.id == topNetworkId);
+                Network_SubNetwork subnet = (Network_SubNetwork)db.networks.Single(sub => sub.id == subNetworkId);
+                topnet.subNetworks.Remove(subnet);
 
                 db.SaveChanges();
                 return true;
@@ -379,12 +391,9 @@ namespace Accessor
             try
             {
                 VestnDB db = new VestnDB();
-                var s = new Network_SubNetwork { id = subNetworkId };
-                var g = new Network_Group { id = groupNetworkId };
-                db.networks.Attach(s);
-                db.networks.Attach(g);
-
-                s.groups.Remove(g);
+                Network_SubNetwork subnet = (Network_SubNetwork)db.networks.Single(sub => sub.id == subNetworkId);
+                Network_Group groupnet = (Network_Group)db.networks.Single(group => group.id == groupNetworkId);
+                subnet.groups.Remove(groupnet);
 
                 db.SaveChanges();
                 return true;

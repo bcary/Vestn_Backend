@@ -6,6 +6,12 @@ using Accessor;
 using Entity;
 using Manager;
 using Engine;
+using System.IO;
+using Microsoft.WindowsAzure;
+using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.ServiceRuntime;
+using Microsoft.WindowsAzure.Diagnostics;
+
 
 namespace Manager
 {
@@ -43,7 +49,7 @@ namespace Manager
             }
         }
 
-        public JsonModels.Network CreateSubNetwork(int topNetworkId)
+        public JsonModels.Network CreateSubNetwork(int topNetworkId, string name = null)
         {
             try
             {
@@ -52,6 +58,7 @@ namespace Manager
                 if (topNet != null)
                 {
                     Network_SubNetwork newSubNetwork = new Network_SubNetwork();
+                    newSubNetwork.name = name;
 
                     returnNetwork = (Network_SubNetwork)networkAccessor.CreateNetwork(newSubNetwork);
 
@@ -135,6 +142,7 @@ namespace Manager
                             userShell.firstName = u.firstName;
                             userShell.lastName = u.lastName;
                             userShell.profileURL = u.profileURL;
+                            userShell.pictureLocation = u.networkPictureThumbnail;
                             networkUsersJson.users.Add(userShell);
                         }
                     }
@@ -191,10 +199,10 @@ namespace Manager
         {
             try
             {
-                AuthenticaitonEngine ae = new AuthenticaitonEngine();
-                string input = network.id.ToString();
-                input += DateTime.Now.ToString();
-                string newIdentifier = ae.GetHash(input);
+                Random r = new Random();
+                string num = r.Next(100000, 999999).ToString();
+                string newIdentifier = num + network.id.ToString();
+
                 bool set = networkAccessor.UpdateNetworkIdentifier(network.id, newIdentifier);
                 if (set)
                 {
@@ -340,6 +348,45 @@ namespace Manager
             {
                 logAccessor.CreateLog(DateTime.Now, "Network Manager - AddNetworkAdmin", ex.StackTrace);
                 return false;
+            }
+        }
+
+        public string UpdateCoverPicture(int networkId, Stream coverPicture)
+        {
+            try
+            {
+                string messageQueueName = "uploadqueue"; //queue name must be in lower case
+                CloudQueueClient queueClient;
+                CloudQueue queue;
+                CloudStorageAccount storageAccount;
+                BlobStorageAccessor blobStorageAccessor = new BlobStorageAccessor();
+                storageAccount = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("BlobConnectionString"));
+                queueClient = storageAccount.CreateCloudQueueClient();
+                queue = queueClient.GetQueueReference(messageQueueName);
+                queue.CreateIfNotExist();
+
+                string fileName = Guid.NewGuid().ToString();
+                string artifactURL = string.Format("{0}{1}", fileName, ".jpeg");
+
+                string blobReference = blobStorageAccessor.uploadImage(coverPicture, false).ToString();
+                string coverPictureLocation = "http://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL;
+                CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", blobReference, networkId, "thumbnail", "Network", 170, 170, "", artifactURL));
+                queue.AddMessage(message);
+
+                bool updated = networkAccessor.UpdateNetworkCoverPicture(networkId, coverPictureLocation);
+                if (updated)
+                {
+                    return coverPictureLocation;
+                }
+                else
+                {
+                    return "Error";
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "Network Manager - AddNetworkAdmin", ex.StackTrace);
+                return "Error";
             }
         }
 

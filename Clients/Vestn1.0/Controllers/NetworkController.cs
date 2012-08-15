@@ -7,6 +7,7 @@ using Manager;
 using Accessor;
 using Entity;
 using Engine;
+using System.IO;
 
 namespace UserClientMembers.Controllers
 {
@@ -45,7 +46,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string AddChildNetwork(int networkId, string token)
+        public string AddChildNetwork(int networkId, string token, string networkName = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
@@ -68,7 +69,8 @@ namespace UserClientMembers.Controllers
                         Network_TopNetwork topNet = (Network_TopNetwork)network;
                         if (topNet != null)
                         {
-                            JsonModels.Network networkJson = networkManager.CreateSubNetwork(topNet.id);
+
+                            JsonModels.Network networkJson = networkManager.CreateSubNetwork(topNet.id, networkName);
                             if (networkJson != null)
                             {
                                 return AddSuccessHeader(Serialize(networkJson));
@@ -77,6 +79,7 @@ namespace UserClientMembers.Controllers
                             {
                                 return AddErrorHeader("An error occurred while creating this subnetwork");
                             }
+
                         }
                         else
                         {
@@ -556,6 +559,51 @@ namespace UserClientMembers.Controllers
             }
         }
 
+        [AcceptVerbs("OPTIONS","POST")]
+        [AllowCrossSiteJson]
+        public string UpdateNetworkCoverPicture(int networkId, string token, string qqfile = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                int userId = authenticationEngine.authenticate(token);
+                if (userId < 0)
+                {
+                    return AddErrorHeader("Not Authenticated");
+                }
+                if (networkManager.IsNetworkAdmin(networkId, userId))
+                {
+                    if (qqfile != null || Request.Files.Count == 1)
+                    {
+                        var length = Request.ContentLength;
+                        var bytes = new byte[length];
+                        Request.InputStream.Read(bytes, 0, length);
+                        Stream s = new MemoryStream(bytes);
+
+                        string returnPic = networkManager.UpdateCoverPicture(networkId, s);
+
+                        return AddSuccessHeader(returnPic, true);
+                    }
+                    else
+                    {
+                        return AddErrorHeader("No files posted to server");
+                    }
+                }
+                else
+                {
+                    return AddErrorHeader("Not Authorized");
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "NetworkController - UpdateNetworkCoverPicture", ex.StackTrace);
+                return AddErrorHeader("something went wrong while updating the NetworkCoverPicture");
+            }
+        }
+
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
         public string RemoveNetworkUser(int networkId, int networkUserId, string token)
@@ -618,6 +666,10 @@ namespace UserClientMembers.Controllers
                 if (userId < 0)
                 {
                     return AddErrorHeader("Not Authenticated");
+                }
+                if (userId == networkAdminId)
+                {
+                    return AddErrorHeader("You probably don't want to remove yourself as an administrator");
                 }
                 if (networkId > 0 && networkAdminId > 0)
                 {

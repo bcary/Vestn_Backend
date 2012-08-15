@@ -41,6 +41,7 @@ namespace Entity
         public string twitterLink { get; set; }
         public string linkedinLink { get; set; }
         public int profileViews { get; set; }
+        public string networkPictureThumbnail { get; set; }
         //public string networks { get; set; }
 
         public virtual ICollection<Network> networks { get; set; }

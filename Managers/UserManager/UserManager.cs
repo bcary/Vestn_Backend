@@ -51,35 +51,32 @@ namespace Manager
             if (CheckImageSize(stmPicture, 10000000))
             {
                 CloudQueueMessage message = null;
-                if (type == "Profile")
-                {
-                    
-                    String FileNameThumb = Guid.NewGuid().ToString();
-                    string artifactURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
-                    user.profilePicture = blobStorageAccessor.uploadImage(stmPicture, false).ToString();
-                    user.profilePictureThumbnail = "http://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL;
-                    photoURL = artifactURL;
-                    message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", user.profilePicture, user.id, "thumbnail", "User", 170, 170, "", artifactURL));
-                }
-                else if (type == "About")
-                {
-                    String FileNameThumb = Guid.NewGuid().ToString();
-                    string artifactURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
-                    user.aboutPicture = blobStorageAccessor.uploadImage(stmPicture, false).ToString();
-                    user.aboutPictureThumbnail = "http://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL;
-                    photoURL = artifactURL;
-                    message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", user.aboutPicture, user.id, "thumbnail", "About", 266, 266, "", artifactURL));
-                    
-                }
+                CloudQueueMessage message2 = null;
+
+                String FileNameThumb = Guid.NewGuid().ToString();
+                string artifactURL = string.Format("{0}{1}", FileNameThumb, ".jpeg");
+                user.profilePicture = blobStorageAccessor.uploadImage(stmPicture, false).ToString();
+                user.profilePictureThumbnail = "http://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL;
+
+                String FileNameThumb2 = Guid.NewGuid().ToString();
+                string artifactURL2 = string.Format("{0}{1}", FileNameThumb2, ".jpeg");
+                user.networkPictureThumbnail = "http://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL2;
+
+                photoURL = artifactURL;
+                message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", user.profilePicture, user.id, "thumbnail", "User", 170, 170, "", artifactURL));
+                message2 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", user.profilePicture, user.id, "thumbnail", "User", 50, 50, "", artifactURL2));
+
                 user = UpdateUser(user);
+
                 queue.AddMessage(message);
+                queue.AddMessage(message2);
                 return photoURL;
             }
             else
+            {
                 return null;
+            }
         }
-
-
 
         public static bool CheckImageSize(Stream stmPicture, long size)
         {

@@ -62,10 +62,10 @@ namespace Manager
                         image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
                         uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
                     }
-                    UserAccessor ua = new UserAccessor();
-                    User u = ua.GetEntityUser(idValue);
-                    u.profilePictureThumbnail = uri.ToString();
-                    ua.UpdateFromWorker(u);
+                    //UserAccessor ua = new UserAccessor();
+                    //User u = ua.GetEntityUser(idValue);
+                    //u.profilePictureThumbnail = uri.ToString();
+                    //ua.UpdateFromWorker(u);
                 }
                 if (type == "About")
                 {
@@ -77,10 +77,21 @@ namespace Manager
                         image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
                         uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
                     }
-                    UserAccessor ua = new UserAccessor();
-                    User u = ua.GetEntityUser(idValue);
-                    u.aboutPictureThumbnail = uri.ToString();
-                    ua.UpdateFromWorker(u);
+                    //UserAccessor ua = new UserAccessor();
+                    //User u = ua.GetEntityUser(idValue);
+                    //u.aboutPictureThumbnail = uri.ToString();
+                    //ua.UpdateFromWorker(u);
+                }
+                if (type == "Network")
+                {
+                    Bitmap image = TEngine.CreateProfileThumbnail(ms, displayWidth, displayHeight);
+
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        // Save image to stream.
+                        image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
+                        uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
+                    }
                 }
                 else
                 {
@@ -88,7 +99,7 @@ namespace Manager
                     if (type == "PictureElement")
                     {
                         Bitmap image = TEngine.CreateThumbnail(ms, displayWidth, displayHeight);
-                        
+
                         using (MemoryStream stream = new MemoryStream())
                         {
                             // Save image to stream.
@@ -102,7 +113,7 @@ namespace Manager
                     else if (type == "PictureElement_Galleria")
                     {
                         Bitmap image = TEngine.CreateThumbnail(ms, displayWidth, displayHeight);
-                        
+
                         using (MemoryStream stream = new MemoryStream())
                         {
                             // Save image to stream.
@@ -116,7 +127,7 @@ namespace Manager
                     else if (type == "DocumentElement")
                     {
                         Bitmap image = TEngine.CreateThumbnail(ms, displayWidth, displayHeight);
-                        
+
                         using (MemoryStream stream = new MemoryStream())
                         {
                             // Save image to stream.

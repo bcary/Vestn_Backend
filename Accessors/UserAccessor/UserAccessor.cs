@@ -372,6 +372,7 @@ namespace Accessor
                 u.resume = user.resume;
                 u.profilePicture = user.profilePicture;
                 u.profilePictureThumbnail = user.profilePictureThumbnail;
+                u.networkPictureThumbnail = user.networkPictureThumbnail;
 
                 u.profileURL = user.profileURL;
 
