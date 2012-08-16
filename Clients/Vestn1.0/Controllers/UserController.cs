@@ -2040,278 +2040,278 @@ namespace UserClientMembers.Controllers
 
         }
 
-        /// <summary>
-        /// This is the main end point for getting basic user information. 
-        /// It takes in a int[] of userIds and a string[] request objects
-        /// Here is an example request:
-        /// /User/GetUserInformation?id=1&id=2&request=firstName&request=lastName&request=tagLine
-        /// requestObjects can contain any of the following strinsg:
-        ///     firstName, lastName, title, school, description, tagLine, resume, profilePicture, profilePictureThumbnail, stats, links, experiences, references, tags, projects, todo, recentActivity, connections
-        /// </summary>
-        /// <param name="List<int> userIds"></param>
-        /// <param name="List<string> requestObjects"></param>
-        /// <returns>Json Object of UserInformation class</returns>
-        /// 
-        //[AcceptVerbs("POST", "OPTIONS")]
-        //public string  GetUserInformation(int id = -1, string profileURL = null, string[] request = null, string token = null)
-        //{
-        //    Response.AddHeader("Access-Control-Allow-Origin", "*");
-        //    if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
-        //    {
-        //        Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
-        //        Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
-        //        Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
-        //        Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
-        //        Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
-        //        Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
-        //        return null;
-        //    }
-        //    else
-        //    {
-        //        //authenticate via token
-        //        string returnVal;
-        //        try
-        //        {
-        //            if (token != null)
-        //            {
-        //                int authenticate = authenticationEngine.authenticate(token);
-        //                if (authenticate < 0)
-        //                {
-        //                    //Response.StatusCode = 500;
-        //                    //return AddErrorHeader("Not Authenticated");
-        //                }
-        //            }
-        //            bool requestAll = false;
-        //            if (request == null)
-        //            {
-        //                requestAll = true;
-        //            }
-        //            List<JsonModels.UserInformation> userInformationList = new List<JsonModels.UserInformation>();
-        //            int add = 0;
-        //            User u;
-        //            if (id < 0)
-        //            {
-        //                if (profileURL != null)
-        //                {
-        //                    u = userManager.GetUserByProfileURL(profileURL);
-        //                    if (u == null)
-        //                    {
-        //                        return AddErrorHeader("A user with the specified profileURL was not found");
-        //                    }
-        //                    else
-        //                    {
-        //                        id = u.id;
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    return AddErrorHeader("An id or profileURL must be specified");
-        //                }
-        //            }
-        //            else
-        //            {
-        //                u = userManager.GetUser(id);
-        //                if (u == null)
-        //                {
-        //                    return AddErrorHeader("A user with the specified id was not found");
-        //                }
-        //            }
-        //            if (u != null)
-        //            {
-        //                add = 0;
-        //                //TODO add company
-        //                JsonModels.UserInformation ui = new JsonModels.UserInformation();
-        //                if (requestAll || request.Contains("firstName"))
-        //                {
-        //                    if (u.firstName != null)
-        //                    {
-        //                        ui.firstName = u.firstName;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("lastName"))
-        //                {
-        //                    if (u.lastName != null)
-        //                    {
-        //                        ui.lastName = u.lastName;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("connections"))
-        //                {
-        //                    if (u.connections != null)
-        //                    {
-        //                        ui.connections = u.connections;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("tagLine"))
-        //                {
-        //                    if (u.tagLine != null)
-        //                    {
-        //                        ui.tagLine = u.tagLine;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("title"))
-        //                {
-        //                    if (u.title != null)
-        //                    {
-        //                        ui.title = u.title;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("school"))
-        //                {
-        //                    if (u.organization != null)
-        //                    {
-        //                        ui.school = u.organization;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("description"))
-        //                {
-        //                    if (u.description != null)
-        //                    {
-        //                        ui.description = u.description;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("resume"))
-        //                {
-        //                    if (u.resume != null)
-        //                    {
-        //                        ui.resume = u.resume;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("profilePicture"))
-        //                {
-        //                    if (u.profilePicture != null)
-        //                    {
-        //                        ui.profilePicture = u.profilePicture;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("aboutPicture"))
-        //                {
-        //                    if (u.aboutPicture != null)
-        //                    {
-        //                        ui.aboutPicture = u.aboutPicture;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("profilePictureThumbnail"))
-        //                {
-        //                    if (u.profilePictureThumbnail != null)
-        //                    {
-        //                        ui.profilePictureThumbnail = u.profilePictureThumbnail;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("aboutPictureThumbnail"))
-        //                {
-        //                    if (u.aboutPictureThumbnail != null)
-        //                    {
-        //                        ui.aboutPictureThumbnail = u.aboutPictureThumbnail;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("stats"))
-        //                {
-        //                    JsonModels.UserStats stats = userManager.getUserStats(id);
-        //                    if (stats != null)
-        //                    {
-        //                        ui.stats = stats;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("links"))
-        //                {
-        //                    JsonModels.Links links = userManager.getUserLinks(id);
-        //                    if (links != null)
-        //                    {
-        //                        ui.links = links;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("experiences"))
-        //                {
-        //                    List<JsonModels.Experience> experiences = userManager.GetUserExperiences(id);
-        //                    if (experiences != null && experiences.Count != 0)
-        //                    {
-        //                        ui.experiences = experiences;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("references"))
-        //                {
-        //                    List<JsonModels.Reference> references = userManager.GetUserReferences(id);
-        //                    if (references != null && references.Count != 0)
-        //                    {
-        //                        ui.references = references;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("tags"))
-        //                {
-        //                    List<JsonModels.UserTag> tags = userManager.GetUserTags(id);
-        //                    if (tags != null && tags.Count != 0)
-        //                    {
-        //                        ui.tags = tags;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("projects"))
-        //                {
-        //                    List<JsonModels.ProjectShell> projects = projectManager.GetProjectShells(id);
-        //                    if (projects != null && projects.Count != 0)
-        //                    {
-        //                        ui.projects = projects;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("todo"))
-        //                {
-        //                    List<JsonModels.Todo> todoList = userManager.GetTodo(id);
-        //                    if (todoList != null && todoList.Count != 0)
-        //                    {
-        //                        ui.todo = todoList;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (requestAll || request.Contains("recentActivity"))
-        //                {
-        //                    List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(id);
-        //                    if (recentActivity != null && recentActivity.Count != 0)
-        //                    {
-        //                        ui.recentActivity = recentActivity;
-        //                        add = 1;
-        //                    }
-        //                }
-        //                if (add == 1)
-        //                {
-        //                    userInformationList.Add(ui);
-        //                }
-        //            }
-        //            try
-        //            {
-        //                returnVal = Serialize(userInformationList);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-        //                return AddErrorHeader(ex.Message);
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-        //            return AddErrorHeader("Bad Request");
-        //        }
-        //        return AddSuccessHeader(returnVal);
-        //    }
-        //}
+         //<summary>
+         //This is the main end point for getting basic user information. 
+         //It takes in a int[] of userIds and a string[] request objects
+         //Here is an example request:
+         ///User/GetUserInformation?id=1&id=2&request=firstName&request=lastName&request=tagLine
+         //requestObjects can contain any of the following strinsg:
+         //    firstName, lastName, title, school, description, tagLine, resume, profilePicture, profilePictureThumbnail, stats, links, experiences, references, tags, projects, todo, recentActivity, connections
+         //</summary>
+         //<param name="List<int> userIds"></param>
+         //<param name="List<string> requestObjects"></param>
+         //<returns>Json Object of UserInformation class</returns>
+         
+        [AcceptVerbs("POST", "OPTIONS")]
+        public string  GetUserInformation(int id = -1, string profileURL = null, string[] request = null, string token = null)
+        {
+            Response.AddHeader("Access-Control-Allow-Origin", "*");
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
+                Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
+                Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+                Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+                return null;
+            }
+            else
+            {
+                //authenticate via token
+                string returnVal;
+                try
+                {
+                    if (token != null)
+                    {
+                        int authenticate = authenticationEngine.authenticate(token);
+                        if (authenticate < 0)
+                        {
+                            //Response.StatusCode = 500;
+                            //return AddErrorHeader("Not Authenticated");
+                        }
+                    }
+                    bool requestAll = false;
+                    if (request == null)
+                    {
+                        requestAll = true;
+                    }
+                    List<JsonModels.UserInformation> userInformationList = new List<JsonModels.UserInformation>();
+                    int add = 0;
+                    User u;
+                    if (id < 0)
+                    {
+                        if (profileURL != null)
+                        {
+                            u = userManager.GetUserByProfileURL(profileURL);
+                            if (u == null)
+                            {
+                                return AddErrorHeader("A user with the specified profileURL was not found");
+                            }
+                            else
+                            {
+                                id = u.id;
+                            }
+                        }
+                        else
+                        {
+                            return AddErrorHeader("An id or profileURL must be specified");
+                        }
+                    }
+                    else
+                    {
+                        u = userManager.GetUser(id);
+                        if (u == null)
+                        {
+                            return AddErrorHeader("A user with the specified id was not found");
+                        }
+                    }
+                    if (u != null)
+                    {
+                        add = 0;
+                        //TODO add company
+                        JsonModels.UserInformation ui = new JsonModels.UserInformation();
+                        if (requestAll || request.Contains("firstName"))
+                        {
+                            if (u.firstName != null)
+                            {
+                                ui.firstName = u.firstName;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("lastName"))
+                        {
+                            if (u.lastName != null)
+                            {
+                                ui.lastName = u.lastName;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("connections"))
+                        {
+                            if (u.connections != null)
+                            {
+                                ui.connections = u.connections;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("tagLine"))
+                        {
+                            if (u.tagLine != null)
+                            {
+                                ui.tagLine = u.tagLine;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("title"))
+                        {
+                            if (u.title != null)
+                            {
+                                ui.title = u.title;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("school"))
+                        {
+                            if (u.organization != null)
+                            {
+                                ui.school = u.organization;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("description"))
+                        {
+                            if (u.description != null)
+                            {
+                                ui.description = u.description;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("resume"))
+                        {
+                            if (u.resume != null)
+                            {
+                                ui.resume = u.resume;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("profilePicture"))
+                        {
+                            if (u.profilePicture != null)
+                            {
+                                ui.profilePicture = u.profilePicture;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("aboutPicture"))
+                        {
+                            if (u.aboutPicture != null)
+                            {
+                                ui.aboutPicture = u.aboutPicture;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("profilePictureThumbnail"))
+                        {
+                            if (u.profilePictureThumbnail != null)
+                            {
+                                ui.profilePictureThumbnail = u.profilePictureThumbnail;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("aboutPictureThumbnail"))
+                        {
+                            if (u.aboutPictureThumbnail != null)
+                            {
+                                ui.aboutPictureThumbnail = u.aboutPictureThumbnail;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("stats"))
+                        {
+                            JsonModels.UserStats stats = userManager.getUserStats(id);
+                            if (stats != null)
+                            {
+                                ui.stats = stats;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("links"))
+                        {
+                            JsonModels.Links links = userManager.getUserLinks(id);
+                            if (links != null)
+                            {
+                                ui.links = links;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("experiences"))
+                        {
+                            List<JsonModels.Experience> experiences = userManager.GetUserExperiences(id);
+                            if (experiences != null && experiences.Count != 0)
+                            {
+                                ui.experiences = experiences;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("references"))
+                        {
+                            List<JsonModels.Reference> references = userManager.GetUserReferences(id);
+                            if (references != null && references.Count != 0)
+                            {
+                                ui.references = references;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("tags"))
+                        {
+                            List<JsonModels.UserTag> tags = userManager.GetUserTags(id);
+                            if (tags != null && tags.Count != 0)
+                            {
+                                ui.tags = tags;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("projects"))
+                        {
+                            List<JsonModels.ProjectShell> projects = projectManager.GetProjectShells(id);
+                            if (projects != null && projects.Count != 0)
+                            {
+                                ui.projects = projects;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("todo"))
+                        {
+                            List<JsonModels.Todo> todoList = userManager.GetTodo(id);
+                            if (todoList != null && todoList.Count != 0)
+                            {
+                                ui.todo = todoList;
+                                add = 1;
+                            }
+                        }
+                        if (requestAll || request.Contains("recentActivity"))
+                        {
+                            List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(id);
+                            if (recentActivity != null && recentActivity.Count != 0)
+                            {
+                                ui.recentActivity = recentActivity;
+                                add = 1;
+                            }
+                        }
+                        if (add == 1)
+                        {
+                            userInformationList.Add(ui);
+                        }
+                    }
+                    try
+                    {
+                        returnVal = Serialize(userInformationList);
+                    }
+                    catch (Exception ex)
+                    {
+                        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                        return AddErrorHeader(ex.Message);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                    return AddErrorHeader("Bad Request");
+                }
+                return AddSuccessHeader(returnVal);
+            }
+        }
 
         [AcceptVerbs("POST", "OPTIONS")]
         public string UpdateProjectOrder(string order, string token)

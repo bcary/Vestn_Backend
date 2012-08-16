@@ -739,6 +739,7 @@ namespace Manager
                                 adminJson.firstName = admin.firstName;
                                 adminJson.lastName = admin.lastName;
                                 adminJson.profileURL = admin.profileURL;
+                                adminJson.pictureLocation = admin.networkPictureThumbnail;
                                 adminShells.Add(adminJson);
                             }
                         }
