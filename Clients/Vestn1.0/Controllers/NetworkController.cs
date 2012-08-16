@@ -40,7 +40,7 @@ namespace UserClientMembers.Controllers
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - CreateNetwork", ex.StackTrace);
-                return AddErrorHeader("Something went wrong while creating this network");
+                return AddErrorHeader("Something went wrong while creating this network", 1);
             }
         }
 
@@ -57,7 +57,7 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!", 2);
                 }
                 User user = userManager.GetUser(userId);
                 Network network = networkManager.GetNetwork(networkId);
@@ -77,13 +77,13 @@ namespace UserClientMembers.Controllers
                             }
                             else
                             {
-                                return AddErrorHeader("An error occurred while creating this subnetwork");
+                                return AddErrorHeader("An error occurred while creating this subnetwork", 1);
                             }
 
                         }
                         else
                         {
-                            return AddErrorHeader("error fetching top level network");
+                            return AddErrorHeader("error fetching top level network", 1);
                         }
                     }
                     else if (network.GetType().Name.Contains("Network_SubNetwork"))
@@ -98,30 +98,30 @@ namespace UserClientMembers.Controllers
                             }
                             else
                             {
-                                return AddErrorHeader("An error occurred while creating this group network");
+                                return AddErrorHeader("An error occurred while creating this group network", 1);
                             }
                         }
                         else
                         {
                             //error fetching subnetwork
-                            return AddErrorHeader("error fetching subnetwork");
+                            return AddErrorHeader("error fetching subnetwork", 1);
                         }
                     }
                     else
                     {
                         //can only add child networks to top and sub networks
-                        return AddErrorHeader("No additional Child Networks can be added");
+                        return AddErrorHeader("No additional Child Networks can be added", 1);
                     }
                 }
                 else
                 {
-                    return AddErrorHeader("The network was not found in the database");
+                    return AddErrorHeader("The network was not found in the database", 1);
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - AddChildNetwork", ex.StackTrace);
-                return AddErrorHeader("Something went wrong while adding this child network");
+                return AddErrorHeader("Something went wrong while adding this child network", 1);
             }
         }
 
@@ -138,7 +138,7 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!", 2);
                 }
 
                 if (networkManager.IsNetworkAdmin(networkId, userId))
@@ -163,18 +163,18 @@ namespace UserClientMembers.Controllers
                     }
                     else
                     {
-                        return AddErrorHeader("An error occurred while adding the network administrator");
+                        return AddErrorHeader("An error occurred while adding the network administrator", 1);
                     }
                 }
                 else
                 {
-                    return AddErrorHeader("User must be an admin to add network administrators");
+                    return AddErrorHeader("User must be an admin to add network administrators", 3);
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - AddNetworkAdmin", ex.StackTrace);
-                return AddErrorHeader("something went wrong while adding this network administrator");
+                return AddErrorHeader("something went wrong while adding this network administrator", 1);
             }
         }
 
@@ -191,7 +191,7 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!", 2);
                 }
                 if (networkManager.IsNetworkAdmin(networkId, userId))
                 {
@@ -204,18 +204,18 @@ namespace UserClientMembers.Controllers
                     }
                     else
                     {
-                        return AddErrorHeader("An error occurred adding network users");
+                        return AddErrorHeader("An error occurred adding network users", 1);
                     }
                 }
                 else
                 {
-                    return AddErrorHeader("User must be a network administrator to add users");
+                    return AddErrorHeader("User must be a network administrator to add users", 3);
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - AddNetworkUsers", ex.StackTrace);
-                return AddErrorHeader("something went wrong while adding network users");
+                return AddErrorHeader("something went wrong while adding network users", 1);
             }
         }
 
@@ -232,7 +232,7 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!", 2);
                 }
                 JsonModels.NetworkUsers netUserJson = networkManager.GetNetworkUsers(networkId);
                 if (netUserJson != null)
@@ -241,13 +241,13 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return AddErrorHeader("An error occurred fetching the network users");
+                    return AddErrorHeader("An error occurred fetching the network users", 1);
                 }
             }
             catch(Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - GetNetworkUsers", ex.StackTrace);
-                return AddErrorHeader("something went wrong while retrieving network users");
+                return AddErrorHeader("something went wrong while retrieving network users", 1);
             }
         }
 
@@ -264,7 +264,7 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!", 2);
                 }
                 Network network = networkManager.GetNetwork(networkId);
                 JsonModels.Network networkJson = networkManager.GetNetworkJson(network);
@@ -366,13 +366,13 @@ namespace UserClientMembers.Controllers
                 }
                 else
                 {
-                    return AddErrorHeader("An error occurred while retrieving the network information");
+                    return AddErrorHeader("An error occurred while retrieving the network information", 1);
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - GetNetworkInformation", ex.StackTrace);
-                return AddErrorHeader("something went wrong while getting the network information");
+                return AddErrorHeader("something went wrong while getting the network information", 1);
             }
         }
 
@@ -389,7 +389,7 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!", 2);
                 }
                 if (networkManager.IsNetworkAdmin(networkId, userId))
                 {
@@ -405,7 +405,7 @@ namespace UserClientMembers.Controllers
                             }
                             else
                             {
-                                return AddErrorHeader("An Error Occurred");
+                                return AddErrorHeader("An Error Occurred", 1);
                             }
                         }
                         else
@@ -415,18 +415,18 @@ namespace UserClientMembers.Controllers
                     }
                     else
                     {
-                        return AddErrorHeader("Network id not found");
+                        return AddErrorHeader("Network id not found", 1);
                     }
                 }
                 else
                 {
-                    return AddErrorHeader("Must be network admin to access join code");
+                    return AddErrorHeader("Must be network admin to access join code", 3);
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - GetNetworkJoinCode", ex.StackTrace);
-                return AddErrorHeader("something went wrong while getting the network join code");
+                return AddErrorHeader("something went wrong while getting the network join code", 1);
             }
         }
 
@@ -443,13 +443,13 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!", 2);
                 }
 
                 Network network = networkManager.GetNetworkByUrl(networkURL);
                 if (network == null)
                 {
-                    return AddErrorHeader("Network with networkURL was not found");
+                    return AddErrorHeader("Network with networkURL was not found", 1);
                 }
                 else
                 {
@@ -459,7 +459,7 @@ namespace UserClientMembers.Controllers
             }
             catch (Exception ex)
             {
-                return AddErrorHeader("Something went wrong while attmpting to retreive this networkURL");
+                return AddErrorHeader("Something went wrong while attmpting to retreive this networkURL", 1);
             }
         }
 
@@ -476,7 +476,7 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!", 2);
                 }
                 if (networkManager.IsNetworkAdmin(networkId, userId))
                 {
@@ -489,26 +489,26 @@ namespace UserClientMembers.Controllers
                         }
                         else if (status == "URL taken")
                         {
-                            return AddErrorHeader("Network URL is already taken.");
+                            return AddErrorHeader("Network URL is already taken.", 1);
                         }
                         else
                         {
-                            return AddErrorHeader("error");
+                            return AddErrorHeader("error", 1);
                         }
                     }
                     else
                     {
-                        return AddErrorHeader("An error occurred while attempting to update this networkURL");
+                        return AddErrorHeader("An error occurred while attempting to update this networkURL", 1);
                     }
                 }
                 else
                 {
-                    return AddErrorHeader("User must be network administrator to update the URL");
+                    return AddErrorHeader("User must be network administrator to update the URL", 3);
                 }
             }
             catch (Exception ex)
             {
-                return AddErrorHeader("Something went wrong while attempting to update this networkURL");
+                return AddErrorHeader("Something went wrong while attempting to update this networkURL", 1);
             }
         }
 
@@ -525,7 +525,7 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("You are not authenticated, please log in!");
+                    return AddErrorHeader("You are not authenticated, please log in!", 2);
                 }
                 if (network != null)
                 {
@@ -539,23 +539,23 @@ namespace UserClientMembers.Controllers
                         }
                         else
                         {
-                            return AddErrorHeader("An error occurred while updating the network model");
+                            return AddErrorHeader("An error occurred while updating the network model", 1);
                         }
                     }
                     else
                     {
-                        return AddErrorHeader("User must be network admin to update the network model");
+                        return AddErrorHeader("User must be network admin to update the network model", 3);
                     }
                 }
                 else
                 {
-                    return AddErrorHeader("The network model passed in was unable to be parsed");
+                    return AddErrorHeader("The network model passed in was unable to be parsed", 1);
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - UpdateNetworkModel", ex.StackTrace);
-                return AddErrorHeader("something went wrong while updating the network information");
+                return AddErrorHeader("something went wrong while updating the network information", 1);
             }
         }
 
@@ -572,7 +572,7 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("Not Authenticated");
+                    return AddErrorHeader("Not Authenticated", 2);
                 }
                 if (networkManager.IsNetworkAdmin(networkId, userId))
                 {
@@ -589,18 +589,18 @@ namespace UserClientMembers.Controllers
                     }
                     else
                     {
-                        return AddErrorHeader("No files posted to server");
+                        return AddErrorHeader("No files posted to server", 1);
                     }
                 }
                 else
                 {
-                    return AddErrorHeader("Not Authorized");
+                    return AddErrorHeader("Not Authorized", 3);
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - UpdateNetworkCoverPicture", ex.StackTrace);
-                return AddErrorHeader("something went wrong while updating the NetworkCoverPicture");
+                return AddErrorHeader("something went wrong while updating the NetworkCoverPicture", 1);
             }
         }
 
@@ -617,7 +617,7 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("Not Authenticated");
+                    return AddErrorHeader("Not Authenticated", 2);
                 }
                 if (networkId > 0 && networkUserId > 0)
                 {
@@ -630,24 +630,24 @@ namespace UserClientMembers.Controllers
                         }
                         else
                         {
-                            return AddErrorHeader("An error occurred while removing this user");
+                            return AddErrorHeader("An error occurred while removing this user", 1);
                         }
                     }
                     else
                     {
-                        return AddErrorHeader("Not Authorized");
+                        return AddErrorHeader("Not Authorized", 3);
                     }
                 }
                 else
                 {
-                    return AddErrorHeader("Invalid integers for networkId or networkUserId");
+                    return AddErrorHeader("Invalid integers for networkId or networkUserId", 1);
                 }
 
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - RemoveNetworkUser", ex.StackTrace);
-                return AddErrorHeader("something went wrong while removing the network user");
+                return AddErrorHeader("something went wrong while removing the network user", 1);
             }
 
         }
@@ -665,11 +665,11 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("Not Authenticated");
+                    return AddErrorHeader("Not Authenticated", 2);
                 }
                 if (userId == networkAdminId)
                 {
-                    return AddErrorHeader("You probably don't want to remove yourself as an administrator");
+                    return AddErrorHeader("You probably don't want to remove yourself as an administrator", 1);
                 }
                 if (networkId > 0 && networkAdminId > 0)
                 {
@@ -682,24 +682,24 @@ namespace UserClientMembers.Controllers
                         }
                         else
                         {
-                            return AddErrorHeader("An error occurred while removing this admin");
+                            return AddErrorHeader("An error occurred while removing this admin", 1);
                         }
                     }
                     else
                     {
-                        return AddErrorHeader("Not Authorized");
+                        return AddErrorHeader("Not Authorized", 3);
                     }
                 }
                 else
                 {
-                    return AddErrorHeader("Invalid integers for networkId or networkAdminId");
+                    return AddErrorHeader("Invalid integers for networkId or networkAdminId", 1);
                 }
 
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - RemoveNetworkAdmin", ex.StackTrace);
-                return AddErrorHeader("something went wrong while removing the network admin");
+                return AddErrorHeader("something went wrong while removing the network admin", 1);
             }
 
         }
@@ -717,7 +717,7 @@ namespace UserClientMembers.Controllers
                 int userId = authenticationEngine.authenticate(token);
                 if (userId < 0)
                 {
-                    return AddErrorHeader("Not Authenticated");
+                    return AddErrorHeader("Not Authenticated", 2);
                 }
                 if (networkManager.IsNetworkAdmin(networkId, userId))
                 {
@@ -733,7 +733,7 @@ namespace UserClientMembers.Controllers
                         }
                         else
                         {
-                            return AddErrorHeader(status);
+                            return AddErrorHeader(status, 1);
                         }
                     }
                     else if (network.GetType().Name.Contains("Network_SubNetwork"))
@@ -747,24 +747,24 @@ namespace UserClientMembers.Controllers
                         }
                         else
                         {
-                            return AddErrorHeader(status);
+                            return AddErrorHeader(status, 1);
                         }
                     }
                     else
                     {
-                        return AddErrorHeader("This will never get hit");
+                        return AddErrorHeader("This will never get hit", 1);
                     }
                 }
                 else
                 {
-                    return AddErrorHeader("Not Authorized");
+                    return AddErrorHeader("Not Authorized", 3);
                 }
 
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "NetworkController - RemoveChildNetwork", ex.StackTrace);
-                return AddErrorHeader("something went wrong while removing the network admin");
+                return AddErrorHeader("something went wrong while removing the network admin", 1);
             }
 
         }

@@ -49,9 +49,9 @@ namespace UserClientMembers.Controllers
             return returnVal;
         }
 
-        protected string AddErrorHeader(string message)
+        protected string AddErrorHeader(string message, int code)
         {
-            return "{\"Success\": false,\"Message\": \"" + @message + "\",\"Reponse\":null}";
+            return "{\"Error\":{\"Code\": \"" + @code + "\",\"Message\": \"" + @message + "\"},\"Success\": false,\"Reponse\":null}";
         }
 
         protected string RenderPartialViewToString()
