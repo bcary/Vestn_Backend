@@ -405,6 +405,28 @@ namespace Accessor
             return changePasswordSucceeded;
         }
 
+        public bool updateUserSettings(User user)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                User u = new User { id = user.id };
+                db.users.Attach(u);
+
+                u.isPublic = user.isPublic;
+                u.email = user.email;
+                u.profileURL = user.profileURL;
+
+                db.SaveChanges();
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool ActivateUser(User user, bool toActivate)
         {
             MembershipUser membershipUser = Membership.GetUser(user.userName);

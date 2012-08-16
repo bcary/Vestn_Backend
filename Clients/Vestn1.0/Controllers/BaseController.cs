@@ -51,7 +51,7 @@ namespace UserClientMembers.Controllers
 
         protected string AddErrorHeader(string message, int code)
         {
-            return "{\"Error\":{\"Code\": \"" + @code + "\",\"Message\": \"" + @message + "\"},\"Success\": false,\"Reponse\":null}";
+            return "{\"Error\":{\"Code\":"  + @code.ToString() + ",\"Message\": \"" + @message + "\"},\"Success\": false,\"Reponse\":null}";
         }
 
         protected string RenderPartialViewToString()
@@ -102,7 +102,7 @@ namespace UserClientMembers.Controllers
                 res.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
                 res.AddHeader("Access-Control-Allow-Headers", "X-Mime-Type");
                 res.AddHeader("Access-Control-Allow-Headers", "Content-Type");
-                res.AddHeader("Access-Control-Allow-Headers", "Accept");
+                //res.AddHeader("Access-Control-Allow-Headers", "Accept");
                 res.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
             }
             base.OnActionExecuting(filterContext);

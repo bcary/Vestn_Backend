@@ -221,6 +221,18 @@ namespace Manager
             return userAccessor.ChangePassword(user, oldPassword, newPassword);
         }
 
+        public bool UpdateUserSettings(User user)
+        {
+            try
+            {
+                return userAccessor.updateUserSettings(user);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool ActivateUser(User user, bool toActivate)
         {
             return userAccessor.ActivateUser(user, toActivate);

@@ -1387,6 +1387,110 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
+        public string UpdateSettings(int userId, string email = null, string profileURL = null, string visibility = null, string token = null)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
+                else
+                {
+                    return AddErrorHeader("An authentication token must be passed in", 2);
+                }
+                User user = userManager.GetUser(userId);
+                if (user != null)
+                {
+                    JsonModels.UserSettings settings = new JsonModels.UserSettings();
+                    settings.email = email;
+                    settings.profileURL = profileURL;
+                    settings.visibility = visibility;
+                    if (user.profileURL != settings.profileURL)
+                    {
+                        string result = ValidationEngine.ValidateProfileURL(settings.profileURL);
+                        if (result == ValidationEngine.Success)
+                        {
+                            user.profileURL = settings.profileURL;
+                            user.email = settings.email;
+                            if (settings.visibility == "hidden")
+                            {
+                                user.isPublic = 0;
+                            }
+                            else
+                            {
+                                user.isPublic = 1;
+                            }
+                            bool success = userManager.UpdateUserSettings(user);
+                            if (success)
+                            {
+                                JsonModels.UserSettings newSettings = new JsonModels.UserSettings();
+                                newSettings.email = user.email;
+                                newSettings.firstName = user.firstName;
+                                newSettings.lastName = user.lastName;
+                                newSettings.profileURL = user.profileURL;
+                                newSettings.visibility = settings.visibility;
+
+                                return AddSuccessHeader(Serialize(newSettings));
+                            }
+                            else
+                            {
+                                return AddErrorHeader("Update Unsuccessful", 1);
+                            }
+                        }
+                        else
+                        {
+                            return AddErrorHeader("ProfileURL Validation Error: " + result, 1);
+                        }
+                    }
+                    else
+                    {
+                        user.email = settings.email;
+                        if (settings.visibility == "hidden")
+                        {
+                            user.isPublic = 0;
+                        }
+                        else
+                        {
+                            user.isPublic = 1;
+                        }
+                        bool success = userManager.UpdateUserSettings(user);
+                        if (success)
+                        {
+                            JsonModels.UserSettings newSettings = new JsonModels.UserSettings();
+                            newSettings.email = user.email;
+                            newSettings.firstName = user.firstName;
+                            newSettings.lastName = user.lastName;
+                            newSettings.profileURL = user.profileURL;
+                            newSettings.visibility = settings.visibility;
+
+                            return AddSuccessHeader(Serialize(newSettings));
+                        }
+                        else
+                        {
+                            return AddErrorHeader("Update Unsuccessful", 1);
+                        }
+                    }
+                }
+                else
+                {
+                    return AddErrorHeader("User not found", 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - UpdateSettingsModel", ex.StackTrace);
+                return AddErrorHeader("Something went wrong while updating this  user SettingsModel", 1);
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
         public string UpdateResume(int userId, string token = null, string qqfile = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
@@ -2096,7 +2200,7 @@ namespace UserClientMembers.Controllers
                             u = userManager.GetUserByProfileURL(profileURL);
                             if (u == null)
                             {
-                                return AddErrorHeader("A user with the specified profileURL was not found");
+                                return AddErrorHeader("A user with the specified profileURL was not found", 1);
                             }
                             else
                             {
@@ -2105,7 +2209,7 @@ namespace UserClientMembers.Controllers
                         }
                         else
                         {
-                            return AddErrorHeader("An id or profileURL must be specified");
+                            return AddErrorHeader("An id or profileURL must be specified", 1);
                         }
                     }
                     else
@@ -2113,7 +2217,7 @@ namespace UserClientMembers.Controllers
                         u = userManager.GetUser(id);
                         if (u == null)
                         {
-                            return AddErrorHeader("A user with the specified id was not found");
+                            return AddErrorHeader("A user with the specified id was not found", 1);
                         }
                     }
                     if (u != null)
@@ -2301,13 +2405,13 @@ namespace UserClientMembers.Controllers
                     catch (Exception ex)
                     {
                         logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                        return AddErrorHeader(ex.Message);
+                        return AddErrorHeader(ex.Message, 1);
                     }
                 }
                 catch (Exception ex)
                 {
                     logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return AddErrorHeader("Bad Request");
+                    return AddErrorHeader("Bad Request", 1);
                 }
                 return AddSuccessHeader(returnVal);
             }
