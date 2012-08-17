@@ -1306,6 +1306,8 @@ namespace UserClientMembers.Controllers
             }
             try
             {
+                //Request.InputStream.Position = 0;
+                //var todoJson = new StreamReader(Request.InputStream).ReadToEnd();
                 int authUserId = -1;
                 if (token != null)
                 {
@@ -2646,7 +2648,10 @@ namespace UserClientMembers.Controllers
             }
             else
             {
-                
+                //HttpRequestBase request1 = Request;
+                //Request.InputStream.Position = 0;
+                //var todoJson = new StreamReader(Request.InputStream).ReadToEnd();
+                //string inputText = Request.InputStream.ToString();
                 //authenticate via token
                 string returnVal;
                 int authenticateId = -1;

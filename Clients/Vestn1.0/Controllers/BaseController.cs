@@ -6,6 +6,9 @@ using System.Web.Routing;
 using System.Net;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
+using System.Web.Script.Serialization;
+using Entity;
 
 namespace UserClientMembers.Controllers
 {
@@ -93,6 +96,43 @@ namespace UserClientMembers.Controllers
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             HttpResponseBase res = filterContext.RequestContext.HttpContext.Response;
+
+            //string toParse = new StreamReader(filterContext.RequestContext.HttpContext.Request.InputStream).ReadToEnd();
+            //string inputText = filterContext.RequestContext.HttpContext.Request.InputStream.ToString();
+            //JavaScriptSerializer serializer = new JavaScriptSerializer();
+            ////serializer.Deserialize(
+            //// filterContext.RequestContext.HttpContext.Request.InputStream.
+
+
+            //string[] stringParams = toParse.Split('&');
+            //foreach (string parameter in stringParams)
+            //{
+            //    string[] kvPair = parameter.Split('=');
+            //    string key = kvPair[0];
+            //    string value = kvPair[1];
+            //    var a = serializer.Deserialize<JsonModels.Artifact>(value);
+            //    Type type = filterContext.ActionParameters[key].GetType();
+            //    if (type != null)
+            //    {
+            //        if (type == typeof(int))
+            //        {
+            //            filterContext.ActionParameters[key] = Int32.Parse(value);
+            //        }
+            //        else if (type == typeof(string))
+            //        {
+            //            filterContext.ActionParameters[key] = value;
+            //        }
+            //        else if (type == typeof(bool))
+            //        {
+            //            filterContext.ActionParameters[key] = bool.Parse(value);
+            //        }
+            //    }
+
+            //}
+
+            //List<string> mylist = new List<string>();
+            //mylist.Add("test");
+
             res.AddHeader("Access-Control-Allow-Origin", "*");
             if (filterContext.RequestContext.HttpContext.Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
