@@ -351,31 +351,33 @@ namespace Accessor
             try
             {
                 VestnDB db = new VestnDB();
-                db.users.Attach(u);
+                //db.users.Attach(u);
+                var updatedUser = db.users.Find(user.id);
+                db.users.Attach(updatedUser);
                 //db.Entry(user).State = EntityState.Modified;
-                u.description = user.description;
-                u.email = user.email;
-                u.facebookLink = user.facebookLink;
-                u.linkedinLink = user.linkedinLink;
-                u.twitterLink = user.twitterLink;
-                u.firstName = user.firstName;
-                u.lastName = user.lastName;
-                u.major = user.major;
-                u.location = user.location;
-                u.phoneNumber = user.phoneNumber;
-                u.projectOrder = user.projectOrder;
-                u.organization = user.organization;
-                u.tagLine = user.tagLine;
-                u.title = user.title;
-                u.isPublic = user.isPublic;
-
-                u.resume = user.resume;
-                u.profilePicture = user.profilePicture;
-                u.profilePictureThumbnail = user.profilePictureThumbnail;
-                u.networkPictureThumbnail = user.networkPictureThumbnail;
-
-                u.profileURL = user.profileURL;
-
+                updatedUser.description = user.description;
+                updatedUser.email = user.email;
+                updatedUser.facebookLink = user.facebookLink;
+                updatedUser.linkedinLink = user.linkedinLink;
+                updatedUser.twitterLink = user.twitterLink;
+                updatedUser.firstName = user.firstName;
+                updatedUser.lastName = user.lastName;
+                updatedUser.major = user.major;
+                updatedUser.location = user.location;
+                updatedUser.phoneNumber = user.phoneNumber;
+                updatedUser.projectOrder = user.projectOrder;
+                updatedUser.organization = user.organization;
+                updatedUser.tagLine = user.tagLine;
+                updatedUser.title = user.title;
+                updatedUser.isPublic = user.isPublic;
+                updatedUser.resume = user.resume;
+                updatedUser.profilePicture = user.profilePicture;
+                updatedUser.profilePictureThumbnail = user.profilePictureThumbnail;
+                updatedUser.networkPictureThumbnail = user.networkPictureThumbnail;
+                updatedUser.profileURL = user.profileURL;
+                updatedUser.forgotPasswordHash = user.forgotPasswordHash;
+                updatedUser.verifyEmailHash = user.verifyEmailHash;
+                
                 db.SaveChanges();
             }
             catch (Exception e)
@@ -396,6 +398,24 @@ namespace Accessor
             try
             {
                 MembershipUser currentUser = Membership.GetUser(user.userName, true /* userIsOnline */);
+                changePasswordSucceeded = currentUser.ChangePassword(oldPassword, newPassword);
+            }
+            catch (Exception)//not logging this exception
+            {
+                changePasswordSucceeded = false;
+            }
+            return changePasswordSucceeded;
+        }
+
+        public bool ChangePassword(User user, string newPassword)
+        {
+            // ChangePassword will throw an exception rather
+            // than return false in certain failure scenarios.
+            bool changePasswordSucceeded;
+            try
+            {
+                MembershipUser currentUser = Membership.GetUser(user.userName, true /* userIsOnline */);
+                string oldPassword = currentUser.ResetPassword();
                 changePasswordSucceeded = currentUser.ChangePassword(oldPassword, newPassword);
             }
             catch (Exception)//not logging this exception

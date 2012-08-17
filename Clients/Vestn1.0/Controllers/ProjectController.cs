@@ -1250,8 +1250,14 @@ namespace UserClientMembers.Controllers
                     Project p = projectManager.IsUserOwnerOfProjectElement(artifactFromJson.id, authUser);
                     if (p != null)
                     {
-                        originalElement.description = (artifactFromJson.description != null) ? artifactFromJson.description : null;
-                        originalElement.title = (artifactFromJson.title != null) ? artifactFromJson.title : null;
+                        if (artifactFromJson.description != null)
+                        {
+                            originalElement.description = (artifactFromJson.description == "null") ? null : artifactFromJson.description;
+                        }
+                        if (artifactFromJson.title != null)
+                        {
+                            originalElement.title = (artifactFromJson.title == "null") ? null : artifactFromJson.title;
+                        }
                         projectManager.UpdateProjectElement(originalElement);
 
                         p.dateModified = DateTime.Now;
@@ -1311,9 +1317,18 @@ namespace UserClientMembers.Controllers
                     }
                     if (projectManager.IsUserOwnerOfProject(projectFromJson.id, authUser))
                     {
-                        originalProject.description = (projectFromJson.description != null) ? projectFromJson.description : null;
-                        originalProject.name = (projectFromJson.title != null) ? projectFromJson.title : null;
-                        originalProject.projectElementOrder = (projectFromJson.artifactOrder != null) ? projectFromJson.artifactOrder : null;
+                        if (projectFromJson.description != null)
+                        {
+                            originalProject.description = (projectFromJson.description == "null") ? null : projectFromJson.description;
+                        }
+                        if (projectFromJson.title != null)
+                        {
+                            originalProject.name = (projectFromJson.title == "null") ? null : projectFromJson.title;
+                        }
+                        if (projectFromJson.artifactOrder != null)
+                        {
+                            originalProject.projectElementOrder = (projectFromJson.artifactOrder == "null") ? null : projectFromJson.artifactOrder;
+                        }
 
                         if (projectFromJson.privacy != null)
                         {

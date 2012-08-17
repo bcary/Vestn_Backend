@@ -221,6 +221,11 @@ namespace Manager
             return userAccessor.ChangePassword(user, oldPassword, newPassword);
         }
 
+        public bool ChangePassword(User user, string newPassword)
+        {
+            return userAccessor.ChangePassword(user, newPassword);
+        }
+
         public bool UpdateUserSettings(User user)
         {
             try

@@ -923,6 +923,7 @@ namespace UserClientMembers.Controllers
             }
         }
 
+        /*
         public JsonResult ForgotPassword(string email)
         {
             try
@@ -977,8 +978,78 @@ namespace UserClientMembers.Controllers
                 return View("Error");
             }
         }
+        */
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string ForgotPassword(string email)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                CommunicationManager communicationManager = new CommunicationManager();
 
+                User user = userManager.GetUserByEmail(email);
+                if (user == null)
+                {
+                    return AddErrorHeader("Email not found", 1);
+                }
 
+                string resetPasswordHash = userManager.ResetPassword(user);
+                user.forgotPasswordHash = resetPasswordHash;
+                userManager.UpdateUser(user);
+
+                communicationManager.SendForgotPassword(user.email, resetPasswordHash, user.firstName);
+
+                return AddSuccessHeader("Email sent");
+            }
+            catch (Exception ex)
+            {
+                return AddErrorHeader("Error sending forgot password email", 1);
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string ResetPassword(string password, int id, string hash)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                User userForId = userManager.GetUser(id);
+                if (userForId.forgotPasswordHash == hash)
+                {
+                    if (userManager.ChangePassword(userForId, password))
+                    {
+                        AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
+                        string token = authEngine.logIn(userForId.id, userForId.userName);
+                        JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
+                        rr.id = userForId.id;
+                        rr.token = token;
+                        userForId.forgotPasswordHash = null;
+                        userManager.UpdateUser(userForId);
+                        return AddSuccessHeader(Serialize(rr));
+                    }
+                    else
+                    {
+                        return AddErrorHeader("Error resetting password", 1);
+                    }
+                }
+                else
+                {
+                    return AddErrorHeader("Invalid hash", 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                return AddErrorHeader("Error resetting password", 1);
+            }
+        }
 
 
 
@@ -1255,23 +1326,63 @@ namespace UserClientMembers.Controllers
                     if (originalProfile != null)
                     {
                         //model sync
-                        originalProfile.description = (profileFromJson.description != null) ? profileFromJson.description : null;
-                        originalProfile.email = (profileFromJson.email != null) ? profileFromJson.email : null;
-
-                        originalProfile.facebookLink = (profileFromJson.facebookLink != null) ? profileFromJson.facebookLink : null;
-                        originalProfile.twitterLink = (profileFromJson.twitterLink != null) ? profileFromJson.twitterLink : null;
-                        originalProfile.linkedinLink = (profileFromJson.linkedinLink != null) ? profileFromJson.linkedinLink : null;
-
-                        originalProfile.firstName = (profileFromJson.firstName != null) ? profileFromJson.firstName : null;
-                        originalProfile.lastName = (profileFromJson.lastName != null) ? profileFromJson.lastName : null;
-                        originalProfile.location = (profileFromJson.location != null) ? profileFromJson.location : null;
-                        originalProfile.major = (profileFromJson.major != null) ? profileFromJson.major : null;
-                        originalProfile.phoneNumber = (profileFromJson.phoneNumber != null) ? profileFromJson.phoneNumber : null;
-                        originalProfile.projectOrder = (profileFromJson.projectOrder != null) ? profileFromJson.projectOrder : null;
+                        if (profileFromJson.description != null)
+                        {
+                            originalProfile.description = (profileFromJson.description == "null") ? null : profileFromJson.description;
+                        }
+                        if (profileFromJson.email != null)
+                        {
+                            originalProfile.email = (profileFromJson.email == "null") ? null : profileFromJson.email;
+                        }
+                        if (profileFromJson.facebookLink != null)
+                        {
+                            originalProfile.facebookLink = (profileFromJson.facebookLink == "null") ? null : profileFromJson.facebookLink;
+                        }
+                        if (profileFromJson.twitterLink != null)
+                        {
+                            originalProfile.twitterLink = (profileFromJson.twitterLink == "null") ? null : profileFromJson.twitterLink;
+                        }
+                        if (profileFromJson.linkedinLink != null)
+                        {
+                            originalProfile.linkedinLink = (profileFromJson.linkedinLink == "null") ? null : profileFromJson.linkedinLink;
+                        }
+                        if (profileFromJson.firstName != null)
+                        {
+                            originalProfile.firstName = (profileFromJson.firstName == "null") ? null : profileFromJson.firstName;
+                        }
+                        if (profileFromJson.lastName != null)
+                        {
+                            originalProfile.lastName = (profileFromJson.lastName == "null") ? null : profileFromJson.lastName;
+                        }
+                        if (profileFromJson.location != null)
+                        {
+                            originalProfile.location = (profileFromJson.location == "null") ? null : profileFromJson.location;
+                        }
+                        if (profileFromJson.major != null)
+                        {
+                            originalProfile.major = (profileFromJson.major == "null") ? null : profileFromJson.major;
+                        }
+                        if (profileFromJson.phoneNumber != null)
+                        {
+                            originalProfile.phoneNumber = (profileFromJson.phoneNumber == "null") ? null : profileFromJson.phoneNumber;
+                        }
+                        if (profileFromJson.projectOrder != null)
+                        {
+                            originalProfile.projectOrder = (profileFromJson.projectOrder == "null") ? null : profileFromJson.projectOrder;
+                        }
                         //originalProfile.resume = (profileFromJson.resume != null) ? profileFromJson.resume : null;
-                        originalProfile.organization = (profileFromJson.organization != null) ? profileFromJson.organization : null;
-                        originalProfile.tagLine = (profileFromJson.tagLine != null) ? profileFromJson.tagLine : null;
-                        originalProfile.title = (profileFromJson.title != null) ? profileFromJson.title : null;
+                        if (profileFromJson.organization != null)
+                        {
+                            originalProfile.organization = (profileFromJson.organization == "null") ? null : profileFromJson.organization;
+                        }
+                        if (profileFromJson.tagLine != null)
+                        {
+                            originalProfile.tagLine = (profileFromJson.tagLine == "null") ? null : profileFromJson.tagLine;
+                        }
+                        if (profileFromJson.title != null)
+                        {
+                            originalProfile.title = (profileFromJson.title == "null") ? null : profileFromJson.title;
+                        }
                         
                         userManager.UpdateUser(originalProfile);
                         JsonModels.ProfileInformation returnProfile = userManager.GetProfileJson(originalProfile);
@@ -3045,13 +3156,34 @@ namespace UserClientMembers.Controllers
                         {
                             if (originalExperience.userId == authUserId)
                             {
-                                originalExperience.city = experienceFromJson.city;
-                                originalExperience.company = experienceFromJson.company;
-                                originalExperience.description = experienceFromJson.description;
-                                originalExperience.endDate = DateTime.Parse(experienceFromJson.endDate);
-                                originalExperience.startDate = DateTime.Parse(experienceFromJson.startDate);
-                                originalExperience.state = experienceFromJson.state;
-                                originalExperience.title = experienceFromJson.title;
+                                if (experienceFromJson.city != null)
+                                {
+                                    originalExperience.city = (experienceFromJson.city == "null") ? null : experienceFromJson.city;
+                                }
+                                if (experienceFromJson.company != null)
+                                {
+                                    originalExperience.company = (experienceFromJson.company == "null") ? null : experienceFromJson.company;
+                                }
+                                if (experienceFromJson.description != null)
+                                {
+                                    originalExperience.description = (experienceFromJson.description == "null") ? null : experienceFromJson.description;
+                                }
+                                if (experienceFromJson.endDate != null)
+                                {
+                                    originalExperience.endDate = DateTime.Parse(experienceFromJson.endDate);
+                                }
+                                if (experienceFromJson.startDate != null)
+                                {
+                                    originalExperience.startDate = DateTime.Parse(experienceFromJson.startDate);
+                                }
+                                if (experienceFromJson.state != null)
+                                {
+                                    originalExperience.state = (experienceFromJson.state == "null") ? null : experienceFromJson.state;
+                                }
+                                if (experienceFromJson.title != null)
+                                {
+                                    originalExperience.title = (experienceFromJson.title == "null") ? null : experienceFromJson.title;
+                                }
                                 userManager.UpdateExperience(originalExperience);
                                 activityManager.AddActivity(authUserId, "Experience", "Updated", originalExperience.id);
                                 return AddSuccessHeader(Serialize(experienceFromJson));
@@ -3394,15 +3526,39 @@ namespace UserClientMembers.Controllers
                         {
                             if (originalReference.userId == authUserId)
                             {
-                                originalReference.company = referenceFromJson.company;
-                                originalReference.email = referenceFromJson.email;
-                                originalReference.firstName = referenceFromJson.firstName;
+                                if (referenceFromJson.company != null)
+                                {
+                                    originalReference.company = (referenceFromJson.company == "null") ? null : referenceFromJson.company;
+                                }
+                                if (referenceFromJson.email != null)
+                                {
+                                    originalReference.email = (referenceFromJson.email == "null") ? null : referenceFromJson.email;
+                                }
+                                if (referenceFromJson.firstName != null)
+                                {
+                                    originalReference.firstName = (referenceFromJson.firstName == "null") ? null : referenceFromJson.firstName;
+                                }
+                                if (referenceFromJson.lastName != null)
+                                {
+                                    originalReference.lastName = (referenceFromJson.lastName == "null") ? null : referenceFromJson.lastName;
+                                }
+                                if (referenceFromJson.message != null)
+                                {
+                                    originalReference.message = (referenceFromJson.message == "null") ? null : referenceFromJson.message;
+                                }
+                                if (referenceFromJson.title != null)
+                                {
+                                    originalReference.title = (referenceFromJson.title == "null") ? null : referenceFromJson.title;
+                                }
+                                if (referenceFromJson.videoLink != null)
+                                {
+                                    originalReference.videoLink = (referenceFromJson.videoLink == "null") ? null : referenceFromJson.videoLink;
+                                }
+                                if (referenceFromJson.videoType != null)
+                                {
+                                    originalReference.videoType = (referenceFromJson.videoType == "null") ? null : referenceFromJson.videoType;
+                                }
                                 originalReference.id = referenceFromJson.id;
-                                originalReference.lastName = referenceFromJson.lastName;
-                                originalReference.message = referenceFromJson.message;
-                                originalReference.title = referenceFromJson.title;
-                                originalReference.videoLink = referenceFromJson.videoLink;
-                                originalReference.videoType = referenceFromJson.videoType;
 
                                 userManager.UpdateReference(originalReference);
                                 activityManager.AddActivity(authUserId, "Reference", "Updated", originalReference.id);
