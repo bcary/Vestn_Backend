@@ -443,6 +443,42 @@ namespace Accessor
             return UpdateUser(user);
         }
 
+        public bool VerifyEmail(int userId)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                User u = new User { id = userId };
+                db.users.Attach(u);
+                u.emailVerified = 1;
+
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool SetVerifyHash(int userId, string hash)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                User u = new User { id = userId };
+                db.users.Attach(u);
+                u.verifyEmailHash = hash;
+
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public User MakePublic(User user, int toActivate)
         {
             user.isPublic = toActivate;

@@ -78,6 +78,34 @@ namespace Manager
             }
         }
 
+        public bool verifyEmail(User user)
+        {
+            try
+            {
+                return userAccessor.VerifyEmail(user.id);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public void SendVerifyEmail(string email)
+        {
+            User user = GetUserByEmail(email);
+            if (user != null)
+            {
+                CommunicationManager cm = new CommunicationManager();
+                Random r = new Random();
+                string random = r.Next(100000, 999999).ToString();
+                string verifyHash = random + user.id.ToString();
+                if(userAccessor.SetVerifyHash(user.id, verifyHash))
+                {
+                    cm.SendVerifyEmail(email, verifyHash);
+                }
+            }
+        }
+
         public static bool CheckImageSize(Stream stmPicture, long size)
         {
             return stmPicture.Length <= size;

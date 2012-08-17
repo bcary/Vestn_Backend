@@ -114,14 +114,16 @@ namespace Manager
             }
         }
 
-        public void SendVerifyEmail(string email)
+
+
+        public void SendVerifyEmail(string email, string code)
         {
             try
             {
-                string verifyLink = "http://qa.vestn.com/#splash=verifyEmail&email="+email+"&userId";
-                string messageBody = "Please click the link below to verify your email address: \n"+verifyLink;
+                string verifyLink = "http://qa.vestn.com/#splash=verifyEmail&email="+email+"&hash="+code;
+                string messageBody = "Vestn allows you to upload and demonstrate your best work and connects you to institutions, peers, and employers. \n \nPlease click the link below to verify your email address: \n \n" + verifyLink;
 
-                SendEmail(email, "Verify Your Email Address", "Greetings!", messageBody);
+                SendEmail(email, "Welcome to Vestn!", "Welcome!", messageBody);
             }
             catch (Exception ex)
             {

@@ -367,13 +367,14 @@ namespace UserClientMembers.Controllers
                             nm.AddNetworkUsers(network, emailArray);
                         }
                     }
+                    userManager.SendVerifyEmail(email);
 
-                    AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
-                    string token = authEngine.logIn(newUser.id, newUser.userName);
-                    JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
-                    rr.id = newUser.id;
-                    rr.token = token;
-                    return AddSuccessHeader(Serialize(rr));
+                    //AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
+                    //string token = authEngine.logIn(newUser.id, newUser.userName);
+                    //JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
+                    //rr.id = newUser.id;
+                    //rr.token = token;
+                    return AddSuccessHeader("Please verify your email address", true);
                 }
                 else
                 {
@@ -1576,6 +1577,54 @@ namespace UserClientMembers.Controllers
                 return AddErrorHeader("Something went wrong while trying to update this user's resume", 1);
             }
         }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string VerifyEmail(string email, string hash)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return null;
+            }
+            try
+            {
+                User u = userManager.GetUserByEmail(email);
+                if (u != null)
+                {
+                    //User Manager Verify Email (email, hash)
+                    if (u.verifyEmailHash == hash)
+                    {
+                        bool success = userManager.verifyEmail(u);
+                        if (success)
+                        {
+                            AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
+                            string token = authEngine.logIn(u.id, u.userName);
+                            JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
+                            rr.id = u.id;
+                            rr.token = token;
+                            return AddSuccessHeader(Serialize(rr));
+                        }
+                        else
+                        {
+                            return AddErrorHeader("Error updating user",1);
+                        }
+                    }
+                    else
+                    {
+                        return AddErrorHeader("Invalid verify email identifier", 1);
+                    }
+                }
+                else
+                {
+                    return AddErrorHeader("Invalid Email", 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                return AddErrorHeader("Something went wrong while verifying this email", 1);
+            }
+        }
+
 
         //[Authorize]
         [AcceptVerbs("POST","OPTIONS")]

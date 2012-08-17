@@ -123,6 +123,10 @@
       <Project>{3F32D179-8AE5-4B56-97A2-2718ED0D0522}</Project>
       <Name>Reference</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CommunicationManager\CommunicationManager.csproj">
+      <Project>{1EE4B5CB-CC17-448C-8992-FCB4E2058656}</Project>
+      <Name>CommunicationManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProjectManager\ProjectManager.csproj">
       <Project>{C9CDDD0E-C63C-4DD3-8005-1E73A426BAAA}</Project>
       <Name>ProjectManager</Name>
