@@ -356,6 +356,9 @@ namespace Entity
 
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string profileURL { get; set; }
+
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public Boolean emailVerified { get; set; }
         }
 
         [DataContract]
@@ -466,7 +469,7 @@ namespace Entity
         public class RegisterResponse
         {
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public int id { get; set; }
+            public int userId { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string token { get; set; }
         }

@@ -369,12 +369,12 @@ namespace UserClientMembers.Controllers
                     }
                     userManager.SendVerifyEmail(email);
 
-                    //AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
-                    //string token = authEngine.logIn(newUser.id, newUser.userName);
-                    //JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
-                    //rr.id = newUser.id;
-                    //rr.token = token;
-                    return AddSuccessHeader("Please verify your email address", true);
+                    AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
+                    string token = authEngine.logIn(newUser.id, newUser.userName);
+                    JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
+                    rr.userId = newUser.id;
+                    rr.token = token;
+                    return AddSuccessHeader(Serialize(rr));
                 }
                 else
                 {
@@ -710,6 +710,7 @@ namespace UserClientMembers.Controllers
                         logOnReturnObject.lastName = (user.lastName != null) ? user.lastName : null;
                         logOnReturnObject.profileURL = (user.profileURL != null) ? user.profileURL : null;
                         logOnReturnObject.token = token;
+                        logOnReturnObject.emailVerified = (user.emailVerified == 1) ? true : false;
 
                         return AddSuccessHeader(Serialize(logOnReturnObject));
                     }
@@ -1030,7 +1031,7 @@ namespace UserClientMembers.Controllers
                         AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
                         string token = authEngine.logIn(userForId.id, userForId.userName);
                         JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
-                        rr.id = userForId.id;
+                        rr.userId = userForId.id;
                         rr.token = token;
                         userForId.forgotPasswordHash = null;
                         userManager.UpdateUser(userForId);
@@ -1713,7 +1714,7 @@ namespace UserClientMembers.Controllers
                             AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
                             string token = authEngine.logIn(u.id, u.userName);
                             JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
-                            rr.id = u.id;
+                            rr.userId = u.id;
                             rr.token = token;
                             return AddSuccessHeader(Serialize(rr));
                         }
@@ -2673,6 +2674,8 @@ namespace UserClientMembers.Controllers
 
                     JsonModels.ProfileInformation ui = new JsonModels.ProfileInformation();
                     User u;
+                    Boolean sameUser = false;
+                    Boolean adminOrMemberCheck = false;
                     if (id < 0)//???? && profileURL != "" ===>>> this endpoint supports getting by id OR profileURL. if the id is < 0, we must try to retrieve the profileURL
                     {
                         if (profileURL != null)
@@ -2683,8 +2686,7 @@ namespace UserClientMembers.Controllers
                                 return AddErrorHeader("A user with the specified profileURL was not found", 1);
                             }
                             id = u.id;
-                            Boolean adminOrMemberCheck = false;
-                            if (id != authenticateId && u.isPublic == 0)//check to see if the authenticated user is an admin of the requested user's networks
+                            if (id != authenticateId)//check to see if the authenticated user is an admin of the requested user's networks
                             {
                                 User authenticatedUser = userManager.GetUser(authenticateId);
                                 if (authenticatedUser == null)
@@ -2730,6 +2732,11 @@ namespace UserClientMembers.Controllers
                                     }
                                 }
                             }
+                            else
+                            {
+                                sameUser = true;
+                            }
+
                             if (id == authenticateId)
                             {
                                 if (request == null)
@@ -2765,12 +2772,11 @@ namespace UserClientMembers.Controllers
                     else
                     {
                         u = userManager.GetUser(id);
-                        Boolean adminOrMemberCheck = false;
                         if (u == null)
                         {
                             return AddErrorHeader("A user with the specified id was not found", 1);
                         }
-                        if (id != authenticateId && u.isPublic == 0)//check to see if the authenticated user is an admin of the requested user's networks
+                        if (id != authenticateId)//check to see if the authenticated user is an admin of the requested user's networks
                         {
                             User authenticatedUser = userManager.GetUser(authenticateId);
                             if (authenticatedUser == null)
@@ -2814,6 +2820,10 @@ namespace UserClientMembers.Controllers
                                 }
                             }
                         }
+                        else
+                        {
+                            sameUser = true;
+                        }
                         if (id == authenticateId)
                         {
                             if (request == null)
@@ -2843,6 +2853,17 @@ namespace UserClientMembers.Controllers
                     }
 
                     //END OF DETECTING SETTINGS
+                    List<string> projectPrivacyPrivledge = new List<string>();
+                    projectPrivacyPrivledge.Add("public");
+                    if (sameUser)
+                    {
+                        projectPrivacyPrivledge.Add("network");
+                        projectPrivacyPrivledge.Add("private");
+                    }
+                    else if (adminOrMemberCheck)
+                    {
+                        projectPrivacyPrivledge.Add("network");
+                    }
 
                     if (u != null)
                     {
@@ -3072,14 +3093,14 @@ namespace UserClientMembers.Controllers
                         }
                         if (requestAll || request.Contains("projects"))
                         {
-                            int[] projectIds = new int[u.projects.Count];
+                            int[] projectIds = new int[u.projects.Count]; 
                             int count = 0;
                             foreach (Project p in u.projects)
                             {
                                 projectIds[count] = p.id;
                                 count++;
                             }
-                            List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(projectIds);
+                            List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(projectIds, projectPrivacyPrivledge);
                             if (projects != null && projects.Count != 0)
                             {
                                 ui.projects = projects;

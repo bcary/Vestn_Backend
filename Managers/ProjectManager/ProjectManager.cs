@@ -1221,10 +1221,17 @@ namespace Manager
 
         }
 
-        public List<JsonModels.CompleteProject> GetCompleteProjects(int[] id)
+        public List<JsonModels.CompleteProject> GetCompleteProjects(int[] id, List<string> projectPrivacyPrivledge)
         {
             List<JsonModels.CompleteProject> projects = new List<JsonModels.CompleteProject>();
             ProjectAccessor pa = new ProjectAccessor();
+            if (projectPrivacyPrivledge == null)
+            {
+                projectPrivacyPrivledge = new List<string>();
+                projectPrivacyPrivledge.Add("public");
+                projectPrivacyPrivledge.Add("network");
+                projectPrivacyPrivledge.Add("private");
+            }
             foreach (int i in id)
             {
                 JsonModels.CompleteProject cp = new JsonModels.CompleteProject();
@@ -1232,7 +1239,7 @@ namespace Manager
                 Project p = pa.GetProject(i);
                 if (p != null)
                 {
-                    if (p.isActive == true)
+                    if (p.isActive == true && (projectPrivacyPrivledge.Contains(p.privacy) || p.privacy == null))
                     {
                         cp.id = p.id;
                         if (p.name != null)

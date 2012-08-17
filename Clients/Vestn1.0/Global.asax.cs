@@ -142,6 +142,7 @@ namespace UserClientMembers
                 if (etfs[x].Substring(0, 1) == "~")
                 {
                     sTag top = tagManager.CreateSTag(0, etfs[x].Substring(1, etfs[x].Length - 1).Trim());
+                    System.Diagnostics.Debug.WriteLine("\"" + top.value + "\",");
                     x++;
                     if (x == etfs.Length)
                     {
@@ -150,8 +151,17 @@ namespace UserClientMembers
                     while (etfs[x] != "!")
                     {
                         int i = etfs[x].IndexOf("(");
-                        string value = etfs[x].Substring(0, i - 2);
+                        string value = null;
+                        if (i > 0)
+                        {
+                            value = etfs[x].Substring(0, i - 2);
+                        }
+                        else
+                        {
+                            value = etfs[x].Trim();
+                        }
                         sTag mid = tagManager.CreateSTag(tagAccessor.GetSTag(top.value).id, value);
+                        System.Diagnostics.Debug.WriteLine("\t\"" + mid.value + "\",");
                         x++;
                         if (x == etfs.Length)
                         {
