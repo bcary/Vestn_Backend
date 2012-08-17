@@ -212,24 +212,44 @@ Windows Phone  (4)
 Academic Writing  (222) 
 Article Rewriting  (450) 
 Articles  (848) 
+Arabic
 Astroturfing  (0) 
-Blog  (305) 
+Blogging  (305) 
 Book Writing  (56) 
+Business Writing
+Cantonese
 Cartography & Maps  (12) 
+Children’s Writing
+Chinese
+Content Writing
 Copy Typing  (87) 
 Copywriting  (463) 
+Creative Writing
+Danish
+Dutch
 eBooks  (74) 
 Editing  (51) 
+English
+Feature Writing
 Fiction  (14) 
 Financial Research  (13) 
 Forum Posting  (53) 
-Ghostwriting  (292) 
+French
+German
+Grammar
 Grant Writing  (5) 
-LaTeX  (0) 
+Italian
+Japanese
+Journalistic Writing
+Korean
+Legal Writing  
 Medical Writing  (32) 
+Mandarin
 Newsletters  (12) 
-PDF  (42) 
+Non-Fiction Writing
+Norwegian 
 Poetry  (2) 
+Polish
 Powerpoint  (12) 
 Press Releases  (36) 
 Product Descriptions  (90) 
@@ -238,15 +258,19 @@ Proposal/Bid Writing  (2)
 Publishing  (11) 
 Report Writing  (71) 
 Research  (144) 
-Resumes  (1) 
+Resume  (1) 
 Reviews  (195) 
+Sales Writing
 Screenwriting  (4) 
-Short Stories  (9) 
-Speech Writing  (6) 
+Script Writing
+Short Stories  (9)
+Spanish 
+Speech Writing  (6)
+Sports Writing
+Swedish 
 Technical Writing  (185) 
 Translation  (120) 
 Travel Writing  (30) 
-WIKI  (4) 
 !
 ~Design, Media & Architecture
 
@@ -265,7 +289,7 @@ Banner Design  (78)   (3)
 Blog Design  (9) 
 Brochure Design  (29)   (1)
 Building Architecture  (14) 
-Business Cards  (16)   (1)
+Calligraphy
 Capture NX2  (0) 
 Caricature & Cartoons  (37)   (1)
 CGI  (3) 
@@ -313,7 +337,6 @@ Print  (8)   (5)
 PSD to HTML  (65) 
 PSD2CMS  (3) 
 QuarkXPress  (1) 
-Shopify Templates  (6) 
 Stationery Design  (11)   (1)
 Sticker Design  (0) 
 T-Shirts  (16)   (0)
@@ -326,7 +349,6 @@ Visual Arts  (4)
 Voice Talent  (53) 
 Website Design  (1845)   (4)
 Word  (24) 
-Yahoo! Store Design  (2) 
 !
 ~Data Entry & Admin
 
@@ -341,9 +363,6 @@ Order Processing  (40)
 Phone Support  (15) 
 Technical Support  (13) 
 Transcription  (19) 
-Video Upload  (20) 
-Virtual Assistant  (119) 
-Web Search  (165) 
 !
 ~Engineering & Science
 
@@ -357,6 +376,7 @@ Biology  (6)
 Biotechnology  (4) 
 Broadcast Engineering  (9) 
 CAD/CAM  (25) 
+Yardi
 Chemical Engineering  (6) 
 Civil Engineering  (5) 
 Clean Technology  (0) 
@@ -368,7 +388,6 @@ Electrical Engineering  (37)
 Electronics  (56) 
 Engineering  (32) 
 Engineering Drawing  (8) 
-Finite Element Analysis  (1) 
 Genetic Engineering  (0) 
 Geology  (0) 
 GPS  (14) 
@@ -393,19 +412,16 @@ Nanotechnology  (1)
 Natural Language  (5) 
 PCB Layout  (27) 
 Petroleum Engineering  (0) 
-PLC & SCADA  (1) 
 Product Management  (3) 
 Project Scheduling  (3) 
 Quantum  (0) 
 Remote Sensing  (1) 
 Robotics  (0) 
-RTOS  (1) 
 Scientific Research  (10) 
 Solidworks  (8) 
 Statistics  (8) 
 Structural Engineering  (1) 
 Telecommunications Engineering  (11) 
-Verilog / VHDL  (2) 
 Wireless  (26) 
 !
 ~Product Sourcing & Manufacturing
@@ -426,15 +442,15 @@ Branding  (21)
 Bulk Marketing  (312) 
 Classifieds Posting  (96) 
 CRM  (18) 
-eBay  (183) 
 Google Adsense  (93) 
 Internet Marketing  (1378) 
 Leads  (342) 
 Market Research  (31) 
 Marketing  (726) 
-MLM  (10) 
 Sales  (445) 
-SEM / Adwords  (58) 
+SEM
+Adwords  
+SEO
 Telemarketing  (133) 
 Viral Marketing  (33) 
 !
@@ -444,6 +460,8 @@ Accounting  (54)
 Audit  (0) 
 Business Analysis  (58) 
 Business Plans  (38) 
+Business
+Business Strategy
 Contracts  (10) 
 Employment Law  (8) 
 ERP  (8) 
@@ -455,7 +473,6 @@ Inventory Management  (1)
 Legal  (23) 
 Legal Research  (12) 
 Management  (11) 
-MYOB  (1) 
 Patents  (3) 
 Payroll  (12) 
 PeopleSoft  (0) 
@@ -468,15 +485,12 @@ Recruitment  (17)
 SAS  (0) 
 Tax  (4) 
 Tax Law  (3) 
-Visa / Immigration  (2) 
 !
 ~Other
 
-Anything Goes  (78) 
 Automotive  (3) 
 Brain Storming  (5) 
 Cooking & Recipes  (3) 
-Dating  (41) 
 Education & Tutoring  (22) 
 Energy  (1) 
 Financial Markets  (29) 

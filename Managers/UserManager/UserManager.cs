@@ -679,7 +679,7 @@ namespace Manager
                 count++;
             }
             ProjectManager pm = new ProjectManager();
-            List<JsonModels.CompleteProject> projects =  pm.GetCompleteProjects(projectIds);
+            List<JsonModels.CompleteProject> projects =  pm.GetCompleteProjects(projectIds, null);
             if (projects != null && projects.Count != 0)
             {
                 ui.projects = projects;

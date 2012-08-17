@@ -1962,7 +1962,7 @@ namespace UserClientMembers.Controllers
                 string returnVal;
                 try
                 {
-                    List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(projectId);
+                    List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(projectId, null);
                     if (projects != null)
                     {
                         try
