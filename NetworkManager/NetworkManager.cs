@@ -84,7 +84,7 @@ namespace Manager
             }
         }
 
-        public JsonModels.Network CreateGroupNetwork(int subNetworkId)
+        public JsonModels.Network CreateGroupNetwork(int subNetworkId, string name = null)
         {
             try
             {
@@ -93,6 +93,7 @@ namespace Manager
                 if (subNet != null)
                 {
                     Network_Group newGroup = new Network_Group();
+                    newGroup.name = name;
                     //newGroup.SubNetworkId = subNetworkId;
                     returnNetwork = (Network_Group)networkAccessor.CreateNetwork(newGroup);
 

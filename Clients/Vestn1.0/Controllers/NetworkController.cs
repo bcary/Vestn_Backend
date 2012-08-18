@@ -91,7 +91,7 @@ namespace UserClientMembers.Controllers
                         Network_SubNetwork subNet = (Network_SubNetwork)network;
                         if (subNet != null)
                         {
-                            JsonModels.Network networkJson = networkManager.CreateGroupNetwork(subNet.id);
+                            JsonModels.Network networkJson = networkManager.CreateGroupNetwork(subNet.id, networkName);
                             if (networkJson != null)
                             {
                                 return AddSuccessHeader(Serialize(networkJson));

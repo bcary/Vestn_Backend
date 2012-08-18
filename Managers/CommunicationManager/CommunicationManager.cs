@@ -135,7 +135,9 @@ namespace Manager
         {
             try
             {
-                string forgotLink = "http://qa.vestn.com/#splash=forgotPassword&resetHash=" + forgotHash;
+                UserAccessor ua = new UserAccessor();
+                int userId = ua.GetUserByEmail(email).id;
+                string forgotLink = "http://qa.vestn.com/#splash=changePassword&userId="+userId+"&resetHash=" + forgotHash;
                 string messageBody = "Please click the link below to reset you password: \n" + forgotLink;
                 string greeting = userFirstName + ",";
 

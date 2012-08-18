@@ -366,6 +366,10 @@ namespace UserClientMembers.Controllers
                             string[] emailArray = { email };
                             nm.AddNetworkUsers(network, emailArray);
                         }
+                        else
+                        {
+                            return AddErrorHeader("Network Join Code is Invalid", 1);
+                        }
                     }
                     userManager.SendVerifyEmail(email);
 
@@ -4028,6 +4032,44 @@ namespace UserClientMembers.Controllers
                 return AddErrorHeader("something went wrong while retrieving this user's info", 1);
             }
         }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string JoinNetwork(string networkJoinCode, string token)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                NetworkManager networkManager = new NetworkManager();
+                int userId = authenticationEngine.authenticate(token);
+                if (userId < 0)
+                {
+                    return AddErrorHeader("Not Authenticated", 2);
+                }
+                Network network = networkManager.GetNetworkByIdentifier(networkJoinCode);
+                User user = userManager.GetUser(userId);
+                if (network != null)
+                {
+                    string[] email = { user.email };
+                    networkManager.AddNetworkUsers(network, email);
+                    return GetUserModel(userId, token);
+                }
+                else
+                {
+                    return AddErrorHeader("The network join code is invalid", 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "NetworkController - JoinNetwork", ex.StackTrace);
+                return AddErrorHeader("something went wrong while joining this network", 1);
+            }
+
+        }
+
 
         public void sendTestEmail(string to, string subject, string greeting, string body)
         {
