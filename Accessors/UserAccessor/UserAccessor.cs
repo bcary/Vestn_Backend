@@ -377,6 +377,7 @@ namespace Accessor
                 updatedUser.profileURL = user.profileURL;
                 updatedUser.forgotPasswordHash = user.forgotPasswordHash;
                 updatedUser.verifyEmailHash = user.verifyEmailHash;
+                updatedUser.profileViews = user.profileViews;
                 
                 db.SaveChanges();
             }
@@ -430,7 +431,7 @@ namespace Accessor
             try
             {
                 VestnDB db = new VestnDB();
-                User u = new User { id = user.id };
+                var u = db.users.Find(user.id);
                 db.users.Attach(u);
 
                 u.isPublic = user.isPublic;

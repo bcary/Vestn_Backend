@@ -838,13 +838,6 @@ namespace UserClientMembers.Controllers
         //    return View(model);
         //}
 
-
-        [Authorize]
-        public ActionResult ChangePassword()
-        {
-            return View();
-        }
-
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
         public string ChangePassword(string oldPassword, string newPassword, string token)
@@ -1009,7 +1002,7 @@ namespace UserClientMembers.Controllers
 
                 communicationManager.SendForgotPassword(user.email, resetPasswordHash, user.firstName);
 
-                return AddSuccessHeader("Email sent");
+                return AddSuccessHeader("Email sent", true);
             }
             catch (Exception ex)
             {
@@ -1019,7 +1012,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string ResetPassword(string password, int id, string hash)
+        public string ResetPassword(string password, int userId, string hash)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
@@ -1027,7 +1020,7 @@ namespace UserClientMembers.Controllers
             }
             try
             {
-                User userForId = userManager.GetUser(id);
+                User userForId = userManager.GetUser(userId);
                 if (userForId.forgotPasswordHash == hash)
                 {
                     if (userManager.ChangePassword(userForId, password))
@@ -1523,21 +1516,63 @@ namespace UserClientMembers.Controllers
                 {
                     return AddErrorHeader("An authentication token must be passed in", 2);
                 }
-                User user = userManager.GetUser(userId);
-                if (user != null)
+
+                if (authUserId != userId)
                 {
-                    JsonModels.UserSettings settings = new JsonModels.UserSettings();
-                    settings.email = email;
-                    settings.profileURL = profileURL;
-                    settings.visibility = visibility;
-                    if (user.profileURL != settings.profileURL)
+                    return AddErrorHeader("Not authorized to update another user's settings", 3);
+                }
+                else
+                {
+                    User user = userManager.GetUser(userId);
+                    if (user != null)
                     {
-                        string result = ValidationEngine.ValidateProfileURL(settings.profileURL);
-                        if (result == ValidationEngine.Success)
+                        JsonModels.UserSettings settings = new JsonModels.UserSettings();
+                        settings.email = user.email;
+                        settings.firstName = user.firstName;
+                        settings.lastName = user.lastName;
+                        settings.profileURL = user.profileURL;
+                        if (user.isPublic == 0)
                         {
-                            user.profileURL = settings.profileURL;
-                            user.email = settings.email;
-                            if (settings.visibility == "hidden")
+                            settings.visibility = "hidden";
+                        }
+                        else
+                        {
+                            settings.visibility = "public";
+                        }
+
+                        Boolean updateTables = false;
+                        if (profileURL != null && user.profileURL != profileURL)
+                        {
+                            string result = ValidationEngine.ValidateProfileURL(profileURL);
+                            if (result == ValidationEngine.Success)
+                            {
+                                settings.profileURL = profileURL;
+                                user.profileURL = profileURL;
+                                updateTables = true;
+                            }
+                            else
+                            {
+                                return AddErrorHeader("Not a valid profile URL", 1);
+                            }
+                        }
+                        else if (email != null && user.email != email)
+                        {
+                            if (userManager.CheckDuplicateEmail(email))
+                            {
+                                settings.email = email;
+                                user.email = email;
+                                updateTables = true;
+                            }
+                            else
+                            {
+                                return AddErrorHeader("Email already in use", 1);
+                            }
+                        }
+                        else if (visibility != null && visibility != settings.visibility)
+                        {
+                            updateTables = true;
+                            settings.visibility = visibility;
+                            if (visibility == "hidden")
                             {
                                 user.isPublic = 0;
                             }
@@ -1545,60 +1580,30 @@ namespace UserClientMembers.Controllers
                             {
                                 user.isPublic = 1;
                             }
+                        }
+                        if (updateTables)
+                        {
+                            //update user now with updated fields;
                             bool success = userManager.UpdateUserSettings(user);
                             if (success)
                             {
-                                JsonModels.UserSettings newSettings = new JsonModels.UserSettings();
-                                newSettings.email = user.email;
-                                newSettings.firstName = user.firstName;
-                                newSettings.lastName = user.lastName;
-                                newSettings.profileURL = user.profileURL;
-                                newSettings.visibility = settings.visibility;
-
-                                return AddSuccessHeader(Serialize(newSettings));
+                                return AddSuccessHeader(Serialize(settings));
+                                //email user's new and old email?
                             }
                             else
                             {
                                 return AddErrorHeader("Update Unsuccessful", 1);
                             }
                         }
-                        else
+                        else//nothing updated but still a success
                         {
-                            return AddErrorHeader("ProfileURL Validation Error: " + result, 1);
+                            return AddSuccessHeader(Serialize(settings));
                         }
                     }
                     else
                     {
-                        user.email = settings.email;
-                        if (settings.visibility == "hidden")
-                        {
-                            user.isPublic = 0;
-                        }
-                        else
-                        {
-                            user.isPublic = 1;
-                        }
-                        bool success = userManager.UpdateUserSettings(user);
-                        if (success)
-                        {
-                            JsonModels.UserSettings newSettings = new JsonModels.UserSettings();
-                            newSettings.email = user.email;
-                            newSettings.firstName = user.firstName;
-                            newSettings.lastName = user.lastName;
-                            newSettings.profileURL = user.profileURL;
-                            newSettings.visibility = settings.visibility;
-
-                            return AddSuccessHeader(Serialize(newSettings));
-                        }
-                        else
-                        {
-                            return AddErrorHeader("Update Unsuccessful", 1);
-                        }
+                        return AddErrorHeader("No user found for id " + userId, 1);
                     }
-                }
-                else
-                {
-                    return AddErrorHeader("User not found", 1);
                 }
             }
             catch (Exception ex)
@@ -2757,14 +2762,12 @@ namespace UserClientMembers.Controllers
                                 if (request == null)
                                 {
                                     requestAll = true;
-                                    if (u.profileViews != null && !ignoreViewCount)
+                                    if (!ignoreViewCount)
                                     {
                                         u.profileViews++;
+                                        userManager.UpdateUser(u);
                                     }
-                                    else
-                                    {
-                                        u.profileViews = 1;
-                                    }
+                            }
                                 }
                             }
                         }
@@ -2844,13 +2847,10 @@ namespace UserClientMembers.Controllers
                             if (request == null)
                             {
                                 requestAll = true;
-                                if (u.profileViews != null && !ignoreViewCount)
+                                if (!ignoreViewCount)
                                 {
                                     u.profileViews++;
-                                }
-                                else
-                                {
-                                    u.profileViews = 1;
+                                    userManager.UpdateUser(u);
                                 }
                             }
                         }
