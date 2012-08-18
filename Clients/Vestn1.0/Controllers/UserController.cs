@@ -2758,7 +2758,6 @@ namespace UserClientMembers.Controllers
                                         u.profileViews++;
                                         userManager.UpdateUser(u);
                                     }
-                            }
                                 }
                             }
                         }
