@@ -92,11 +92,219 @@ namespace UserClientMembers.Controllers
             }
         }
 
+        //[AcceptVerbs("POST", "OPTIONS")]
+        //public string CheckFileExist(String url, string token)
+        //{
+        //    Response.AddHeader("Access-Control-Allow-Origin", "*");
+        //    if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+        //    {
+        //        Response.AddHeader("Access-Control-Allow-Methods", "POST, PUT");
+        //        Response.AddHeader("Access-Control-Allow-Headers", "X-Requested-With");
+        //        Response.AddHeader("Access-Control-Allow-Headers", "X-Request");
+        //        Response.AddHeader("Access-Control-Allow-Headers", "X-File-Name");
+        //        Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+        //        Response.AddHeader("Access-Control-Max-Age", "86400"); //caching this policy for 1 day
+        //        return null;
+        //    }
+        //    else
+        //    {
+        //        try
+        //        {
+
+        //            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(url);
+        //            bool found = false;
+        //            int counter = 0;
+        //            while (!found)
+        //            {
+        //                try
+        //                {
+        //                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+        //                    if (response.StatusCode != HttpStatusCode.NotFound)
+        //                    {
+        //                        found = true;
+        //                        return AddSuccessHeader("File Exists", true);
+        //                    }
+        //                    else
+        //                    {
+        //                        Thread.Sleep(500);
+        //                        counter++;
+        //                        if (counter > 40)
+        //                        {
+        //                            return AddErrorHeader("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
+        //                        }
+        //                    }
+
+        //                }
+        //                catch (System.Net.WebException)
+        //                {
+        //                    Thread.Sleep(500);
+        //                    counter++;
+        //                    if (counter > 40)
+        //                    {
+        //                        return AddErrorHeader("Check File Timeout. Either this URL will not exist, or the server is suuuper slow");
+        //                    }
+        //                    continue;
+        //                }
+        //            }
+        //            return AddSuccessHeader("File Exists", true);
+                    
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+        //            return AddErrorHeader("Unknown error - CheckFileExist");
+        //        }
+        //    }
+        //}
+
 
         public string TestMe()
         {
             return "success";
         }
+
+        //User Account Creation
+
+        //public ActionResult Register(Boolean isEducation = false)
+        //{
+        //    ViewBag.IsEducation = isEducation;
+        //    return View();
+        //}
+
+        //[HttpPost]
+        //public ActionResult Register(RegisterModel model)
+        //{
+        //    try
+        //    {
+        //        CommunicationManager communicationManager = new CommunicationManager();
+        //        //if (ValidationEngine.ValidateBetaKey(model.betaKey) != ValidationEngine.Success)
+        //        //{
+        //        //    TempData["MessageBar"] = ValidationEngine.ValidateBetaKey(model.betaKey);
+        //        //    return View(model);
+        //        //}
+        //        if (ValidationEngine.ValidateEmail(model.Email) != ValidationEngine.Success || ValidationEngine.IsDuplicateEmail(model.Email) == true)
+        //        {
+        //            TempData["MessageBar"] = "Invalid Email";
+        //            return View(model);
+        //        }
+        //        if (!userManager.CheckDuplicateEmail(model.Email))
+        //        {
+        //            TempData["MessageBar"] = "A user with that email already exists in our database";
+        //            return View(model);
+        //        }
+        //        if (ValidationEngine.ValidateUsername(model.UserName) != ValidationEngine.Success)
+        //        {
+        //            TempData["MessageBar"] = ValidationEngine.ValidateUsername(model.UserName);
+        //            return View(model);
+        //        }
+        //        if (!userManager.CheckDuplicateUsername(model.UserName))
+        //        {
+        //            TempData["MessageBar"] = "A user with that username already exists in our database";
+        //            return View(model);
+        //        }
+        //        if (ValidationEngine.ValidatePassword(model.Password) != ValidationEngine.Success)
+        //        {
+        //            TempData["MessageBar"] = ValidationEngine.ValidatePassword(model.Password);
+        //            return View(model);
+        //        }
+        //        if (model.Password != model.ConfirmPassword)
+        //        {
+        //            TempData["MessageBar"] = "Password fields do not match";
+        //            return View(model);
+        //        }
+        //        if (ModelState.IsValid)
+        //        {
+        //            User newUser = model.toUser();
+        //            newUser.profileURL = newUser.userName;
+
+        //            newUser = userManager.CreateUser(newUser, model.Password);
+
+        //            userManager.ActivateUser(newUser, true);
+        //            communicationManager.SendVerificationMail(userManager.GetProviderUserKey(newUser), newUser.userName, newUser.email);
+
+        //            FormsAuthentication.SetAuthCookie(newUser.userName, false /* createPersistentCookie */);
+        //        }
+
+        //        return RedirectToAction("Profile", "User");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+        //        return View("Error");
+        //    }
+        //}
+
+        //[HttpPost]
+        //public string Register(string UserName, string Email, string Password, string ConfirmPassword)
+        //{
+        //    try
+        //    {
+        //        CommunicationManager communicationManager = new CommunicationManager();
+        //        //if (ValidationEngine.ValidateBetaKey(model.betaKey) != ValidationEngine.Success)
+        //        //{
+        //        //    TempData["MessageBar"] = ValidationEngine.ValidateBetaKey(model.betaKey);
+        //        //    return View(model);
+        //        //}
+        //        RegisterModel model = new RegisterModel { Email = Email, UserName = UserName, Password = Password, ConfirmPassword = ConfirmPassword };
+        //        if (ValidationEngine.ValidateEmail(model.Email) != ValidationEngine.Success || ValidationEngine.IsDuplicateEmail(model.Email) == true)
+        //        {
+        //            TempData["MessageBar"] = "Invalid Email";
+        //            return AddErrorHeader("Invalid Email");
+        //            //return View(model);
+        //        }
+        //        if (!userManager.CheckDuplicateEmail(model.Email))
+        //        {
+        //            TempData["MessageBar"] = "A user with that email already exists in our database";
+        //            return AddErrorHeader("A user with that email already exists in our database");
+        //            //return View(model);
+        //        }
+        //        if (ValidationEngine.ValidateUsername(model.UserName) != ValidationEngine.Success)
+        //        {
+        //            TempData["MessageBar"] = ValidationEngine.ValidateUsername(model.UserName);
+        //            return AddErrorHeader(ValidationEngine.ValidateUsername(model.UserName));
+        //            //return View(model);
+        //        }
+        //        if (!userManager.CheckDuplicateUsername(model.UserName))
+        //        {
+        //            TempData["MessageBar"] = "A user with that username already exists in our database";
+        //            return AddErrorHeader("A user with that username already exists in our database");
+
+        //            //return View(model);
+        //        }
+        //        if (ValidationEngine.ValidatePassword(model.Password) != ValidationEngine.Success)
+        //        {
+        //            TempData["MessageBar"] = ValidationEngine.ValidatePassword(model.Password);
+        //            return AddErrorHeader(ValidationEngine.ValidateUsername(model.Password));
+        //            //return View(model);
+        //        }
+        //        if (model.Password != model.ConfirmPassword)
+        //        {
+        //            TempData["MessageBar"] = "Password fields do not match";
+        //            return AddErrorHeader("Password fields do not match");
+
+        //            //return View(model);
+        //        }
+        //        if (ModelState.IsValid)
+        //        {
+        //            User newUser = model.toUser();
+        //            newUser.profileURL = newUser.userName;
+
+        //            newUser = userManager.CreateUser(newUser, model.Password);
+
+        //            userManager.ActivateUser(newUser, true);
+        //            communicationManager.SendVerificationMail(userManager.GetProviderUserKey(newUser), newUser.userName, newUser.email);
+
+        //            FormsAuthentication.SetAuthCookie(newUser.userName, false /* createPersistentCookie */);
+        //        }
+        //        return AddSuccessHeader("\"Register Successful\"");
+        //        //return RedirectToAction("Profile", "User");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+        //        return AddErrorHeader("Error");
+        //    }
+        //}
 
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
@@ -176,30 +384,6 @@ namespace UserClientMembers.Controllers
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return AddErrorHeader("Something went wrong while creating this user", 1);
-            }
-        }
-
-        [AcceptVerbs("OPTIONS", "POST")]
-        [AllowCrossSiteJson]
-        public string ResendVerificationEmail(string email)
-        {
-            try
-            {
-                User user = userManager.GetUserByEmail(email);
-                if (user != null)
-                {
-                    userManager.SendVerifyEmail(email);
-                    return AddSuccessHeader("Verification Email send", true);
-                }
-                else
-                {
-                    return AddErrorHeader("Email address is not associated with a Vestn Profile", 1);
-                }
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, "UserController - ResendVerificationEmail", ex.ToString());
                 return AddErrorHeader("Something went wrong while creating this user", 1);
             }
         }
@@ -624,6 +808,32 @@ namespace UserClientMembers.Controllers
             return View();
         }
 
+        //[Authorize]
+        //[HttpPost]
+        //public ActionResult ChangeUserName(ChangeUserNameModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        User user = userManager.GetUser(User.Identity.Name);
+        //        user = userManager.ChangeUserName(user, model.NewUserName, model.Password);
+
+        //        if (user != null)
+        //        {
+        //            TempData.Add("MessageBar", "Your username has been changed successfully.");
+        //            FormsAuthentication.SignOut();
+        //            FormsAuthentication.SetAuthCookie(user.userName, false);
+        //            return RedirectToAction("Index");
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError("", "The password is incorrect or the new username is invalid.");
+        //        }
+        //    }
+
+        //    // If we got this far, something failed, redisplay form
+        //    return View(model);
+        //}
+
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
         public string ChangePassword(string oldPassword, string newPassword, string token)
@@ -708,6 +918,62 @@ namespace UserClientMembers.Controllers
             }
         }
 
+        /*
+        public JsonResult ForgotPassword(string email)
+        {
+            try
+            {
+                CommunicationManager communicationManager = new CommunicationManager();
+
+                User user = userManager.GetUserByEmail(email);
+                if (user == null)
+                {
+                    return Json(new { ForgotPasswordStatus = "emailNotSent" });
+                }
+
+                string resetPasswordHash = userManager.ResetPassword(user);
+
+                communicationManager.SendForgotPasswordEmail(user.userName, user.email, resetPasswordHash);
+
+                return Json(new { ForgotPasswordStatus = "emailSent" });
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                return Json(new { ForgotPasswordStatus = "Error" });
+            }
+        }
+
+        public ActionResult ResetPassword(string userName, string resetPasswordHash)
+        {
+            try
+            {
+                CommunicationManager communicationManager = new CommunicationManager();
+
+                User user = userManager.GetUser(userName);
+
+                ChangePasswordModel changePasswordModel = new ChangePasswordModel()
+                {
+                    OldPassword = resetPasswordHash,
+                    NewPassword = "",
+                    ConfirmPassword = ""
+                };
+
+                if (userManager.ValidateUser(user, resetPasswordHash))
+                {
+                    FormsAuthentication.SetAuthCookie(user.userName, false);
+                    return View(changePasswordModel);
+                }
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                return View("Error");
+            }
+        }
+        */
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
         public string ForgotPassword(string email)
@@ -723,7 +989,7 @@ namespace UserClientMembers.Controllers
                 User user = userManager.GetUserByEmail(email);
                 if (user == null)
                 {
-                    return AddErrorHeader("The email provided is not associated with a Vestn account", 1);
+                    return AddErrorHeader("Email not found", 1);
                 }
 
                 string resetPasswordHash = userManager.ResetPassword(user);
@@ -832,197 +1098,197 @@ namespace UserClientMembers.Controllers
             }
         }
 
-        //public ActionResult Profile(string profileURL)
-        //{
-        //    if (profileURL == "")
-        //    {
-        //        User currentUser = userManager.GetUser(User.Identity.Name);
-        //        return RedirectToAction("Profile", "User", new { profileURL = currentUser.profileURL });
-        //    }
+        public ActionResult Profile(string profileURL)
+        {
+            if (profileURL == "")
+            {
+                User currentUser = userManager.GetUser(User.Identity.Name);
+                return RedirectToAction("Profile", "User", new { profileURL = currentUser.profileURL });
+            }
 
 
-        //    //throw (new ArgumentNullException());
-        //    TempData["MessageBar"] = TempData["MessageBar"];
-        //    TempData["Popup"] = TempData["Popup"];
+            //throw (new ArgumentNullException());
+            TempData["MessageBar"] = TempData["MessageBar"];
+            TempData["Popup"] = TempData["Popup"];
 
-        //    try
-        //    {
-        //        ViewBag.DisplayPicture = false;
-        //        ViewBag.DisplayInfo = false;
+            try
+            {
+                ViewBag.DisplayPicture = false;
+                ViewBag.DisplayInfo = false;
 
-        //        TagManager tagManager = new TagManager();
-
-
-        //        User user = userManager.GetUserByProfileURL(profileURL);
-        //        if (user == null)
-        //        {
-        //            try
-        //            {
-        //                string userNameLoggedIn = User.Identity.Name;
-        //                if (userNameLoggedIn == null || userNameLoggedIn == "")
-        //                {
-        //                    return RedirectToAction("Index", "Home");
-        //                }
-        //                else
-        //                {
-        //                    user = userManager.GetUser(userNameLoggedIn);
-        //                }
-        //            }
-        //            catch (Exception e)
-        //            {
-
-        //            }
-        //        }
-        //        else if ((User.Identity.Name != user.userName) && (user.isPublic != 1))
-        //        {
-        //            //if not the owner and trying to access a user that is not public
-        //            return RedirectToAction("Index", "Home");
-        //        }
-        //        //else...
-        //        //projectManager.moveProjectRight(user, 2);
-        //        //userManager.UpdateUser(user);
-        //        if (user.projectOrder == null)
-        //        {
-        //            userManager.ResetProjectOrder(user);
-        //            userManager.UpdateUser(user);
-        //            foreach (Project p in user.projects)
-        //            {
-        //                projectManager.resetProjectElementOrder(p);
-        //                projectManager.UpdateProject(p);
-        //            }
-        //        }
-
-        //        ProfileModel model = new ProfileModel(user);
-        //        List<string> tagValues = new List<string>();
-        //        //Put user's tags on the ProfileModel
-        //        /*
-        //        if (user.tagIds != null && user.tagIds != "")
-        //        {
-        //            List<Tag> tagList = tagManager.GetTags(user.tagIds);
-        //            foreach (Tag tag in tagList)
-        //            {
-        //                tagValues.Add(tag.value);
-        //            }
-        //            model.tagValues = tagValues;
-        //        }*/
-
-        //        //ViewBag.WillingToRelocate = new List<string>(Enum.GetNames(typeof(WillingToRelocateType)));
-
-        //        if (user.userName == User.Identity.Name && User.Identity.IsAuthenticated)
-        //        {
-        //            AnalyticsAccessor aa = new AnalyticsAccessor();
-        //            aa.CreateAnalytic("Profile Page Hit: Logged in", DateTime.Now, user.userName);
-
-        //            //User is going to their own profile
-        //            ViewBag.IsOwner = true;
-        //            model.connections = new List<User>();
-        //            if (user.connections != null)
-        //            {
-        //                foreach (string userId in user.connections.Split(','))
-        //                {
-        //                    if (userId.Trim() != "")
-        //                    {
-        //                        int userIdInt = Convert.ToInt32(userId);
-        //                        User connection = userManager.GetUser(userIdInt);
-        //                        model.connections.Add(connection);
-        //                    }
-        //                }
-        //            }
-
-        //            /*//depreciated. can't use .CompleteProfilePrompt any more. will have to deal with tags some other way
-        //             * if (userManager.IsProfilePartiallyComplete(user))
-        //            {
-        //                //User has already entered some extra information on their profile
-        //                ViewBag.CompleteProfilePrompt = false;
-        //            }
-        //            else
-        //            {
-        //                //User has not updated any further info on their profile
-        //                //Get list of tags for picking out which ones we initially want on our profile
-        //                List<string> listOfLowestLevelTags = userManager.GetAllLowestLevelTagValues();
-        //                ViewBag.LowestLevelTags = listOfLowestLevelTags;
-        //                ViewBag.CompleteProfilePrompt = true;
-        //            }*/
-        //        }
-        //        else
-        //        {
-        //            AnalyticsAccessor aa = new AnalyticsAccessor();
-        //            aa.CreateAnalytic("Profile Page Hit: Not Logged in", DateTime.Now, user.userName);
-
-        //            //User is visiting someone else's profile
-        //            ViewBag.IsOwner = false;
-        //        }
+                TagManager tagManager = new TagManager();
 
 
-        //        //------------------------------------------------------------
-        //        return View(model);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-        //        return View("Error");
-        //    }
+                User user = userManager.GetUserByProfileURL(profileURL);
+                if (user == null)
+                {
+                    try
+                    {
+                        string userNameLoggedIn = User.Identity.Name;
+                        if (userNameLoggedIn == null || userNameLoggedIn == "")
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            user = userManager.GetUser(userNameLoggedIn);
+                        }
+                    }
+                    catch (Exception e)
+                    {
 
-        //}
+                    }
+                }
+                else if ((User.Identity.Name != user.userName) && (user.isPublic != 1))
+                {
+                    //if not the owner and trying to access a user that is not public
+                    return RedirectToAction("Index", "Home");
+                }
+                //else...
+                //projectManager.moveProjectRight(user, 2);
+                //userManager.UpdateUser(user);
+                if (user.projectOrder == null)
+                {
+                    userManager.ResetProjectOrder(user);
+                    userManager.UpdateUser(user);
+                    foreach (Project p in user.projects)
+                    {
+                        projectManager.resetProjectElementOrder(p);
+                        projectManager.UpdateProject(p);
+                    }
+                }
+
+                ProfileModel model = new ProfileModel(user);
+                List<string> tagValues = new List<string>();
+                //Put user's tags on the ProfileModel
+                /*
+                if (user.tagIds != null && user.tagIds != "")
+                {
+                    List<Tag> tagList = tagManager.GetTags(user.tagIds);
+                    foreach (Tag tag in tagList)
+                    {
+                        tagValues.Add(tag.value);
+                    }
+                    model.tagValues = tagValues;
+                }*/
+
+                //ViewBag.WillingToRelocate = new List<string>(Enum.GetNames(typeof(WillingToRelocateType)));
+
+                if (user.userName == User.Identity.Name && User.Identity.IsAuthenticated)
+                {
+                    AnalyticsAccessor aa = new AnalyticsAccessor();
+                    aa.CreateAnalytic("Profile Page Hit: Logged in", DateTime.Now, user.userName);
+
+                    //User is going to their own profile
+                    ViewBag.IsOwner = true;
+                    model.connections = new List<User>();
+                    if (user.connections != null)
+                    {
+                        foreach (string userId in user.connections.Split(','))
+                        {
+                            if (userId.Trim() != "")
+                            {
+                                int userIdInt = Convert.ToInt32(userId);
+                                User connection = userManager.GetUser(userIdInt);
+                                model.connections.Add(connection);
+                            }
+                        }
+                    }
+
+                    /*//depreciated. can't use .CompleteProfilePrompt any more. will have to deal with tags some other way
+                     * if (userManager.IsProfilePartiallyComplete(user))
+                    {
+                        //User has already entered some extra information on their profile
+                        ViewBag.CompleteProfilePrompt = false;
+                    }
+                    else
+                    {
+                        //User has not updated any further info on their profile
+                        //Get list of tags for picking out which ones we initially want on our profile
+                        List<string> listOfLowestLevelTags = userManager.GetAllLowestLevelTagValues();
+                        ViewBag.LowestLevelTags = listOfLowestLevelTags;
+                        ViewBag.CompleteProfilePrompt = true;
+                    }*/
+                }
+                else
+                {
+                    AnalyticsAccessor aa = new AnalyticsAccessor();
+                    aa.CreateAnalytic("Profile Page Hit: Not Logged in", DateTime.Now, user.userName);
+
+                    //User is visiting someone else's profile
+                    ViewBag.IsOwner = false;
+                }
+
+
+                //------------------------------------------------------------
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                return View("Error");
+            }
+
+        }
 
 
 
-        ////Edit a User's Profile
+        //Edit a User's Profile
 
-        ////Update profile method written eliquently by Skyler
-        ////(Called after modal box is submitted)
-        //[Authorize]
-        //[HttpPost]
-        //public ActionResult Profile(ProfileModel model)
-        //{
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            User user = model.toUser();
+        //Update profile method written eliquently by Skyler
+        //(Called after modal box is submitted)
+        [Authorize]
+        [HttpPost]
+        public ActionResult Profile(ProfileModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    User user = model.toUser();
 
-        //            //Will need to be uncommented when we start editing tags on the profile page
-        //            /*
-        //            foreach (string tag in model.tagValues)
-        //            {
-        //                user = userManager.addTag(user, tag);
-        //            }
-        //            */
-        //            user = userManager.UpdateUser(user);
+                    //Will need to be uncommented when we start editing tags on the profile page
+                    /*
+                    foreach (string tag in model.tagValues)
+                    {
+                        user = userManager.addTag(user, tag);
+                    }
+                    */
+                    user = userManager.UpdateUser(user);
 
-        //        }
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-        //        return View("Error");
-        //    }
-        //}
+                }
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                return View("Error");
+            }
+        }
 
-        //[Authorize]
-        //public JsonResult InviteFriend(string friendName, string friendEmail)
-        //{
-        //    if (ValidationEngine.ValidateEmail(friendEmail) != ValidationEngine.Success)
-        //    {
-        //        return Json(new { InviteFriendStatus = "emailNotSent" });
-        //    }
-        //    if (!userManager.CheckDuplicateEmail(friendEmail))
-        //    {
-        //        return Json(new { InviteFriendStatus = "emailAlreadyRegistered" });
-        //    }
-        //    try
-        //    {
-        //        //for now skip this. don't want to send emails to everyone
-        //        communicationManager.SendInviteFriendEmail(User.Identity.Name, friendName, friendEmail);
-        //        return Json(new { InviteFriendStatus = "emailSent" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-        //        return Json(new { Error = "An unknown error occured" });
-        //    }
-        //}
+        [Authorize]
+        public JsonResult InviteFriend(string friendName, string friendEmail)
+        {
+            if (ValidationEngine.ValidateEmail(friendEmail) != ValidationEngine.Success)
+            {
+                return Json(new { InviteFriendStatus = "emailNotSent" });
+            }
+            if (!userManager.CheckDuplicateEmail(friendEmail))
+            {
+                return Json(new { InviteFriendStatus = "emailAlreadyRegistered" });
+            }
+            try
+            {
+                //for now skip this. don't want to send emails to everyone
+                communicationManager.SendInviteFriendEmail(User.Identity.Name, friendName, friendEmail);
+                return Json(new { InviteFriendStatus = "emailSent" });
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+                return Json(new { Error = "An unknown error occured" });
+            }
+        }
 
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
@@ -1034,8 +1300,6 @@ namespace UserClientMembers.Controllers
             }
             try
             {
-                //Request.InputStream.Position = 0;
-                //var todoJson = new StreamReader(Request.InputStream).ReadToEnd();
                 int authUserId = -1;
                 if (token != null)
                 {
@@ -2388,10 +2652,7 @@ namespace UserClientMembers.Controllers
             }
             else
             {
-                //HttpRequestBase request1 = Request;
-                //Request.InputStream.Position = 0;
-                //var todoJson = new StreamReader(Request.InputStream).ReadToEnd();
-                //string inputText = Request.InputStream.ToString();
+                
                 //authenticate via token
                 string returnVal;
                 int authenticateId = -1;
@@ -3745,7 +4006,6 @@ namespace UserClientMembers.Controllers
                         userSettingsJson.visibility = "hidden";
                     }
 
-                    userInfoJson.emailVerified = user.emailVerified;
                     userInfoJson.networks = userNetworksJson;
                     userInfoJson.settings = userSettingsJson;
 
@@ -3762,44 +4022,6 @@ namespace UserClientMembers.Controllers
                 return AddErrorHeader("something went wrong while retrieving this user's info", 1);
             }
         }
-
-        [AcceptVerbs("POST", "OPTIONS")]
-        [AllowCrossSiteJson]
-        public string JoinNetwork(string networkJoinCode, string token)
-        {
-            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
-            {
-                return null;
-            }
-            try
-            {
-                NetworkManager networkManager = new NetworkManager();
-                int userId = authenticationEngine.authenticate(token);
-                if (userId < 0)
-                {
-                    return AddErrorHeader("Not Authenticated", 2);
-                }
-                Network network = networkManager.GetNetworkByIdentifier(networkJoinCode);
-                User user = userManager.GetUser(userId);
-                if (network != null)
-                {
-                    string[] email = { user.email };
-                    networkManager.AddNetworkUsers(network, email);
-                    return GetUserModel(userId, token);
-                }
-                else
-                {
-                    return AddErrorHeader("The network join code is invalid", 1);
-                }
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, "NetworkController - JoinNetwork", ex.StackTrace);
-                return AddErrorHeader("something went wrong while joining this network", 1);
-            }
-
-        }
-
 
         public void sendTestEmail(string to, string subject, string greeting, string body)
         {
