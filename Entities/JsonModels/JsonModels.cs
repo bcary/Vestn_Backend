@@ -249,6 +249,8 @@ namespace Entity
             public List<UserNetworkShell> networks { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public UserSettings settings { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public int emailVerified { get; set; }
         }
 
         [DataContract]
