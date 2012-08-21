@@ -432,7 +432,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string DeActivateNetworkJoinCode(int networkId, string token)
+        public string DeactivateNetworkJoinCode(int networkId, string token)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {

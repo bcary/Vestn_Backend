@@ -182,15 +182,27 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("OPTIONS", "POST")]
         [AllowCrossSiteJson]
-        public string ResendVerificationEmail(string email)
+        public string ResendVerificationEmail(string email, string token)
         {
             try
             {
+                int authUserId = -1;
+                if (token != null)
+                {
+                    authUserId = authenticationEngine.authenticate(token);
+                }
                 User user = userManager.GetUserByEmail(email);
                 if (user != null)
                 {
-                    userManager.SendVerifyEmail(email);
-                    return AddSuccessHeader("Verification Email sent", true);
+                    if (user.id == authUserId)
+                    {
+                        userManager.SendVerifyEmail(email);
+                        return AddSuccessHeader("Verification Email sent", true);
+                    }
+                    else
+                    {
+                        return AddErrorHeader("User must be profile owner to resend email verification", 3);
+                    }
                 }
                 else
                 {
