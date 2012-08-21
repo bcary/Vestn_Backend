@@ -114,6 +114,18 @@ namespace Manager
             }
         }
 
+        public void SendSiteFeedback(string feedback)
+        {
+            try
+            {
+                SendEmail("vestnteam@vestn.com", "Site Feedback", "Hey team, someone left some feedback!", feedback);
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "Communicaiton Manager - SendSiteFeedback", ex.StackTrace);
+            }
+        }
+
 
 
         public void SendVerifyEmail(string email, string code)
@@ -292,23 +304,23 @@ namespace Manager
         }
 
 
-        [ExcludeFromCodeCoverage]
-        public bool SendSiteFeedbackEmail(string name, string useremail, string message)
-        {
-            try
-            {
-                String messageBody = message;
+        //[ExcludeFromCodeCoverage]
+        //public bool SendSiteFeedbackEmail(string name, string useremail, string message)
+        //{
+        //    try
+        //    {
+        //        String messageBody = message;
 
-                SendMessage("vestnteam@vestn.com", "noreply@vestn.com", new String[1] { "connerdana@vestn.com" }, null, null, "Feedback from " + name, "User name: " + name + " User email: " + useremail + " Message: " + messageBody);
+        //        SendMessage("vestnteam@vestn.com", "noreply@vestn.com", new String[1] { "connerdana@vestn.com" }, null, null, "Feedback from " + name, "User name: " + name + " User email: " + useremail + " Message: " + messageBody);
 
-                return true;
-            }
-            catch (Exception e)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), e.ToString());
-                return false;
-            }
-        }
+        //        return true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), e.ToString());
+        //        return false;
+        //    }
+        //}
 
         private string generateEmailBody(string template, ForgotPasswordModel model)
         {

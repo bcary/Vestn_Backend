@@ -190,7 +190,7 @@ namespace UserClientMembers.Controllers
                 if (user != null)
                 {
                     userManager.SendVerifyEmail(email);
-                    return AddSuccessHeader("Verification Email send", true);
+                    return AddSuccessHeader("Verification Email sent", true);
                 }
                 else
                 {
@@ -1856,48 +1856,48 @@ namespace UserClientMembers.Controllers
             base.Dispose(disposing);
         }
 
-        //This get use by both add feedback and Get help request
-        public JsonResult AddFeedback(string message, string subject)
-        {
-            try
-            {
-                string name = null;
-                string userEmail = null;
-                try
-                {
-                    name = User.Identity.Name;
-                    userEmail = userManager.GetUser(name).email;
-                }
-                catch (Exception e)
-                {
-                    logAccessor.CreateLog(DateTime.Now, System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), e.ToString());
-                }
-                FeedbackAccessor feedbackAccesor = new FeedbackAccessor();
-                feedbackAccesor.CreateFeedback(name, message, subject);
-                if (subject == "Error Report")
-                {
-                    CommunicationManager cm = new CommunicationManager();
-                    cm.SendErrorEmail(name, message);
-                }
-                else if (subject == "Help Request")
-                {
-                    CommunicationManager cm = new CommunicationManager();
-                    cm.SendHelpRequestEmail(userEmail, message);
-                }
-                else if (subject == "Feedback")
-                {
-                    CommunicationManager cm = new CommunicationManager();
-                    cm.SendSiteFeedbackEmail(name, userEmail, message);
-                }
+        ////This get use by both add feedback and Get help request
+        //public JsonResult AddFeedback(string message, string subject)
+        //{
+        //    try
+        //    {
+        //        string name = null;
+        //        string userEmail = null;
+        //        try
+        //        {
+        //            name = User.Identity.Name;
+        //            userEmail = userManager.GetUser(name).email;
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            logAccessor.CreateLog(DateTime.Now, System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), e.ToString());
+        //        }
+        //        FeedbackAccessor feedbackAccesor = new FeedbackAccessor();
+        //        feedbackAccesor.CreateFeedback(name, message, subject);
+        //        if (subject == "Error Report")
+        //        {
+        //            CommunicationManager cm = new CommunicationManager();
+        //            cm.SendErrorEmail(name, message);
+        //        }
+        //        else if (subject == "Help Request")
+        //        {
+        //            CommunicationManager cm = new CommunicationManager();
+        //            cm.SendHelpRequestEmail(userEmail, message);
+        //        }
+        //        else if (subject == "Feedback")
+        //        {
+        //            CommunicationManager cm = new CommunicationManager();
+        //            cm.SendSiteFeedbackEmail(name, userEmail, message);
+        //        }
 
-                return Json(new { FeedbackStatus = "success" });
-            }
-            catch (Exception ex)
-            {
-                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                return Json(new { Error = "Problem submitting feedback" });
-            }
-        }
+        //        return Json(new { FeedbackStatus = "success" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+        //        return Json(new { Error = "Problem submitting feedback" });
+        //    }
+        //}
 
         public JsonResult Share(string link, string email)
         {
@@ -3794,10 +3794,30 @@ namespace UserClientMembers.Controllers
             }
             catch (Exception ex)
             {
-                logAccessor.CreateLog(DateTime.Now, "NetworkController - JoinNetwork", ex.StackTrace);
+                logAccessor.CreateLog(DateTime.Now, "UserController - JoinNetwork", ex.StackTrace);
                 return AddErrorHeader("something went wrong while joining this network", 1);
             }
 
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string SendSiteFeedback(string feedback)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                communicationManager.SendSiteFeedback(feedback);
+                return AddSuccessHeader("Feedback sent!" , true);
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "UserController - SendSiteFeedback", ex.StackTrace);
+                return AddErrorHeader("something went wrong while sending this feedback", 1);
+            }
         }
 
 

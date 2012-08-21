@@ -673,51 +673,51 @@ namespace Controllers
             }
         }
 
-        [AcceptVerbs("POST", "OPTIONS")]
-        [AllowCrossSiteJson]
-        public string GetProject(int[] projectId, string token = null)
-        {
-            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
-            {
-                return null;
-            }
-            else
-            {
-                if (token != null)
-                {
-                    int userId = authenticationEngine.authenticate(token);
-                    if (userId < 0)
-                    {
-                        // ALLOW NON AUTHENTICATED REQUESTS
-                        //return AddErrorHeader("You are not authenticated, please log in!");
-                    }
-                }
-                string returnVal;
-                try
-                {
-                    List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(projectId);
-                    if (projects != null)
-                    {
-                        try
-                        {
-                            returnVal = Serialize(projects);
-                        }
-                        catch (Exception exception)
-                        {
-                            return AddErrorHeader(exception.Message);
-                        }
-                    }
-                    else
-                    {
-                        return AddErrorHeader("No Information Found");
-                    }
-                }
-                catch (Exception e)
-                {
-                    return AddErrorHeader("Bad Request");
-                }
-                return AddSuccessHeader(returnVal);
-            }
-        }
+        //[AcceptVerbs("POST", "OPTIONS")]
+        //[AllowCrossSiteJson]
+        //public string GetProject(int[] projectId, string token = null)
+        //{
+        //    if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+        //    {
+        //        return null;
+        //    }
+        //    else
+        //    {
+        //        if (token != null)
+        //        {
+        //            int userId = authenticationEngine.authenticate(token);
+        //            if (userId < 0)
+        //            {
+        //                // ALLOW NON AUTHENTICATED REQUESTS
+        //                //return AddErrorHeader("You are not authenticated, please log in!");
+        //            }
+        //        }
+        //        string returnVal;
+        //        try
+        //        {
+        //            List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(projectId);
+        //            if (projects != null)
+        //            {
+        //                try
+        //                {
+        //                    returnVal = Serialize(projects);
+        //                }
+        //                catch (Exception exception)
+        //                {
+        //                    return AddErrorHeader(exception.Message);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                return AddErrorHeader("No Information Found");
+        //            }
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            return AddErrorHeader("Bad Request");
+        //        }
+        //        return AddSuccessHeader(returnVal);
+        //    }
+        //}
     }
 }

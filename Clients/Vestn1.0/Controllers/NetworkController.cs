@@ -432,6 +432,52 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
+        public string DeActivateNetworkJoinCode(int networkId, string token)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                int userId = authenticationEngine.authenticate(token);
+                if (userId < 0)
+                {
+                    return AddErrorHeader("You are not authenticated, please log in!", 2);
+                }
+                Network network = networkManager.GetNetwork(networkId);
+                if (network != null)
+                {
+                    if (networkManager.IsNetworkAdmin(networkId, userId))
+                    {
+                        if (networkManager.SetNetworkIdentifier(network) != null)
+                        {
+                            return AddSuccessHeader("Identifier de-activated", true);
+                        }
+                        else
+                        {
+                            return AddErrorHeader("An error occurred processing your request", 1);
+                        }
+                    }
+                    else
+                    {
+                        return AddErrorHeader("You must be a network administrator to de-activate the network join code" , 3);
+                    }
+                }
+                else
+                {
+                    return AddErrorHeader("The network was not found", 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "NetworkController - GetNetworkJoinCode", ex.StackTrace);
+                return AddErrorHeader("something went wrong while de-activating the network join code", 1);
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
         public string GetNetworkByURL(string networkURL, string token)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request

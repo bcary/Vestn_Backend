@@ -134,7 +134,7 @@ namespace Controllers
                     AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
                     string token = authEngine.logIn(newUser.id, newUser.userName);
                     JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
-                    rr.id = newUser.id;
+                    rr.userId = newUser.id;
                     rr.token = token;
                     return AddSuccessHeader(Serialize(rr));
                 }
@@ -348,378 +348,378 @@ namespace Controllers
             }
         }
 
-        [AcceptVerbs("POST", "OPTIONS")]
-        [AllowCrossSiteJson]
-        public string GetProfile(int id = -1, string profileURL = null, string[] request = null, string token = null)
-        {
-            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
-            {
-                return null;
-            }
-            else
-            {
+        //[AcceptVerbs("POST", "OPTIONS")]
+        //[AllowCrossSiteJson]
+        //public string GetProfile(int id = -1, string profileURL = null, string[] request = null, string token = null)
+        //{
+        //    if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+        //    {
+        //        return null;
+        //    }
+        //    else
+        //    {
 
-                //authenticate via token
-                string returnVal;
-                int authenticateId = -1;
-                try
-                {
-                    if (token != null)
-                    {
-                        int authenticate = authenticationEngine.authenticate(token);
-                        if (authenticate < 0)
-                        {
-                            //Only return PUBLIC projects
-                        }
-                    }
-                    bool requestAll = false;
-                    if (request == null)
-                    {
-                        requestAll = true;
-                    }
-                    //List<JsonModels.ProfileInformation> userInformationList = new List<JsonModels.ProfileInformation>();
-                    JsonModels.ProfileInformation ui = new JsonModels.ProfileInformation();
-                    int add = 0;
-                    User u;
-                    if (id < 0)
-                    {
-                        if (profileURL != null)
-                        {
-                            u = userManager.GetUserByProfileURL(profileURL);
-                            if (u == null)
-                            {
-                                return AddErrorHeader("A user with the specified profileURL was not found");
-                            }
-                            else
-                            {
-                                id = u.id;
-                                if (id == authenticateId)
-                                {
-                                    //TODO request is coming from owner, return EVERYTHING
-                                }
-                                else
-                                {
-                                    //TODO need to check if request came from another in the same network or not
-                                }
-                            }
-                        }
-                        else
-                        {
-                            return AddErrorHeader("An id or profileURL must be specified");
-                        }
-                    }
-                    else
-                    {
-                        u = userManager.GetUser(id);
-                        if (u == null)
-                        {
-                            return AddErrorHeader("A user with the specified id was not found");
-                        }
-                        if (id == authenticateId)
-                        {
-                            //TODO request is coming from owner, return EVERYTHING
-                        }
-                        else
-                        {
-                            //TODO need to check if request came from another in the same network or not
-                        }
-                    }
-                    if (u != null)
-                    {
-                        add = 0;
-                        //TODO add company
-                        if (requestAll || request.Contains("firstName"))
-                        {
-                            if (u.firstName != null)
-                            {
-                                ui.firstName = u.firstName;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.firstName = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("lastName"))
-                        {
-                            if (u.lastName != null)
-                            {
-                                ui.lastName = u.lastName;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.lastName = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("phoneNumber"))
-                        {
-                            if (u.phoneNumber != null)
-                            {
-                                ui.phoneNumber = u.phoneNumber;
-                                add = 1;
-                            }
-                        }
-                        if (requestAll || request.Contains("tagLine"))
-                        {
-                            if (u.tagLine != null)
-                            {
-                                ui.tagLine = u.tagLine;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.tagLine = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("email"))
-                        {
-                            if (u.email != null)
-                            {
-                                ui.email = u.email;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.email = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("location"))
-                        {
-                            if (u.location != null)
-                            {
-                                ui.location = u.location;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.location = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("title"))
-                        {
-                            if (u.title != null)
-                            {
-                                ui.title = u.title;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.title = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("school"))
-                        {
-                            if (u.organization != null)
-                            {
-                                ui.organization = u.organization;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.organization = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("major"))
-                        {
-                            if (u.major != null)
-                            {
-                                ui.major = u.major;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.major = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("description"))
-                        {
-                            if (u.description != null)
-                            {
-                                ui.description = u.description;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.description = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("resume"))
-                        {
-                            if (u.resume != null)
-                            {
-                                ui.resume = u.resume;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.resume = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("projectOrder"))
-                        {
-                            if (u.projectOrder != null)
-                            {
-                                ui.projectOrder = u.projectOrder;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.projectOrder = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("profilePicture"))
-                        {
-                            if (u.profilePicture != null)
-                            {
-                                ui.profilePicture = u.profilePicture;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.profilePicture = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("profilePictureThumbnail"))
-                        {
-                            if (u.profilePictureThumbnail != null)
-                            {
-                                ui.profilePictureThumbnail = u.profilePictureThumbnail;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.profilePictureThumbnail = null;
-                            }
-                        }
-                        //TODO actually calculate the stats
-                        if (requestAll || request.Contains("stats"))
-                        {
-                            JsonModels.UserStats stats = userManager.getUserStats(id);
-                            if (stats != null)
-                            {
-                                ui.stats = stats;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.stats = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("links"))
-                        {
-                            //JsonModels.Links links = userManager.getUserLinks(id);
-                            //if (links != null)
-                            //{
-                            //    ui.links = links;
-                            //    add = 1;
-                            //}
-                            //else
-                            //{
-                            //    ui.links = null;
-                            //}
-                        }
-                        if (requestAll || request.Contains("experiences"))
-                        {
-                            List<JsonModels.Experience> experiences = userManager.GetUserExperiences(id);
-                            if (experiences != null && experiences.Count != 0)
-                            {
-                                ui.experiences = experiences;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.experiences = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("references"))
-                        {
-                            List<JsonModels.Reference> references = userManager.GetUserReferences(id);
-                            if (references != null && references.Count != 0)
-                            {
-                                ui.references = references;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.references = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("tags"))
-                        {
-                            List<JsonModels.UserTag> tags = userManager.GetUserTags(id);
-                            if (tags != null && tags.Count != 0)
-                            {
-                                ui.tags = tags;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.tags = null;
-                            }
-                        }
-                        if (requestAll || request.Contains("projects"))
-                        {
-                            int[] projectIds = new int[u.projects.Count];
-                            int count = 0;
-                            foreach (Project p in u.projects)
-                            {
-                                projectIds[count] = p.id;
-                                count++;
-                            }
-                            List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(projectIds);
-                            if (projects != null && projects.Count != 0)
-                            {
-                                ui.projects = projects;
-                                add = 1;
-                            }
-                            else
-                            {
-                                ui.projects = null;
-                            }
-                        }
-                        ////if (requestAll || request.Contains("todo"))
-                        ////{
-                        ////    List<JsonModels.Todo> todoList = userManager.GetTodo(id);
-                        ////    if (todoList != null && todoList.Count != 0)
-                        ////    {
-                        ////        ui.todo = todoList;
-                        ////        add = 1;
-                        ////    }
-                        ////}
-                        //if (requestAll || request.Contains("recentActivity"))
-                        //{
-                        //    List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(id);
-                        //    if (recentActivity != null && recentActivity.Count != 0)
-                        //    {
-                        //        ui.recentActivity = recentActivity;
-                        //        add = 1;
-                        //    }
-                        //    else
-                        //    {
-                        //        ui.recentActivity = null;
-                        //    }
-                        //}
-                        ui.id = u.id.ToString();
-                    }
-                    try
-                    {
-                        returnVal = Serialize(ui);
-                    }
-                    catch (Exception ex)
-                    {
-                        logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                        return AddErrorHeader(ex.Message);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
-                    return AddErrorHeader("Bad Request");
-                }
-                return AddSuccessHeader(returnVal);
-            }
-        }
+        //        //authenticate via token
+        //        string returnVal;
+        //        int authenticateId = -1;
+        //        try
+        //        {
+        //            if (token != null)
+        //            {
+        //                int authenticate = authenticationEngine.authenticate(token);
+        //                if (authenticate < 0)
+        //                {
+        //                    //Only return PUBLIC projects
+        //                }
+        //            }
+        //            bool requestAll = false;
+        //            if (request == null)
+        //            {
+        //                requestAll = true;
+        //            }
+        //            //List<JsonModels.ProfileInformation> userInformationList = new List<JsonModels.ProfileInformation>();
+        //            JsonModels.ProfileInformation ui = new JsonModels.ProfileInformation();
+        //            int add = 0;
+        //            User u;
+        //            if (id < 0)
+        //            {
+        //                if (profileURL != null)
+        //                {
+        //                    u = userManager.GetUserByProfileURL(profileURL);
+        //                    if (u == null)
+        //                    {
+        //                        return AddErrorHeader("A user with the specified profileURL was not found");
+        //                    }
+        //                    else
+        //                    {
+        //                        id = u.id;
+        //                        if (id == authenticateId)
+        //                        {
+        //                            //TODO request is coming from owner, return EVERYTHING
+        //                        }
+        //                        else
+        //                        {
+        //                            //TODO need to check if request came from another in the same network or not
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    return AddErrorHeader("An id or profileURL must be specified");
+        //                }
+        //            }
+        //            else
+        //            {
+        //                u = userManager.GetUser(id);
+        //                if (u == null)
+        //                {
+        //                    return AddErrorHeader("A user with the specified id was not found");
+        //                }
+        //                if (id == authenticateId)
+        //                {
+        //                    //TODO request is coming from owner, return EVERYTHING
+        //                }
+        //                else
+        //                {
+        //                    //TODO need to check if request came from another in the same network or not
+        //                }
+        //            }
+        //            if (u != null)
+        //            {
+        //                add = 0;
+        //                //TODO add company
+        //                if (requestAll || request.Contains("firstName"))
+        //                {
+        //                    if (u.firstName != null)
+        //                    {
+        //                        ui.firstName = u.firstName;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.firstName = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("lastName"))
+        //                {
+        //                    if (u.lastName != null)
+        //                    {
+        //                        ui.lastName = u.lastName;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.lastName = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("phoneNumber"))
+        //                {
+        //                    if (u.phoneNumber != null)
+        //                    {
+        //                        ui.phoneNumber = u.phoneNumber;
+        //                        add = 1;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("tagLine"))
+        //                {
+        //                    if (u.tagLine != null)
+        //                    {
+        //                        ui.tagLine = u.tagLine;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.tagLine = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("email"))
+        //                {
+        //                    if (u.email != null)
+        //                    {
+        //                        ui.email = u.email;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.email = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("location"))
+        //                {
+        //                    if (u.location != null)
+        //                    {
+        //                        ui.location = u.location;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.location = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("title"))
+        //                {
+        //                    if (u.title != null)
+        //                    {
+        //                        ui.title = u.title;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.title = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("school"))
+        //                {
+        //                    if (u.organization != null)
+        //                    {
+        //                        ui.organization = u.organization;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.organization = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("major"))
+        //                {
+        //                    if (u.major != null)
+        //                    {
+        //                        ui.major = u.major;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.major = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("description"))
+        //                {
+        //                    if (u.description != null)
+        //                    {
+        //                        ui.description = u.description;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.description = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("resume"))
+        //                {
+        //                    if (u.resume != null)
+        //                    {
+        //                        ui.resume = u.resume;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.resume = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("projectOrder"))
+        //                {
+        //                    if (u.projectOrder != null)
+        //                    {
+        //                        ui.projectOrder = u.projectOrder;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.projectOrder = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("profilePicture"))
+        //                {
+        //                    if (u.profilePicture != null)
+        //                    {
+        //                        ui.profilePicture = u.profilePicture;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.profilePicture = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("profilePictureThumbnail"))
+        //                {
+        //                    if (u.profilePictureThumbnail != null)
+        //                    {
+        //                        ui.profilePictureThumbnail = u.profilePictureThumbnail;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.profilePictureThumbnail = null;
+        //                    }
+        //                }
+        //                //TODO actually calculate the stats
+        //                if (requestAll || request.Contains("stats"))
+        //                {
+        //                    JsonModels.UserStats stats = userManager.getUserStats(id);
+        //                    if (stats != null)
+        //                    {
+        //                        ui.stats = stats;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.stats = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("links"))
+        //                {
+        //                    //JsonModels.Links links = userManager.getUserLinks(id);
+        //                    //if (links != null)
+        //                    //{
+        //                    //    ui.links = links;
+        //                    //    add = 1;
+        //                    //}
+        //                    //else
+        //                    //{
+        //                    //    ui.links = null;
+        //                    //}
+        //                }
+        //                if (requestAll || request.Contains("experiences"))
+        //                {
+        //                    List<JsonModels.Experience> experiences = userManager.GetUserExperiences(id);
+        //                    if (experiences != null && experiences.Count != 0)
+        //                    {
+        //                        ui.experiences = experiences;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.experiences = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("references"))
+        //                {
+        //                    List<JsonModels.Reference> references = userManager.GetUserReferences(id);
+        //                    if (references != null && references.Count != 0)
+        //                    {
+        //                        ui.references = references;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.references = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("tags"))
+        //                {
+        //                    List<JsonModels.UserTag> tags = userManager.GetUserTags(id);
+        //                    if (tags != null && tags.Count != 0)
+        //                    {
+        //                        ui.tags = tags;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.tags = null;
+        //                    }
+        //                }
+        //                if (requestAll || request.Contains("projects"))
+        //                {
+        //                    int[] projectIds = new int[u.projects.Count];
+        //                    int count = 0;
+        //                    foreach (Project p in u.projects)
+        //                    {
+        //                        projectIds[count] = p.id;
+        //                        count++;
+        //                    }
+        //                    List<JsonModels.CompleteProject> projects = projectManager.GetCompleteProjects(projectIds);
+        //                    if (projects != null && projects.Count != 0)
+        //                    {
+        //                        ui.projects = projects;
+        //                        add = 1;
+        //                    }
+        //                    else
+        //                    {
+        //                        ui.projects = null;
+        //                    }
+        //                }
+        //                ////if (requestAll || request.Contains("todo"))
+        //                ////{
+        //                ////    List<JsonModels.Todo> todoList = userManager.GetTodo(id);
+        //                ////    if (todoList != null && todoList.Count != 0)
+        //                ////    {
+        //                ////        ui.todo = todoList;
+        //                ////        add = 1;
+        //                ////    }
+        //                ////}
+        //                //if (requestAll || request.Contains("recentActivity"))
+        //                //{
+        //                //    List<JsonModels.RecentActivity> recentActivity = userManager.GetRecentActivity(id);
+        //                //    if (recentActivity != null && recentActivity.Count != 0)
+        //                //    {
+        //                //        ui.recentActivity = recentActivity;
+        //                //        add = 1;
+        //                //    }
+        //                //    else
+        //                //    {
+        //                //        ui.recentActivity = null;
+        //                //    }
+        //                //}
+        //                ui.id = u.id.ToString();
+        //            }
+        //            try
+        //            {
+        //                returnVal = Serialize(ui);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+        //                return AddErrorHeader(ex.Message);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            logAccessor.CreateLog(DateTime.Now, this.GetType().ToString() + "." + System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), ex.ToString());
+        //            return AddErrorHeader("Bad Request");
+        //        }
+        //        return AddSuccessHeader(returnVal);
+        //    }
+        //}
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
