@@ -370,7 +370,7 @@ namespace Manager
                 string artifactURL = string.Format("{0}{1}", fileName, ".jpeg");
 
                 string blobReference = blobStorageAccessor.uploadImage(coverPicture, false).ToString();
-                string coverPictureLocation = "http://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL;
+                string coverPictureLocation = "http://vestn.blob.core.windows.net/thumbnails/" + artifactURL;
                 CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", blobReference, networkId, "thumbnail", "Network", 170, 170, "", artifactURL));
                 queue.AddMessage(message);
 

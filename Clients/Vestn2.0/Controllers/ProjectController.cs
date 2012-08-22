@@ -207,7 +207,7 @@ namespace Controllers
                             //}
                             //else
                             //{
-                            //    response.artifactURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
+                            //    response.artifactURL = "https://vestn.blob.core.windows.net/pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
                             //}
                             //--------------------------
                             if (response == null)
@@ -234,7 +234,7 @@ namespace Controllers
                     artifactResponse.id = response.id;
                     if (artifactType == "picture")
                     {
-                        artifactResponse.artifactLocation = "https://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL;
+                        artifactResponse.artifactLocation = "https://vestn.blob.core.windows.net/thumbnails/" + response.artifactURL;
                         artifactResponse.fileLocation = response.fileURL;
                     }
                     else if (artifactType == "document")
@@ -610,7 +610,7 @@ namespace Controllers
                         }
                         else
                         {
-                            return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
+                            return AddSuccessHeader("http://vestn.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
                         }
                     }
                     else

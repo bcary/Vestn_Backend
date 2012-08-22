@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ServiceConfiguration serviceName="Vestn1.0.Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="1" osVersion="*">
   <Role name="Vestn1.0">
-    <Instances count="1" />
+    <Instances count="2" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstaging;AccountKey=5sAlHPtJaiKjOSjFZUuwNwB7PQMU0aNMxAPy6DMBPK1Fuhg3AZey8b2iWkwwTbEfvd610V6xaabB939kZxTp4w==" />
-      <Setting name="BlobConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstaging;AccountKey=5sAlHPtJaiKjOSjFZUuwNwB7PQMU0aNMxAPy6DMBPK1Fuhg3AZey8b2iWkwwTbEfvd610V6xaabB939kZxTp4w==" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestn;AccountKey=q3RBWe8Jj2VWfNIsKrOnwt49OmNKN7+3liUDdVcR4P+MueIWjvvJFzd7qfzr455o7sG0v3ldH01ZbwZCohZMug==" />
+      <Setting name="BlobConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestn;AccountKey=q3RBWe8Jj2VWfNIsKrOnwt49OmNKN7+3liUDdVcR4P+MueIWjvvJFzd7qfzr455o7sG0v3ldH01ZbwZCohZMug==" />
     </ConfigurationSettings>
   </Role>
   <Role name="BackgroundProcesses">
-    <Instances count="1" />
+    <Instances count="2" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstaging;AccountKey=5sAlHPtJaiKjOSjFZUuwNwB7PQMU0aNMxAPy6DMBPK1Fuhg3AZey8b2iWkwwTbEfvd610V6xaabB939kZxTp4w==" />
-      <Setting name="BlobConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstaging;AccountKey=5sAlHPtJaiKjOSjFZUuwNwB7PQMU0aNMxAPy6DMBPK1Fuhg3AZey8b2iWkwwTbEfvd610V6xaabB939kZxTp4w==" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestn;AccountKey=q3RBWe8Jj2VWfNIsKrOnwt49OmNKN7+3liUDdVcR4P+MueIWjvvJFzd7qfzr455o7sG0v3ldH01ZbwZCohZMug==" />
+      <Setting name="BlobConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestn;AccountKey=q3RBWe8Jj2VWfNIsKrOnwt49OmNKN7+3liUDdVcR4P+MueIWjvvJFzd7qfzr455o7sG0v3ldH01ZbwZCohZMug==" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>

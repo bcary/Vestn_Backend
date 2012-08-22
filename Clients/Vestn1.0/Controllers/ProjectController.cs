@@ -600,7 +600,7 @@ namespace UserClientMembers.Controllers
                                 }
                                 else
                                 {
-                                    response.artifactURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
+                                    response.artifactURL = "https://vestn.blob.core.windows.net/pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
                                 }
                                 
                                 
@@ -708,7 +708,7 @@ namespace UserClientMembers.Controllers
                             //}
                             //else
                             //{
-                            //    response.artifactURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
+                            //    response.artifactURL = "https://vestn.blob.core.windows.net/pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
                             //}
                             //--------------------------
                             if (response == null)
@@ -735,7 +735,7 @@ namespace UserClientMembers.Controllers
                     artifactResponse.id = response.id;
                     if(artifactType == "picture")
                     {
-                        artifactResponse.artifactLocation = "https://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL;
+                        artifactResponse.artifactLocation = "https://vestn.blob.core.windows.net/thumbnails/" + response.artifactURL;
                         artifactResponse.fileLocation = response.fileURL;
                     }
                     else if (artifactType == "document")
@@ -1421,7 +1421,7 @@ namespace UserClientMembers.Controllers
                         else
                         {
                             activityManager.AddActivity(user.id, "Project Cover Picture", "Updated", projectId);
-                            return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
+                            return AddSuccessHeader("http://vestn.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
                         }
                     }
                     else
@@ -1522,7 +1522,7 @@ namespace UserClientMembers.Controllers
                                 }
                                 else
                                 {
-                                    return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
+                                    return AddSuccessHeader("http://vestn.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
                                 }
                             }
                         }

@@ -1219,7 +1219,7 @@ namespace UserClientMembers.Controllers
                         }
                         string returnPic = userManager.UploadUserPicture(user, s, "Profile");
                         activityManager.AddActivity(user.id, "Profile Picture", "Updated", user.id);
-                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                        return AddSuccessHeader("http://vestn.blob.core.windows.net/thumbnails/" + returnPic, true);
                     }
                     else
                     {
@@ -1410,22 +1410,22 @@ namespace UserClientMembers.Controllers
                     else if (String.Compare(fileType, "doc", true) == 0)
                     {
                         resumeUri = userManager.UploadResumeDoc(user, fs);
-                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                        return AddSuccessHeader("http://vestn.blob.core.windows.net/pdfs/" + resumeUri, true);
                     }
                     else if (String.Compare(fileType, "docx", true) == 0)
                     {
                         resumeUri = userManager.UploadResumeDocx(user, fs);
-                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                        return AddSuccessHeader("http://vestn.blob.core.windows.net/pdfs/" + resumeUri, true);
                     }
                     else if (String.Compare(fileType, "rtf", true) == 0)
                     {
                         resumeUri = userManager.UploadResumeRTF(user, fs);
-                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                        return AddSuccessHeader("http://vestn.blob.core.windows.net/pdfs/" + resumeUri, true);
                     }
                     else if (String.Compare(fileType, "txt", true) == 0)
                     {
                         resumeUri = userManager.UploadResumeTXT(user, fs);
-                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                        return AddSuccessHeader("http://vestn.blob.core.windows.net/pdfs/" + resumeUri, true);
                     }
                     else
                     {
@@ -1570,7 +1570,7 @@ namespace UserClientMembers.Controllers
                                     Request.InputStream.Read(bytes, 0, length);
                                     Stream s = new MemoryStream(bytes);
                                     string returnPic = userManager.UploadUserPicture(user, s, "About");
-                                    return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                                    return AddSuccessHeader("http://vestn.blob.core.windows.net/thumbnails/" + returnPic, true);
                                 }
                                 else if (propertyId == "profilePicture")
                                 {
@@ -1583,7 +1583,7 @@ namespace UserClientMembers.Controllers
                                         userManager.DeleteProfilePicture(user);
                                     }
                                     string returnPic = userManager.UploadUserPicture(user, s, "Profile");
-                                    return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                                    return AddSuccessHeader("http://vestn.blob.core.windows.net/thumbnails/" + returnPic, true);
                                 }
                                 else if (propertyId == "resume")
                                 {
@@ -1612,22 +1612,22 @@ namespace UserClientMembers.Controllers
                                     else if (String.Compare(fileType, "doc", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeDoc(user, fs);
-                                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                        return AddSuccessHeader("http://vestn.blob.core.windows.net/pdfs/" + resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "docx", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeDocx(user, fs);
-                                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                        return AddSuccessHeader("http://vestn.blob.core.windows.net/pdfs/" + resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "rtf", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeRTF(user, fs);
-                                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                        return AddSuccessHeader("http://vestn.blob.core.windows.net/pdfs/" + resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "txt", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeTXT(user, fs);
-                                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                        return AddSuccessHeader("http://vestn.blob.core.windows.net/pdfs/" + resumeUri, true);
                                     }
                                     else
                                     {
