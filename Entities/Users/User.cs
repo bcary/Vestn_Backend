@@ -44,6 +44,7 @@ namespace Entity
         public string networkPictureThumbnail { get; set; }
         public string verifyEmailHash { get; set; }
         public string forgotPasswordHash { get; set; }
+        public int isTodoComplete { get; set; }
 
         public virtual ICollection<Network> networks { get; set; }
         public virtual ICollection<Network> adminNetworks { get; set; }

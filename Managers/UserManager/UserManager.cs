@@ -595,7 +595,10 @@ namespace Manager
             return new List<string> { ("No users found.") };
         }
 
-        
+        public bool CompleteTodo(int userId)
+        {
+            return userAccessor.CompleteTodo(userId);
+        }
 
         public JsonModels.UserStats getUserStats(int ID)
         {

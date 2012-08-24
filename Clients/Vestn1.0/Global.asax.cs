@@ -29,7 +29,8 @@ namespace UserClientMembers
                 return null;
 
             var subDomain = url.Substring(0, index);
-            if (subDomain.Contains("4705902cf6e546169b8f9608a8645941") || subDomain.Equals("vestndev", StringComparison.InvariantCultureIgnoreCase))
+            //http://a275b090ab8b4ad1a9e2b7c61fd73071.cloudapp.net/ <-- production staging DNS name
+            if (subDomain.Contains("4705902cf6e546169b8f9608a8645941") || subDomain.Equals("vestndev", StringComparison.InvariantCultureIgnoreCase) || subDomain.Equals("vestn", StringComparison.InvariantCultureIgnoreCase) || subDomain.Equals("testapi", StringComparison.InvariantCultureIgnoreCase))
             {
                 return null;
             }

@@ -250,7 +250,9 @@ namespace Entity
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public UserSettings settings { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
-            public int emailVerified { get; set; }
+            public bool emailVerified { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public bool todoComplete { get; set; }
         }
 
         [DataContract]

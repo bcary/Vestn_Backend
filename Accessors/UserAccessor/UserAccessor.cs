@@ -614,6 +614,27 @@ namespace Accessor
             return user;
         }
 
+        public bool CompleteTodo(int userId)
+        {
+            try
+            {
+                VestnDB db = new VestnDB();
+                var updatedUser = db.users.Find(userId);
+                db.users.Attach(updatedUser);
+
+                updatedUser.isTodoComplete = 1;
+
+                db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "User Accessor", ex.ToString());
+                return false;
+            }
+        }
+        
+
     //ASK DOUG ABOUT THIS METHOD
         /*
         protected override void Dispose(bool disposing)

@@ -100,7 +100,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
-        public string Register(string email, string password, string networkJoinCode = null)
+        public string Register(string email, string password, string networkJoinCode = null, string firstName = null, string lastName = null)
         {
             if (Request != null)
             {
@@ -143,7 +143,8 @@ namespace UserClientMembers.Controllers
                 {
                     User newUser = model.toUser();
                     newUser.profileURL = newUser.userName;
-
+                    newUser.firstName = firstName;
+                    newUser.lastName = lastName;
                     newUser = userManager.CreateUser(newUser, model.Password);
 
                     userManager.ActivateUser(newUser, true);
@@ -3757,7 +3758,22 @@ namespace UserClientMembers.Controllers
                         userSettingsJson.visibility = "hidden";
                     }
 
-                    userInfoJson.emailVerified = user.emailVerified;
+                    if (user.emailVerified == 1)
+                    {
+                        userInfoJson.emailVerified = true;
+                    }
+                    else
+                    {
+                        userInfoJson.emailVerified = false;
+                    }
+                    if (user.isTodoComplete == 1)
+                    {
+                        userInfoJson.todoComplete = true;
+                    }
+                    else
+                    {
+                        userInfoJson.todoComplete = false;
+                    }
                     userInfoJson.networks = userNetworksJson;
                     userInfoJson.settings = userSettingsJson;
 
@@ -3829,6 +3845,37 @@ namespace UserClientMembers.Controllers
             {
                 logAccessor.CreateLog(DateTime.Now, "UserController - SendSiteFeedback", ex.StackTrace);
                 return AddErrorHeader("something went wrong while sending this feedback", 1);
+            }
+        }
+
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public string CompleteTodo(string token)
+        {
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+                return null;
+            }
+            try
+            {
+                int userId = authenticationEngine.authenticate(token);
+                if (userId < 0)
+                {
+                    return AddErrorHeader("Not Authenticated", 2);
+                }
+                bool success = userManager.CompleteTodo(userId);
+                if (success)
+                {
+                    return AddSuccessHeader("ToDo Completed", true);
+                }
+                else
+                {
+                    return AddErrorHeader("An error occurred while updating the user" , 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                return AddErrorHeader("something went wrong while updating this user's todo list status" , 1);
             }
         }
 

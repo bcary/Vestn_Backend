@@ -310,7 +310,7 @@ namespace Manager
                 if (userName != "")
                 {
                     PDFLocation = BSAccessor.uploadPDF(outStream, false).ToString();
-                    PDFLocation = stampThatShit(PDFLocation, userName, presetDocURL);
+                    //PDFLocation = stampThatShit(PDFLocation, userName, presetDocURL);
                 }
                 else
                 {
@@ -345,7 +345,7 @@ namespace Manager
                 if (userName != "")
                 {
                     PDFLocation = BSAccessor.uploadPDF(outStream, false).ToString();
-                    PDFLocation = stampThatShit(PDFLocation, userName, presetDocURL);
+                    //PDFLocation = stampThatShit(PDFLocation, userName, presetDocURL);
                 }
                 else
                 {
