@@ -169,6 +169,7 @@ namespace UserClientMembers.Controllers
                     {
                         return AddErrorHeader("An error occurred while adding this administrator" , 1);
                     }
+                    return AddErrorHeader("An error occurred while adding this administrator", 1);
                 }
                 else
                 {
