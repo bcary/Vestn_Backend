@@ -40,9 +40,6 @@ namespace Manager
             UserAccessor ua = new UserAccessor();
             ua.AddProjectIdToOrder(project.id, u);
 
-            AnalyticsAccessor aa = new AnalyticsAccessor();
-            aa.CreateAnalytic("Project Created", DateTime.Now, u.userName);
-
             return project;
         }
 
