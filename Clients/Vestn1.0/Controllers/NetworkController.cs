@@ -143,8 +143,8 @@ namespace UserClientMembers.Controllers
 
                 if (networkManager.IsNetworkAdmin(networkId, userId))
                 {
-                    bool added = networkManager.AddNetworkAdmin(networkId, adminEmail);
-                    if (added)
+                    string added = networkManager.AddNetworkAdmin(networkId, adminEmail);
+                    if (added == "success")
                     {
                         User admin = userManager.GetUserByEmail(adminEmail);
                         if (admin != null)
@@ -156,14 +156,18 @@ namespace UserClientMembers.Controllers
                             uShell.userId = admin.id;
                             return AddSuccessHeader(Serialize(uShell));
                         }
-                        else
-                        {
-                            return AddSuccessHeader("Admin Email Sent", true);
-                        }
+                    }
+                    else if(added == "admin not found")
+                    {
+                        return AddErrorHeader("The administrator you attempted to add does not have a Vestn account. Please have your administrator create an account, then try adding them again", 1);
+                    }
+                    else if (added == "admin exists")
+                    {
+                        return AddErrorHeader("This user is already an administrator", 1);
                     }
                     else
                     {
-                        return AddErrorHeader("An error occurred while adding the network administrator", 1);
+                        return AddErrorHeader("An error occurred while adding this administrator" , 1);
                     }
                 }
                 else

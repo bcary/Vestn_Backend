@@ -328,7 +328,7 @@ namespace Controllers
                             userManager.DeleteProfilePicture(user);
                         }
                         string returnPic = userManager.UploadUserPicture(user, s, "Profile");
-                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                        return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"thumbnails/" + returnPic, true);
                     }
                     else
                     {

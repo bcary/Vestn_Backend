@@ -302,7 +302,7 @@ namespace Manager
             }
         }
 
-        public bool AddNetworkAdmin(int networkId, string adminEmail)
+        public string AddNetworkAdmin(int networkId, string adminEmail)
         {
             try
             {
@@ -318,37 +318,37 @@ namespace Manager
                             if (network.admins.Contains(admin))
                             {
                                 //User is already an admin of this network
-                                return false;
+                                return "admin exists";
                             }
                             else
                             {
                                 bool added = networkAccessor.AddAdmin(networkId, admin.id);
-                                return added;
+                                return "success";
                             }
                         }
                         else
                         {
                             //Network not found in database
-                            return false;
+                            return "network not found";
                         }
                     }
                     else
                     {
                         //TODO when email complete
                         //email does not exist in system, send email invitation with network admin creds
-                        return false;
+                        return "admin not found";
                     }
                 }
                 else
                 {
                     //need the email
-                    return false;
+                    return "error";
                 }
             }
             catch (Exception ex)
             {
                 logAccessor.CreateLog(DateTime.Now, "Network Manager - AddNetworkAdmin", ex.StackTrace);
-                return false;
+                return "error";
             }
         }
 
@@ -370,7 +370,7 @@ namespace Manager
                 string artifactURL = string.Format("{0}{1}", fileName, ".jpeg");
 
                 string blobReference = blobStorageAccessor.uploadImage(coverPicture, false).ToString();
-                string coverPictureLocation = "http://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL;
+                string coverPictureLocation = RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"thumbnails/" + artifactURL;
                 CloudQueueMessage message = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", blobReference, networkId, "thumbnail", "Network", 170, 170, "", artifactURL));
                 queue.AddMessage(message);
 

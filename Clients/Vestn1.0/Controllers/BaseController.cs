@@ -9,6 +9,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Web.Script.Serialization;
 using Entity;
+using Accessor;
 
 namespace UserClientMembers.Controllers
 {
@@ -54,6 +55,8 @@ namespace UserClientMembers.Controllers
 
         protected string AddErrorHeader(string message, int code)
         {
+            AnalyticsAccessor aa = new AnalyticsAccessor();
+            aa.CreateAnalytic("Error_Returned", DateTime.Now, "user", message);
             return "{\"Error\":{\"Code\":"  + @code.ToString() + ",\"Message\": \"" + @message + "\"},\"Success\": false,\"Reponse\":null}";
         }
 

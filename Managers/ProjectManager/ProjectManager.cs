@@ -148,7 +148,7 @@ namespace Manager
                     string artifactURL1 = string.Format("{0}{1}", FileNameThumb1, ".jpeg");
                     CloudQueueMessage message3 = new CloudQueueMessage(String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", imageURI, p.id, "thumbnail", "ProjectPicture", 266, 266, "", artifactURL1));
                     queue.AddMessage(message3);
-                    p.coverPictureThumbnail = "https://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL1;
+                    p.coverPictureThumbnail = RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString() + "thumbnails/" + artifactURL1;
                     p.coverPicture = imageURI;
 
                     p.dateModified = DateTime.Now;
@@ -164,7 +164,7 @@ namespace Manager
                     {
                         title = GetTitle(fileName),
                         pictureLocation = imageURI,
-                        pictureThumbnailLocation = "https://vestnstaging.blob.core.windows.net/thumbnails/" + artifactURL
+                        pictureThumbnailLocation = RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"thumbnails/" + artifactURL
                     };
                     int projectElementId = pa.AddProjectElement(p, pe);
                     if (projectElementId == -1)
@@ -306,7 +306,7 @@ namespace Manager
             }
             else
             {
-                docThumb = "https://vestnstaging.blob.core.windows.net/pdfs/" + uniqueBlobName;
+                docThumb = RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"pdfs/" + uniqueBlobName;
             }
             ProjectElement_Document pe = new ProjectElement_Document
             {

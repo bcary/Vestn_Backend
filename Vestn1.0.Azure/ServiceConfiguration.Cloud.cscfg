@@ -5,6 +5,7 @@
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstaging;AccountKey=5sAlHPtJaiKjOSjFZUuwNwB7PQMU0aNMxAPy6DMBPK1Fuhg3AZey8b2iWkwwTbEfvd610V6xaabB939kZxTp4w==" />
       <Setting name="BlobConnectionString" value="DefaultEndpointsProtocol=https;AccountName=vestnstaging;AccountKey=5sAlHPtJaiKjOSjFZUuwNwB7PQMU0aNMxAPy6DMBPK1Fuhg3AZey8b2iWkwwTbEfvd610V6xaabB939kZxTp4w==" />
+      <Setting name="storageAccountUrl" value="http://vestn.blob.core.windows.net/" />
     </ConfigurationSettings>
   </Role>
   <Role name="BackgroundProcesses">

@@ -157,6 +157,16 @@ namespace UserClientMembers.Controllers
                     }
                     newUser = userManager.CreateUser(newUser, model.Password);
 
+                    UserAgreementAccessor uaa = new UserAgreementAccessor();
+                    if (Request.ServerVariables["REMOTE_ADDR"] != null)
+                    {
+                        uaa.CreateAgreement(DateTime.Now, newUser.userName, "Agree", Request.ServerVariables["REMOTE_ADDR"]);
+                    }
+                    else
+                    {
+                        uaa.CreateAgreement(DateTime.Now, newUser.userName, "Agree", "IP not detectable");
+                    }
+
                     userManager.ActivateUser(newUser, true);
                     //communicationManager.SendVerificationMail(userManager.GetProviderUserKey(newUser), newUser.userName, newUser.email);
 
@@ -171,7 +181,8 @@ namespace UserClientMembers.Controllers
                         }
                     }
                     userManager.SendVerifyEmail(email);
-
+                    AnalyticsAccessor aa = new AnalyticsAccessor();
+                    aa.CreateAnalytic("Register", DateTime.Now, newUser.userName);
                     AuthenticaitonEngine authEngine = new AuthenticaitonEngine();
                     string token = authEngine.logIn(newUser.id, newUser.userName);
                     JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
@@ -541,7 +552,7 @@ namespace UserClientMembers.Controllers
                         string token = authEngine.logIn(user.id, user.userName);
 
                         AnalyticsAccessor aa = new AnalyticsAccessor();
-                        aa.CreateAnalytic("User Login", DateTime.Now, user.userName);
+                        aa.CreateAnalytic("LogOn", DateTime.Now, user.userName);
 
                         JsonModels.LogOnModel logOnReturnObject = new JsonModels.LogOnModel();
                         logOnReturnObject.userId = user.id;
@@ -1230,7 +1241,9 @@ namespace UserClientMembers.Controllers
                         }
                         string returnPic = userManager.UploadUserPicture(user, s, "Profile");
                         activityManager.AddActivity(user.id, "Profile Picture", "Updated", user.id);
-                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+
+                        //string heyo = RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString() + "thumbnails/" + returnPic;
+                        return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"thumbnails/" + returnPic, true);
                     }
                     else
                     {
@@ -1421,22 +1434,22 @@ namespace UserClientMembers.Controllers
                     else if (String.Compare(fileType, "doc", true) == 0)
                     {
                         resumeUri = userManager.UploadResumeDoc(user, fs);
-                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                        return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"pdfs/" + resumeUri, true);
                     }
                     else if (String.Compare(fileType, "docx", true) == 0)
                     {
                         resumeUri = userManager.UploadResumeDocx(user, fs);
-                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                        return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"pdfs/" + resumeUri, true);
                     }
                     else if (String.Compare(fileType, "rtf", true) == 0)
                     {
                         resumeUri = userManager.UploadResumeRTF(user, fs);
-                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                        return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"pdfs/" + resumeUri, true);
                     }
                     else if (String.Compare(fileType, "txt", true) == 0)
                     {
                         resumeUri = userManager.UploadResumeTXT(user, fs);
-                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                        return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"pdfs/" + resumeUri, true);
                     }
                     else
                     {
@@ -1478,6 +1491,10 @@ namespace UserClientMembers.Controllers
                             JsonModels.RegisterResponse rr = new JsonModels.RegisterResponse();
                             rr.userId = u.id;
                             rr.token = token;
+
+                            AnalyticsAccessor aa = new AnalyticsAccessor();
+                            aa.CreateAnalytic("EmailVerified", DateTime.Now, u.userName);
+
                             return AddSuccessHeader(Serialize(rr));
                         }
                         else
@@ -1581,7 +1598,7 @@ namespace UserClientMembers.Controllers
                                     Request.InputStream.Read(bytes, 0, length);
                                     Stream s = new MemoryStream(bytes);
                                     string returnPic = userManager.UploadUserPicture(user, s, "About");
-                                    return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                                    return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"thumbnails/" + returnPic, true);
                                 }
                                 else if (propertyId == "profilePicture")
                                 {
@@ -1594,7 +1611,7 @@ namespace UserClientMembers.Controllers
                                         userManager.DeleteProfilePicture(user);
                                     }
                                     string returnPic = userManager.UploadUserPicture(user, s, "Profile");
-                                    return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + returnPic, true);
+                                    return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"thumbnails/" + returnPic, true);
                                 }
                                 else if (propertyId == "resume")
                                 {
@@ -1623,22 +1640,22 @@ namespace UserClientMembers.Controllers
                                     else if (String.Compare(fileType, "doc", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeDoc(user, fs);
-                                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                        return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"pdfs/" + resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "docx", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeDocx(user, fs);
-                                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                        return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"pdfs/" + resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "rtf", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeRTF(user, fs);
-                                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                        return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"pdfs/" + resumeUri, true);
                                     }
                                     else if (String.Compare(fileType, "txt", true) == 0)
                                     {
                                         resumeUri = userManager.UploadResumeTXT(user, fs);
-                                        return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/pdfs/" + resumeUri, true);
+                                        return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"pdfs/" + resumeUri, true);
                                     }
                                     else
                                     {
@@ -3880,6 +3897,9 @@ namespace UserClientMembers.Controllers
                 bool success = userManager.CompleteTodo(userId);
                 if (success)
                 {
+                    User user = userManager.GetUser(userId);
+                    AnalyticsAccessor aa = new AnalyticsAccessor();
+                    aa.CreateAnalytic("CompleteTodo", DateTime.Now, user.userName);
                     return AddSuccessHeader("ToDo Completed", true);
                 }
                 else

@@ -25,6 +25,7 @@
     </Imports>
     <ConfigurationSettings>
       <Setting name="BlobConnectionString" />
+      <Setting name="storageAccountUrl" />
     </ConfigurationSettings>
   </WebRole>
   <WorkerRole name="BackgroundProcesses" vmsize="Small">

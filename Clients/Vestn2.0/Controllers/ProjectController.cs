@@ -201,15 +201,7 @@ namespace Controllers
 
                             //check if this is development enviroment or LIVE
                             var account = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("BlobConnectionString"));
-                            //if (account.BlobEndpoint.IsLoopback)
-                            //{
-                            //    response.artifactURL = @"http://127.0.0.1:10000/devstoreaccount1/pdfs/" + response.artifactURL;
-                            //}
-                            //else
-                            //{
-                            //    response.artifactURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
-                            //}
-                            //--------------------------
+
                             if (response == null)
                             {
                                 return AddErrorHeader("File type not accepted");
@@ -234,7 +226,7 @@ namespace Controllers
                     artifactResponse.id = response.id;
                     if (artifactType == "picture")
                     {
-                        artifactResponse.artifactLocation = "https://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL;
+                        artifactResponse.artifactLocation = RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"thumbnails/" + response.artifactURL;
                         artifactResponse.fileLocation = response.fileURL;
                     }
                     else if (artifactType == "document")
@@ -610,7 +602,7 @@ namespace Controllers
                         }
                         else
                         {
-                            return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
+                            return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"thumbnails/" + response.artifactURL, true);
                         }
                     }
                     else

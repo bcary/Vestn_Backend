@@ -90,6 +90,7 @@ namespace UserClientMembers.Controllers
                         return AddErrorHeader(exception.Message, 1);
                     }
                     activityManager.AddActivity(user.id, "Project", "Added", response.id);
+                    aa.CreateAnalytic("Add_Project", DateTime.Now, user.userName);
                     return AddSuccessHeader(returnVal);
                 }
                 catch (Exception ex)
@@ -600,7 +601,7 @@ namespace UserClientMembers.Controllers
                                 }
                                 else
                                 {
-                                    response.artifactURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
+                                    response.artifactURL = RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
                                 }
                                 
                                 
@@ -693,7 +694,7 @@ namespace UserClientMembers.Controllers
                             {
                                 return AddErrorHeader("An error occured saving the docuement.", 1);
                             }
-                            aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, qqfile);
+                            aa.CreateAnalytic("Add_Media", DateTime.Now, user.userName, "Picture");
                             artifactType = "picture";
                         }
                         else if (qqfile.Contains(".PDF") || qqfile.Contains(".pdf") || qqfile.Contains(".doc") || qqfile.Contains(".docx") || qqfile.Contains(".ppt") || qqfile.Contains(".pptx") || qqfile.Contains(".xls") || qqfile.Contains(".xlsx") || qqfile.Contains(".txt") || qqfile.Contains(".rtf") || qqfile.Contains(".DOC") || qqfile.Contains(".DOCX") || qqfile.Contains(".PPT") || qqfile.Contains(".PPTX") || qqfile.Contains(".XLS") || qqfile.Contains(".XLSX") || qqfile.Contains(".TXT") || qqfile.Contains(".RTF"))
@@ -702,20 +703,12 @@ namespace UserClientMembers.Controllers
 
                             //check if this is development enviroment or LIVE
                             var account = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("BlobConnectionString"));
-                            //if (account.BlobEndpoint.IsLoopback)
-                            //{
-                            //    response.artifactURL = @"http://127.0.0.1:10000/devstoreaccount1/pdfs/" + response.artifactURL;
-                            //}
-                            //else
-                            //{
-                            //    response.artifactURL = "https://vestnstaging.blob.core.windows.net/pdfs/" + response.artifactURL;//TODO change this when it goes live to vestnstorage
-                            //}
-                            //--------------------------
+
                             if (response == null)
                             {
                                 return AddErrorHeader("File type not accepted", 1);
                             }
-                            aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, qqfile);
+                            aa.CreateAnalytic("Add_Media", DateTime.Now, user.userName, "Document");
                             artifactType = "document";
                         }
                         else
@@ -735,7 +728,7 @@ namespace UserClientMembers.Controllers
                     artifactResponse.id = response.id;
                     if(artifactType == "picture")
                     {
-                        artifactResponse.artifactLocation = "https://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL;
+                        artifactResponse.artifactLocation = RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"thumbnails/" + response.artifactURL;
                         artifactResponse.fileLocation = response.fileURL;
                     }
                     else if (artifactType == "document")
@@ -893,7 +886,7 @@ namespace UserClientMembers.Controllers
                     
                     JsonModels.Artifact response = projectManager.AddVideoElement(projectId, null, videoLink, vType);
 
-                    aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, "Video link");
+                    aa.CreateAnalytic("Add_Media", DateTime.Now, user.userName, "Video");
                     string returnVal;
                     try
                     {
@@ -955,7 +948,7 @@ namespace UserClientMembers.Controllers
                     if (code != null && type != null)
                     {
                         response = projectManager.AddCodeElement(projectId, code, type);
-                        aa.CreateAnalytic("Add Media", DateTime.Now, user.userName, "Code Sample");
+                        aa.CreateAnalytic("Add_Media", DateTime.Now, user.userName, "Code Sample");
                     }
                     else
                     {
@@ -971,6 +964,7 @@ namespace UserClientMembers.Controllers
                         return AddErrorHeader(exception.Message, 1);
                     }
                     activityManager.AddActivity(user.id, "Artifact", "Added", response.id); 
+
                     return AddSuccessHeader(returnVal);
                 }
                 catch (Exception ex)
@@ -1421,7 +1415,7 @@ namespace UserClientMembers.Controllers
                         else
                         {
                             activityManager.AddActivity(user.id, "Project Cover Picture", "Updated", projectId);
-                            return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
+                            return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"thumbnails/" + response.artifactURL, true);
                         }
                     }
                     else
@@ -1522,7 +1516,7 @@ namespace UserClientMembers.Controllers
                                 }
                                 else
                                 {
-                                    return AddSuccessHeader("http://vestnstaging.blob.core.windows.net/thumbnails/" + response.artifactURL, true);
+                                    return AddSuccessHeader(RoleEnvironment.GetConfigurationSettingValue("storageAccountUrl").ToString()+"thumbnails/" + response.artifactURL, true);
                                 }
                             }
                         }
