@@ -303,50 +303,41 @@ namespace Manager
 
         public bool CheckDuplicateEmail(string email)//returns true if there are no matching emails for users
         {
-            List<User> users = userAccessor.GetAllUsers();
-            bool duplicate = true;
-            foreach (User u in users)
+            User u = userAccessor.GetUserByEmail(email);
+            if (u == null)
             {
-                if (u.email.Trim() == email.Trim())
-                {
-                    duplicate = false;
-                }
+                return true;
             }
-            return duplicate;
+            else
+            {
+                return false;
+            }
         }
 
         public bool CheckDuplicateUsername(string userName)//returns true if there are no matching usernames for users
         {
-            List<User> users = userAccessor.GetAllUsers();
-            bool duplicate = true;
-            foreach (User u in users)
+            User u = userAccessor.GetUser(userName);
+            if (u == null)
             {
-                if (u.userName.Trim() == userName.Trim() || u.profileURL.Trim() == userName.Trim())
-                {
-                    duplicate = false;
-                }
+                return true;
             }
-            return duplicate;
+            else
+            {
+                return false;
+            }
         }
 
-        public bool CheckDuplicateProfileURL(User user)//returns true if there are no matching usernames for users
+        public bool CheckDuplicateProfileURL(string profileURL)//returns true if there are no matching usernames for users
         {
-            List<User> users = userAccessor.GetAllUsers();
-            bool duplicate = true;
-            foreach (User u in users)
+            User u = userAccessor.GetUserByProfileURL(profileURL);
+            if (u == null)
             {
-                if ((
-                        u.profileURL.Trim() == user.profileURL.Trim() || 
-                        u.userName.Trim() == user.profileURL.Trim()
-                        ) &&
-                    u.userName.Trim() != user.userName.Trim()
-                    )
-
-                {
-                    duplicate = false;
-                }
+                return true;
             }
-            return duplicate;
+            else
+            {
+                return false;
+            }
         }
 
         public User AddConnection(User u, int connection)

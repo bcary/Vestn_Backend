@@ -145,6 +145,16 @@ namespace UserClientMembers.Controllers
                     newUser.profileURL = newUser.userName;
                     newUser.firstName = firstName;
                     newUser.lastName = lastName;
+                    if (networkJoinCode != null)
+                    {
+                        NetworkManager nm = new NetworkManager();
+                        Network network = nm.GetNetworkByIdentifier(networkJoinCode);
+                        if (network != null)
+                        {
+                            newUser.title = "student";
+                            newUser.organization = network.name;
+                        }
+                    }
                     newUser = userManager.CreateUser(newUser, model.Password);
 
                     userManager.ActivateUser(newUser, true);
@@ -3809,6 +3819,10 @@ namespace UserClientMembers.Controllers
                 }
                 Network network = networkManager.GetNetworkByIdentifier(networkJoinCode);
                 User user = userManager.GetUser(userId);
+                if (network.networkUsers.Contains(user))
+                {
+                    return AddErrorHeader("You are already a part of this network.", 1);
+                }
                 if (network != null)
                 {
                     string[] email = { user.email };

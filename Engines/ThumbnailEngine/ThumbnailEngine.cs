@@ -117,7 +117,18 @@ namespace Engine
                     Bitmap bmpCrop = thumbnailImage.Clone(rect, thumbnailImage.PixelFormat);
                     return bmpCrop;
                 }
-                return null;
+                else
+                {
+                    var thumbnailImage = new Bitmap(width, height);
+                    using (Graphics graphics = Graphics.FromImage(thumbnailImage))
+                    {
+                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                        graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                        graphics.DrawImage(originalImage, 0, 0, width, height);
+                    }
+                    return thumbnailImage;
+                }
             }
             catch (Exception ex)
             {
