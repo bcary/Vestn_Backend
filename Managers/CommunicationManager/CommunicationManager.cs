@@ -103,7 +103,7 @@ namespace Manager
         {
             try
             {
-                string registerLink = "http://qa.vestn.com/#splash=signUp&joinCode=" + networkJoinCode + "&email=" + email;
+                string registerLink = "http://vestn.com/#splash=signUp&joinCode=" + networkJoinCode + "&email=" + email;
                 string messageBody = "You have been invited to join a Vestn Network! Click the link below to start demonstrating your excellence: \n" + registerLink;
 
                 SendEmail(email, "You've Been Invited!", "Greetings!", messageBody);
@@ -132,7 +132,7 @@ namespace Manager
         {
             try
             {
-                string verifyLink = "http://qa.vestn.com/#splash=verifyEmail&email="+email+"&hash="+code;
+                string verifyLink = "http://vestn.com/#splash=verifyEmail&email="+email+"&hash="+code;
                 string messageBody = "Vestn allows you to upload and demonstrate your best work and connects you to institutions, peers, and employers. \n \nPlease click the link below to verify your email address: \n \n" + verifyLink;
 
                 SendEmail(email, "Welcome to Vestn!", "Welcome!", messageBody);
@@ -149,7 +149,7 @@ namespace Manager
             {
                 UserAccessor ua = new UserAccessor();
                 int userId = ua.GetUserByEmail(email).id;
-                string forgotLink = "http://qa.vestn.com/#splash=changePassword&userId="+userId+"&resetHash=" + forgotHash;
+                string forgotLink = "http://vestn.com/#splash=changePassword&userId="+userId+"&resetHash=" + forgotHash;
                 string messageBody = "Please click the link below to reset you password: \n" + forgotLink;
                 string greeting = userFirstName + ",";
 
