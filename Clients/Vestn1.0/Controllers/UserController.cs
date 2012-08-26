@@ -114,6 +114,7 @@ namespace UserClientMembers.Controllers
                 CommunicationManager communicationManager = new CommunicationManager();
                 string userName = email.Substring(0, email.IndexOf('@'));
                 userName = userName.Replace("+", "");
+                userName = userName.Replace(".", "");
                 RegisterModel model = new RegisterModel { Email = email, UserName = userName, Password = password, ConfirmPassword = password };
                 if (ValidationEngine.ValidateEmail(model.Email) != ValidationEngine.Success)
                 {

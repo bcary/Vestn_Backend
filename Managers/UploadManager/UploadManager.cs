@@ -316,7 +316,7 @@ namespace Manager
                 {
                     PDFLocation = BSAccessor.uploadPDF(outStream, false, presetDocURL).ToString();
                 }
-                pe.documentText = ExtractText(PDFLocation);
+                //pe.documentText = ExtractText(PDFLocation);
                 //pe.documentThumbnailLocation = PDFLocation;
                 pa.UpdateProjectElement(pe);
             }
