@@ -685,7 +685,7 @@ namespace UserClientMembers.Controllers
                         var length = Request.ContentLength;
                         var bytes = new byte[length];
                         Stream s;
-                        if (qqfile == null)
+                        if (qqfile == "System.Web.HttpPostedFileWrapper")
                         {
                             qqfile = Request.Files[0].FileName;
                             s = Request.Files[0].InputStream;
@@ -695,6 +695,8 @@ namespace UserClientMembers.Controllers
                             Request.InputStream.Read(bytes, 0, length);
                             s = new MemoryStream(bytes);
                         }
+                        //logAccessor.CreateLog(DateTime.Now, "Upload Artifact Media - 700", "request.files[0].filename:"+Request.Files[0].FileName);
+                        //logAccessor.CreateLog(DateTime.Now, "Upload Artifact Media - 701", "request.files[0].contenttype:" + Request.Files[0].ContentType);
 
                         if (qqfile.Contains(".jpeg") || qqfile.Contains(".jpg") || qqfile.Contains(".png") || qqfile.Contains(".bmp") || qqfile.Contains(".JPEG") || qqfile.Contains(".JPG") || qqfile.Contains(".PNG") || qqfile.Contains(".BMP"))
                         {
@@ -1414,7 +1416,7 @@ namespace UserClientMembers.Controllers
                         var length = Request.ContentLength;
                         var bytes = new byte[length];
                         Stream s;
-                        if (qqfile == null)
+                        if (qqfile == "System.Web.HttpPostedFileWrapper")
                         {
                             qqfile = Request.Files[0].FileName;
                             s = Request.Files[0].InputStream;

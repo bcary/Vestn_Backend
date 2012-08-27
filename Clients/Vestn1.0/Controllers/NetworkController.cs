@@ -632,7 +632,7 @@ namespace UserClientMembers.Controllers
                         var length = Request.ContentLength;
                         var bytes = new byte[length];
                         Stream s;
-                        if (qqfile == null)
+                        if (qqfile == "System.Web.HttpPostedFileWrapper")
                         {
                             qqfile = Request.Files[0].FileName;
                             s = Request.Files[0].InputStream;
