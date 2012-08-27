@@ -106,7 +106,22 @@ namespace Manager
                 string registerLink = "http://vestn.com/#splash=signUp&joinCode=" + networkJoinCode + "&email=" + email;
                 string messageBody = "You have been invited to join a Vestn Network! Click the link below to start demonstrating your excellence: \n" + registerLink;
 
-                SendEmail(email, "You've Been Invited!", "Greetings!", messageBody);
+                SendEmail(email, "You've Been Invited To Join a Vestn Network!", "Greetings!", messageBody);
+            }
+            catch (Exception ex)
+            {
+                logAccessor.CreateLog(DateTime.Now, "Communicaiton Manager - SendRegisterNetworkInvite", ex.StackTrace);
+            }
+        }
+
+        public void SendRegisterNetworkAdminInvite(string email, string networkJoinCode)
+        {
+            try
+            {
+                string registerLink = "http://vestn.com/#splash=signUp&joinCode=" + networkJoinCode + "&email=" + email + "&type=network";
+                string messageBody = "You have been invited to be an administrator of a Vestn Network! Click the link below and Register to begin configuring and managing your netowrk : \n" + registerLink;
+
+                SendEmail(email, "Vestn Network Administrator Invitation", "Greetings!", messageBody);
             }
             catch (Exception ex)
             {

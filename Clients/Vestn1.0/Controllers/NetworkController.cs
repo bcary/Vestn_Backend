@@ -156,6 +156,10 @@ namespace UserClientMembers.Controllers
                             uShell.userId = admin.id;
                             return AddSuccessHeader(Serialize(uShell));
                         }
+                        else
+                        {
+                            return AddSuccessHeader("An email has been sent to "+adminEmail+" with instructions on creating a Vestn Account",true);
+                        }
                     }
                     else if(added == "admin not found")
                     {
