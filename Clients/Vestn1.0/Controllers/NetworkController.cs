@@ -631,8 +631,17 @@ namespace UserClientMembers.Controllers
                     {
                         var length = Request.ContentLength;
                         var bytes = new byte[length];
-                        Request.InputStream.Read(bytes, 0, length);
-                        Stream s = new MemoryStream(bytes);
+                        Stream s;
+                        if (qqfile == null)
+                        {
+                            qqfile = Request.Files[0].FileName;
+                            s = Request.Files[0].InputStream;
+                        }
+                        else
+                        {
+                            Request.InputStream.Read(bytes, 0, length);
+                            s = new MemoryStream(bytes);
+                        }
 
                         string returnPic = networkManager.UpdateCoverPicture(networkId, s);
 

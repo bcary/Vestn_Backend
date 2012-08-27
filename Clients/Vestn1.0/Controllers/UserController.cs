@@ -1234,8 +1234,17 @@ namespace UserClientMembers.Controllers
                     {
                         var length = Request.ContentLength;
                         var bytes = new byte[length];
-                        Request.InputStream.Read(bytes, 0, length);
-                        Stream s = new MemoryStream(bytes);
+                        Stream s;
+                        if (qqfile == null)
+                        {
+                            qqfile = Request.Files[0].FileName;
+                            s = Request.Files[0].InputStream;
+                        }
+                        else
+                        {
+                            Request.InputStream.Read(bytes, 0, length);
+                            s = new MemoryStream(bytes);
+                        }
                         if (user.profilePicture != null && user.profilePictureThumbnail != null)
                         {
                             userManager.DeleteProfilePicture(user);
@@ -1410,20 +1419,20 @@ namespace UserClientMembers.Controllers
                 }
                 if (userId == authUserId)
                 {
-                    string fileName = null;
+                    var length = Request.ContentLength;
+                    var bytes = new byte[length];
+                    Stream fs;
                     if (qqfile == null)
                     {
-                        fileName = Request.Files.Get(0).FileName;
+                        qqfile = Request.Files[0].FileName;
+                        s = Request.Files[0].InputStream;
                     }
                     else
                     {
-                        fileName = qqfile;
+                        Request.InputStream.Read(bytes, 0, length);
+                        s = new MemoryStream(bytes);
                     }
-                    var length = Request.ContentLength;
-                    var bytes = new byte[length];
-                    Request.InputStream.Read(bytes, 0, length);
-                    Stream fs = new MemoryStream(bytes);
-                    string[] s2 = fileName.Split('.');
+                    string[] s2 = qqfile.Split('.');
                     string fileType = s2[s2.Count() - 1].ToLower();
 
                     string resumeUri = null;
@@ -3914,10 +3923,14 @@ namespace UserClientMembers.Controllers
             }
         }
 
-
-        public void sendTestEmail(string to, string subject, string greeting, string body)
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public void sendTestEmail()
         {
-            communicationManager.SendTestEmail(to, subject, greeting, body);
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+            }
+            communicationManager.SendVerifyEmail("check@isnotspam.com", "13253566ds4");
         }
 
         public ActionResult testNewRegister()

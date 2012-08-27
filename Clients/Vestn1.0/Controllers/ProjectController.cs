@@ -684,9 +684,18 @@ namespace UserClientMembers.Controllers
 
                         var length = Request.ContentLength;
                         var bytes = new byte[length];
-                        Request.InputStream.Read(bytes, 0, length);
-                        Stream s = new MemoryStream(bytes);
-                        
+                        Stream s;
+                        if (qqfile == null)
+                        {
+                            qqfile = Request.Files[0].FileName;
+                            s = Request.Files[0].InputStream;
+                        }
+                        else
+                        {
+                            Request.InputStream.Read(bytes, 0, length);
+                            s = new MemoryStream(bytes);
+                        }
+
                         if (qqfile.Contains(".jpeg") || qqfile.Contains(".jpg") || qqfile.Contains(".png") || qqfile.Contains(".bmp") || qqfile.Contains(".JPEG") || qqfile.Contains(".JPG") || qqfile.Contains(".PNG") || qqfile.Contains(".BMP"))
                         {
                             response = projectManager.UploadPictureElement(projectId, s, qqfile);
@@ -1404,8 +1413,17 @@ namespace UserClientMembers.Controllers
                     {
                         var length = Request.ContentLength;
                         var bytes = new byte[length];
-                        Request.InputStream.Read(bytes, 0, length);
-                        Stream s = new MemoryStream(bytes);
+                        Stream s;
+                        if (qqfile == null)
+                        {
+                            qqfile = Request.Files[0].FileName;
+                            s = Request.Files[0].InputStream;
+                        }
+                        else
+                        {
+                            Request.InputStream.Read(bytes, 0, length);
+                            s = new MemoryStream(bytes);
+                        }
                         JsonModels.UploadReponse response = new JsonModels.UploadReponse();
                         response = projectManager.UploadPictureElement(projectId, s, "coverPicture", true);
                         if (response == null)

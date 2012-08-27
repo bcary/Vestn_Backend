@@ -33,7 +33,7 @@ namespace UserClientMembers.Controllers
                 }
                 else if (user.isPublic == 0)
                 {
-                    string redirectURL = "http://vestn.com";
+                    string redirectURL = "http://vestn.com/#splash=404";
                     return Redirect(redirectURL);
                 }
                 else
