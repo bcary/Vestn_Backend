@@ -1425,12 +1425,12 @@ namespace UserClientMembers.Controllers
                     if (qqfile == null)
                     {
                         qqfile = Request.Files[0].FileName;
-                        s = Request.Files[0].InputStream;
+                        fs = Request.Files[0].InputStream;
                     }
                     else
                     {
                         Request.InputStream.Read(bytes, 0, length);
-                        s = new MemoryStream(bytes);
+                        fs = new MemoryStream(bytes);
                     }
                     string[] s2 = qqfile.Split('.');
                     string fileType = s2[s2.Count() - 1].ToLower();
