@@ -100,7 +100,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST","OPTIONS")]
         [AllowCrossSiteJson]
-        public string Register(string email, string password, string networkJoinCode = null, string firstName = null, string lastName = null)
+        public string Register(string email, string password, string networkJoinCode = null, string firstName = null, string lastName = null, string type = "standard")
         {
             if (Request != null)
             {
@@ -114,6 +114,7 @@ namespace UserClientMembers.Controllers
                 CommunicationManager communicationManager = new CommunicationManager();
                 string userName = email.Substring(0, email.IndexOf('@'));
                 userName = userName.Replace("+", "");
+                userName = userName.Replace(".", "");
                 RegisterModel model = new RegisterModel { Email = email, UserName = userName, Password = password, ConfirmPassword = password };
                 if (ValidationEngine.ValidateEmail(model.Email) != ValidationEngine.Success)
                 {
@@ -176,8 +177,15 @@ namespace UserClientMembers.Controllers
                         Network network = nm.GetNetworkByIdentifier(networkJoinCode);
                         if (network != null)
                         {
-                            string[] emailArray = { email };
-                            nm.AddNetworkUsers(network, emailArray);
+                            if (type == "network")
+                            {
+                                nm.AddNetworkAdmin(network.id, email);
+                            }
+                            else
+                            {
+                                string[] emailArray = { email };
+                                nm.AddNetworkUsers(network, emailArray);
+                            }
                         }
                     }
                     userManager.SendVerifyEmail(email);
@@ -1233,8 +1241,17 @@ namespace UserClientMembers.Controllers
                     {
                         var length = Request.ContentLength;
                         var bytes = new byte[length];
-                        Request.InputStream.Read(bytes, 0, length);
-                        Stream s = new MemoryStream(bytes);
+                        Stream s;
+                        if (qqfile == "System.Web.HttpPostedFileWrapper")
+                        {
+                            qqfile = Request.Files[0].FileName;
+                            s = Request.Files[0].InputStream;
+                        }
+                        else
+                        {
+                            Request.InputStream.Read(bytes, 0, length);
+                            s = new MemoryStream(bytes);
+                        }
                         if (user.profilePicture != null && user.profilePictureThumbnail != null)
                         {
                             userManager.DeleteProfilePicture(user);
@@ -1409,20 +1426,20 @@ namespace UserClientMembers.Controllers
                 }
                 if (userId == authUserId)
                 {
-                    string fileName = null;
-                    if (qqfile == null)
+                    var length = Request.ContentLength;
+                    var bytes = new byte[length];
+                    Stream fs;
+                    if (qqfile == "System.Web.HttpPostedFileWrapper")
                     {
-                        fileName = Request.Files.Get(0).FileName;
+                        qqfile = Request.Files[0].FileName;
+                        fs = Request.Files[0].InputStream;
                     }
                     else
                     {
-                        fileName = qqfile;
+                        Request.InputStream.Read(bytes, 0, length);
+                        fs = new MemoryStream(bytes);
                     }
-                    var length = Request.ContentLength;
-                    var bytes = new byte[length];
-                    Request.InputStream.Read(bytes, 0, length);
-                    Stream fs = new MemoryStream(bytes);
-                    string[] s2 = fileName.Split('.');
+                    string[] s2 = qqfile.Split('.');
                     string fileType = s2[s2.Count() - 1].ToLower();
 
                     string resumeUri = null;
@@ -3741,6 +3758,7 @@ namespace UserClientMembers.Controllers
                                     Network_Group groupNet = (Network_Group)groupNetworks.ElementAt(k);
                                     if (groupNet.Network_SubNetwork.id == subNet.id)
                                     {
+                                        
                                         JsonModels.UserNetworkShell groupNetShell = new JsonModels.UserNetworkShell();
                                         groupNetShell.name = groupNet.name;
                                         groupNetShell.networkId = groupNet.id;
@@ -3765,13 +3783,68 @@ namespace UserClientMembers.Controllers
                                     topNetShell.subnetworks = new List<JsonModels.UserNetworkShell>();
                                 }
                                 topNetShell.subnetworks.Add(subNetShell);
-
                             }
                         }
-
                         userNetworksJson.Add(topNetShell);
-
                     }
+
+                    for (int i = 0; i < user.adminNetworks.Count; i++)
+                    {
+                        if (user.adminNetworks.ElementAt(i).GetType().Name.Contains("Network_SubNetwork"))
+                        {
+                            Network_SubNetwork subAdmin = (Network_SubNetwork)user.adminNetworks.ElementAt(i);
+                            if (!user.adminNetworks.Contains(subAdmin.Network_TopNetwork))
+                            {
+                                JsonModels.UserNetworkShell subNetShell = new JsonModels.UserNetworkShell();
+                                subNetShell.name = subAdmin.name;
+                                subNetShell.networkId = subAdmin.id;
+                                subNetShell.networkURL = subAdmin.profileURL;
+                                subNetShell.userAuthorization = "admin";
+
+                                for (int k = 0; k < groupNetworks.Count; k++)
+                                {
+                                    Network_Group groupNet = (Network_Group)groupNetworks.ElementAt(k);
+                                    if (groupNet.Network_SubNetwork.id == subAdmin.id)
+                                    {
+
+                                        JsonModels.UserNetworkShell groupNetShell = new JsonModels.UserNetworkShell();
+                                        groupNetShell.name = groupNet.name;
+                                        groupNetShell.networkId = groupNet.id;
+                                        groupNetShell.networkURL = groupNet.profileURL;
+                                        if (user.adminNetworks.Contains(groupNet))
+                                        {
+                                            groupNetShell.userAuthorization = "admin";
+                                        }
+                                        else
+                                        {
+                                            groupNetShell.userAuthorization = "member";
+                                        }
+                                        if (subNetShell.subnetworks == null)
+                                        {
+                                            subNetShell.subnetworks = new List<JsonModels.UserNetworkShell>();
+                                        }
+                                        subNetShell.subnetworks.Add(groupNetShell);
+                                    }
+                                }
+                                userNetworksJson.Add(subNetShell);
+                            }
+                        }
+                        else if (user.adminNetworks.ElementAt(i).GetType().Name.Contains("Network_Group"))
+                        {
+                            Network_Group groupAdmin = (Network_Group)user.adminNetworks.ElementAt(i);
+                            if (!user.adminNetworks.Contains(groupAdmin.Network_SubNetwork) && !user.adminNetworks.Contains(groupAdmin.Network_SubNetwork.Network_TopNetwork))
+                            {
+                                JsonModels.UserNetworkShell groupNetShell = new JsonModels.UserNetworkShell();
+                                groupNetShell.name = groupAdmin.name;
+                                groupNetShell.networkId = groupAdmin.id;
+                                groupNetShell.networkURL = groupAdmin.profileURL;
+                                groupNetShell.userAuthorization = "admin";
+
+                                userNetworksJson.Add(groupNetShell);
+                            }
+                        }
+                    }
+
                     userSettingsJson.email = user.email;
                     userSettingsJson.profileURL = user.profileURL;
                     userSettingsJson.firstName = user.firstName;
@@ -3913,10 +3986,14 @@ namespace UserClientMembers.Controllers
             }
         }
 
-
-        public void sendTestEmail(string to, string subject, string greeting, string body)
+        [AcceptVerbs("POST", "OPTIONS")]
+        [AllowCrossSiteJson]
+        public void sendTestEmail()
         {
-            communicationManager.SendTestEmail(to, subject, greeting, body);
+            if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
+            {
+            }
+            communicationManager.SendVerifyEmail("check@isnotspam.com", "13253566ds4");
         }
 
         public ActionResult testNewRegister()

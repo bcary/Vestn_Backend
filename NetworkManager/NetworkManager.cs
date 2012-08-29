@@ -334,9 +334,25 @@ namespace Manager
                     }
                     else
                     {
-                        //TODO when email complete
-                        //email does not exist in system, send email invitation with network admin creds
-                        return "admin not found";
+                        Network network = networkAccessor.GetNetwork(networkId);
+                        if (network != null)
+                        {
+                            CommunicationManager communicationManager = new CommunicationManager();
+                            if (network.networkIdentifier == null)
+                            {
+                                string identifier = SetNetworkIdentifier(network);
+                                communicationManager.SendRegisterNetworkAdminInvite(adminEmail, identifier);
+                            }
+                            else
+                            {
+                                communicationManager.SendRegisterNetworkAdminInvite(adminEmail, network.networkIdentifier);
+                            }
+                            return "success";
+                        }
+                        else
+                        {
+                            return "network not found";
+                        }
                     }
                 }
                 else

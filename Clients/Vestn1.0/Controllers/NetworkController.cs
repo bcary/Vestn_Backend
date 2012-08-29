@@ -156,6 +156,10 @@ namespace UserClientMembers.Controllers
                             uShell.userId = admin.id;
                             return AddSuccessHeader(Serialize(uShell));
                         }
+                        else
+                        {
+                            return AddSuccessHeader("An email has been sent to "+adminEmail+" with instructions on creating a Vestn Account",true);
+                        }
                     }
                     else if(added == "admin not found")
                     {
@@ -631,8 +635,17 @@ namespace UserClientMembers.Controllers
                     {
                         var length = Request.ContentLength;
                         var bytes = new byte[length];
-                        Request.InputStream.Read(bytes, 0, length);
-                        Stream s = new MemoryStream(bytes);
+                        Stream s;
+                        if (qqfile == "System.Web.HttpPostedFileWrapper")
+                        {
+                            qqfile = Request.Files[0].FileName;
+                            s = Request.Files[0].InputStream;
+                        }
+                        else
+                        {
+                            Request.InputStream.Read(bytes, 0, length);
+                            s = new MemoryStream(bytes);
+                        }
 
                         string returnPic = networkManager.UpdateCoverPicture(networkId, s);
 
