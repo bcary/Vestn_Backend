@@ -144,6 +144,7 @@ namespace Manager
                             userShell.lastName = u.lastName;
                             userShell.profileURL = u.profileURL;
                             userShell.pictureLocation = u.networkPictureThumbnail;
+                            //visibility
                             if (u.isPublic == 1)
                             {
                                 userShell.visibility = "visible";
