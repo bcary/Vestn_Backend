@@ -95,7 +95,7 @@ namespace Manager
                 }
                 else
                 {
-                    ProjectAccessor pa = new ProjectAccessor();
+                    //ProjectAccessor pa = new ProjectAccessor();
                     if (type == "PictureElement")
                     {
                         Bitmap image = TEngine.CreateThumbnail(ms, displayWidth, displayHeight);
@@ -106,9 +106,9 @@ namespace Manager
                             image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
                             uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
                         }
-                        ProjectElement_Picture pe = (ProjectElement_Picture)pa.GetProjectElement(idValue);
-                        pe.pictureThumbnailLocation = uri.ToString();
-                        pa.UpdateProjectElement(pe);
+                        //ProjectElement_Picture pe = (ProjectElement_Picture)pa.GetProjectElement(idValue);
+                        //pe.pictureThumbnailLocation = uri.ToString();
+                        //pa.UpdateProjectElement(pe);
                     }
                     else if (type == "PictureElement_Galleria")
                     {
@@ -120,9 +120,9 @@ namespace Manager
                             image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
                             uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
                         }
-                        ProjectElement_Picture pe = (ProjectElement_Picture)pa.GetProjectElement(idValue);
-                        pe.pictureGalleriaThumbnailLocation = uri.ToString();
-                        pa.UpdateProjectElement(pe);
+                        //ProjectElement_Picture pe = (ProjectElement_Picture)pa.GetProjectElement(idValue);
+                       // pe.pictureGalleriaThumbnailLocation = uri.ToString();
+                        //pa.UpdateProjectElement(pe);
                     }
                     else if (type == "DocumentElement")
                     {
@@ -134,9 +134,9 @@ namespace Manager
                             image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
                             uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
                         }
-                        ProjectElement_Document pe = (ProjectElement_Document)pa.GetProjectElement(idValue);
-                        pe.documentThumbnailLocation = uri.ToString();
-                        pa.UpdateProjectElement(pe);
+                        //ProjectElement_Document pe = (ProjectElement_Document)pa.GetProjectElement(idValue);
+                        //pe.documentThumbnailLocation = uri.ToString();
+                        //pa.UpdateProjectElement(pe);
                     }
                     else if (type == "ProjectPicture")
                     {
@@ -148,9 +148,9 @@ namespace Manager
                             image.Save(stream, ImageFormat.Png);//changed this to make the background transparent
                             uri = BSAccessor.uploadThumbnail(stream, false, presetURL);
                         }
-                        Project p = pa.GetProject(idValue);
-                        p.coverPictureThumbnail = uri.ToString();
-                        pa.UpdateProject(p);
+                        //Project p = pa.GetProject(idValue);
+                       // p.coverPictureThumbnail = uri.ToString();
+                        //pa.UpdateProject(p);
                     }
                 }
                 return uri.ToString();
@@ -297,28 +297,21 @@ namespace Manager
         public string convertDocument(string location, string type, int projectElementId, string userName, string presetDocURL)
         {
             string PDFLocation = "unassigned";
-            ProjectAccessor pa = new ProjectAccessor();
-            ProjectElement_Document pe = (ProjectElement_Document)pa.GetProjectElement(projectElementId);
+            //ProjectAccessor pa = new ProjectAccessor();
+            //ProjectElement_Document pe = (ProjectElement_Document)pa.GetProjectElement(projectElementId);
             WebClient client = new WebClient();
             byte[] data = client.DownloadData(location);
             MemoryStream outStream = new MemoryStream();
             try
             {
                 Word2Pdf convertApi = new Word2Pdf(667067036);
-                //Word2Pdf convertApi = new Word2Pdf();
                 convertApi.ConvertFileByte(data, location.Substring(location.Length - 6, 6), outStream, type);
-                if (userName != "")
-                {
-                    PDFLocation = BSAccessor.uploadPDF(outStream, false).ToString();
-                    //PDFLocation = stampThatShit(PDFLocation, userName, presetDocURL);
-                }
-                else
-                {
-                    PDFLocation = BSAccessor.uploadPDF(outStream, false, presetDocURL).ToString();
-                }
-                pe.documentText = ExtractText(PDFLocation);
+
+                PDFLocation = BSAccessor.uploadPDF(outStream, false, presetDocURL).ToString();
+
+                //pe.documentText = ExtractText(PDFLocation);
                 //pe.documentThumbnailLocation = PDFLocation;
-                pa.UpdateProjectElement(pe);
+                //pa.UpdateProjectElement(pe);
             }
             catch (Exception e)
             {
@@ -332,8 +325,6 @@ namespace Manager
         public string convertUserDocument(string location, string type, int userId, string userName, string presetDocURL)
         {
             string PDFLocation = "unassigned";
-            UserAccessor userAccessor = new UserAccessor();
-            User u = userAccessor.GetUser(userId);
             WebClient client = new WebClient();
             byte[] data = client.DownloadData(location);
             MemoryStream outStream = new MemoryStream();
@@ -342,25 +333,14 @@ namespace Manager
                 Word2Pdf convertApi = new Word2Pdf(667067036);
                 //Word2Pdf convertApi = new Word2Pdf();
                 convertApi.ConvertFileByte(data, location.Substring(location.Length - 6, 6), outStream, type);
-                if (userName != "")
-                {
-                    PDFLocation = BSAccessor.uploadPDF(outStream, false).ToString();
-                    //PDFLocation = stampThatShit(PDFLocation, userName, presetDocURL);
-                }
-                else
-                {
-                    PDFLocation = BSAccessor.uploadPDF(outStream, false, presetDocURL).ToString();
-                }
-                u.resume = PDFLocation;
-                userAccessor.UpdateFromWorker(u);
+
+                PDFLocation = BSAccessor.uploadPDF(outStream, false, presetDocURL).ToString();
             }
             catch (Exception e)
             {
                 return e.StackTrace;
             }
-
             outStream.Close();
-
             return PDFLocation;
         }
         

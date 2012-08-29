@@ -258,8 +258,8 @@ namespace Manager
             {
                 location = ba.uploadPDF(fileStream, false).ToString();
                 UploadManager um = new UploadManager();
-                location = um.stampThatShit(location, fullName, null);
-                documentText = um.ExtractText(location);
+                //location = um.stampThatShit(location, fullName, null);
+                //documentText = um.ExtractText(location);
             }
             else if (extention == "doc" || extention == "docx")
             {
