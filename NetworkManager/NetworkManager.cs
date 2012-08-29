@@ -144,6 +144,14 @@ namespace Manager
                             userShell.lastName = u.lastName;
                             userShell.profileURL = u.profileURL;
                             userShell.pictureLocation = u.networkPictureThumbnail;
+                            if (u.isPublic == 1)
+                            {
+                                userShell.visibility = "visible";
+                            }
+                            else
+                            {
+                                userShell.visibility = "hidden";
+                            }
                             networkUsersJson.users.Add(userShell);
                         }
                     }
@@ -757,6 +765,14 @@ namespace Manager
                                 adminJson.lastName = admin.lastName;
                                 adminJson.profileURL = admin.profileURL;
                                 adminJson.pictureLocation = admin.networkPictureThumbnail;
+                                if (admin.isPublic == 1)
+                                {
+                                    adminJson.visibility = "visible";
+                                }
+                                else
+                                {
+                                    adminJson.visibility = "hidden";
+                                }
                                 adminShells.Add(adminJson);
                             }
                         }

@@ -215,6 +215,8 @@ namespace Entity
             public string profileURL { get; set; }
             [DataMember(IsRequired = true, EmitDefaultValue = true)]
             public string pictureLocation { get; set; }
+            [DataMember(IsRequired = true, EmitDefaultValue = true)]
+            public string visibility { get; set; }
         }
 
         [DataContract]

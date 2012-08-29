@@ -148,8 +148,10 @@ namespace Accessor
                 }
                 else
                 {
-                    u.projectOrder += ("," + newProjectId.ToString());
-                    user.projectOrder += ("," + newProjectId.ToString());
+                    u.projectOrder = newProjectId.ToString() + "," + u.projectOrder;
+                    user.projectOrder = newProjectId.ToString() + "," + user.projectOrder;
+                    //u.projectOrder += ("," + newProjectId.ToString());
+                    //user.projectOrder += ("," + newProjectId.ToString());
                 }
                 db.SaveChanges();
             }
