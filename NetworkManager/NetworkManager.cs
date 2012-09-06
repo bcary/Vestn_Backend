@@ -258,6 +258,7 @@ namespace Manager
                         {
                             if (email != null)
                             {
+                                ValidationEngine.ValidateEmail(email);
                                 User addUser = userManager.GetUserByEmail(email);
                                 if (addUser != null)
                                 {

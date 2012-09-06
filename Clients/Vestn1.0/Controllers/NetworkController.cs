@@ -8,6 +8,7 @@ using Accessor;
 using Entity;
 using Engine;
 using System.IO;
+using System.Drawing;
 
 namespace UserClientMembers.Controllers
 {
@@ -154,6 +155,14 @@ namespace UserClientMembers.Controllers
                             uShell.profileURL = admin.profileURL;
                             uShell.lastName = admin.lastName;
                             uShell.userId = admin.id;
+                            if (admin.isPublic == 1)
+                            {
+                                uShell.visibility = "visible";
+                            }
+                            else
+                            {
+                                uShell.visibility = "hidden";
+                            }
                             return AddSuccessHeader(Serialize(uShell));
                         }
                         else
@@ -645,6 +654,18 @@ namespace UserClientMembers.Controllers
                         {
                             Request.InputStream.Read(bytes, 0, length);
                             s = new MemoryStream(bytes);
+                        }
+                        try
+                        {
+                            Bitmap test = new Bitmap(s);
+                            if (test.Height < 170 || test.Width < 170)
+                            {
+                                return AddErrorHeader("The cover picture must be at least 170px wide and 170px tall", 1);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            return AddErrorHeader("The image is invalid",1);
                         }
 
                         string returnPic = networkManager.UpdateCoverPicture(networkId, s);

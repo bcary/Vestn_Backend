@@ -64,6 +64,10 @@
       <Project>{88EEE859-7550-499B-AF53-034C19D5CD6F}</Project>
       <Name>ReorderEngine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Engines\ValidationEngine\ValidationEngine.csproj">
+      <Project>{E4F892EF-FB39-4408-928A-05AC3DEFDB87}</Project>
+      <Name>ValidationEngine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Entities\JsonModels\JsonModels.csproj">
       <Project>{F52C4CC1-F773-4912-8D96-56286C81BB35}</Project>
       <Name>JsonModels</Name>

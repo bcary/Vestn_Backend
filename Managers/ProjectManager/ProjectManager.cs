@@ -1172,6 +1172,14 @@ namespace Manager
                     artifactJson.type = "code";
                     return artifactJson;
                 }
+                else if (element.GetType() == typeof(ProjectElement_Video))
+                {
+                    ProjectElement_Video pev = (ProjectElement_Video)element;
+                    artifactJson.artifactLocation = pev.videoId;
+                    artifactJson.fileLocation = pev.videoType;
+                    artifactJson.type = "video";
+                    return artifactJson;
+                }
                 else
                 {
                     return null;

@@ -1256,6 +1256,18 @@ namespace UserClientMembers.Controllers
                         {
                             userManager.DeleteProfilePicture(user);
                         }
+                        try
+                        {
+                            Bitmap test = new Bitmap(s);
+                            if (test.Height < 170 || test.Width < 170)
+                            {
+                                return AddErrorHeader("Your profile picture must be at least 170px wide and 170px tall", 1);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            return AddErrorHeader("The image is invalid", 1);
+                        }
                         string returnPic = userManager.UploadUserPicture(user, s, "Profile");
                         activityManager.AddActivity(user.id, "Profile Picture", "Updated", user.id);
 
@@ -3626,7 +3638,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string GetUserModel(int userId, string token)
+        public string GetUserModel(int userId = -1, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -3635,13 +3647,13 @@ namespace UserClientMembers.Controllers
             try
             {
                 int authUserId = -1;
-                if (token != null)
+                if (token != null || userId < 0)
                 {
                     authUserId = authenticationEngine.authenticate(token);
                 }
                 else
                 {
-                    return AddErrorHeader("A token must be passed in", 2);
+                    return AddErrorHeader("A token and a userId must be passed in", 2);
                 }
                 if (authUserId < 0)
                 {

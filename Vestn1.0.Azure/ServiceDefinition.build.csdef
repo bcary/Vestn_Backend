@@ -9,7 +9,7 @@
   **********************************************************************************************
 -->
 <ServiceDefinition name="Vestn1.0.Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition">
-  <WebRole name="Vestn1.0" vmsize="Small">
+  <WebRole name="Vestn1.0" vmsize="ExtraSmall">
     <!--<Sites>
       <Site name="Web">
         <Bindings>
@@ -28,7 +28,7 @@
       <Setting name="storageAccountUrl" />
     </ConfigurationSettings>
   </WebRole>
-  <WorkerRole name="BackgroundProcesses" vmsize="Small">
+  <WorkerRole name="BackgroundProcesses" vmsize="ExtraSmall">
     <Imports>
       <Import moduleName="Diagnostics" />
     </Imports>

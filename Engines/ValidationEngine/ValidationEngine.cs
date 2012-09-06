@@ -137,8 +137,6 @@ namespace Engine
                 {
                     return "Email not entered";
                 }
-               
-
                 string patternLenient = @"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
 
                 string patternStrict = @"^(([^<>()[\]\\.,;:\s@\""]+"
@@ -151,9 +149,6 @@ namespace Engine
                 {
                     return "Invalid email address.";
                 }
-                
-                
-
                 // completed with no errors
             }
             catch (Exception e)
