@@ -493,7 +493,14 @@ namespace Manager
             {
                 newProjectOrder += y + " ";
             }
-            newProjectOrder = newProjectOrder.TrimEnd().Replace(' ', ',');
+            if (orderList.Count == 0)
+            {
+                newProjectOrder = null;
+            }
+            else
+            {
+                newProjectOrder = newProjectOrder.TrimEnd().Replace(' ', ',');
+            }
             u.projectOrder = newProjectOrder;
             return id;
         }

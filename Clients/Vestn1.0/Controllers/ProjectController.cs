@@ -184,7 +184,7 @@ namespace UserClientMembers.Controllers
         /// <returns>JsonResult</returns>
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string DeleteProjectTag(string value, int projectId, string token = null)
+        public string DeleteProjectTag(string value = null, int projectId = -1, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
@@ -258,7 +258,7 @@ namespace UserClientMembers.Controllers
         /// <returns>JsonResult</returns>
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string DeleteProject(int projectId, string token)
+        public string DeleteProject(int projectId = -1, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
@@ -1638,7 +1638,7 @@ namespace UserClientMembers.Controllers
 
         [AcceptVerbs("POST", "OPTIONS")]
         [AllowCrossSiteJson]
-        public string DeleteArtifact(int projectId, int artifactId, string token)
+        public string DeleteArtifact(int projectId = -1, int artifactId = -1, string token = null)
         {
             if (Request.RequestType.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase))  //This is a preflight request
             {
