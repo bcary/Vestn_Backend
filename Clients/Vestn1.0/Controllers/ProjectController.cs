@@ -64,7 +64,7 @@ namespace UserClientMembers.Controllers
 
                     project.name = name;
                     project.description = description;
-                    project.privacy = "network";
+                    project.privacy = "public";
                     project.dateModified = DateTime.Now;
                     projectManager.UpdateProject(project);
 

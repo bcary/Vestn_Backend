@@ -665,7 +665,23 @@ namespace Manager
 
         public int deleteProjectElementFromOrder(Project p, int id)
         {
-            p.projectElementOrder = RemoveFromElementFromList(reorderEngine.stringOrderToList(p.projectElementOrder), id);
+            if (p.projectElementOrder == null)
+            {
+                string newOrder = null;
+                foreach (ProjectElement pe in p.projectElements)
+                {
+                    newOrder += pe.id + " ";
+                }
+                if (newOrder != null)
+                {
+                    newOrder = newOrder.TrimEnd().Replace(' ', ',');
+                }
+                p.projectElementOrder = newOrder;
+            }
+            else
+            {
+                p.projectElementOrder = RemoveFromElementFromList(reorderEngine.stringOrderToList(p.projectElementOrder), id);
+            }
             return id;
         }
 

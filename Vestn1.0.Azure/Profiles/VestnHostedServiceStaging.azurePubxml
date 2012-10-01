@@ -2,14 +2,14 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <AzureCredentials>BrianAdministratorAzure</AzureCredentials>
-    <AzureHostedServiceName>vestnDev</AzureHostedServiceName>
-    <AzureHostedServiceLabel>Development</AzureHostedServiceLabel>
+    <AzureHostedServiceName>vestn</AzureHostedServiceName>
+    <AzureHostedServiceLabel>Production</AzureHostedServiceLabel>
     <AzureSlot>Staging</AzureSlot>
     <AzureEnableIntelliTrace>False</AzureEnableIntelliTrace>
     <AzureEnableProfiling>False</AzureEnableProfiling>
     <AzureEnableWebDeploy>False</AzureEnableWebDeploy>
-    <AzureStorageAccountName>vestnstaging</AzureStorageAccountName>
-    <AzureStorageAccountLabel>vestnstaging</AzureStorageAccountLabel>
+    <AzureStorageAccountName>vestn</AzureStorageAccountName>
+    <AzureStorageAccountLabel>vestn</AzureStorageAccountLabel>
     <AzureDeploymentLabel>Vestn1.0.Azure</AzureDeploymentLabel>
     <AzureSolutionConfiguration>Release</AzureSolutionConfiguration>
     <AzureServiceConfiguration>Cloud</AzureServiceConfiguration>
