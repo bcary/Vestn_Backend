@@ -135,7 +135,6 @@ namespace Manager
         public User GetUser(int id)
         {
             User user = userAccessor.GetUser(id);
-
             //Reorder project elements before sending back to user
             ReorderEngine reorderEngine = new ReorderEngine();
             user = reorderEngine.ReOrderProjects(user);
